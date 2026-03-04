@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: athlix-ingress
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /athlix
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /athlix
+            pathType: Prefix
+            backend:
+              service:
+                name: athlix
+                port:
+                  number: 8080

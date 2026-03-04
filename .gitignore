@@ -1,0 +1,22 @@
+# ---- FRONTEND ----
+
+# Dependencias
+frontend/node_modules/
+frontend/node_modules/.cache/
+
+# Reportes de test/coverage
+frontend/coverage/
+
+# Builds/dist (si existiera)
+frontend/dist/
+frontend/build/
+
+# ---- BACKEND ----
+# Archivos generados por Maven/Gradle
+target/
+
+# --- Sistema/IDE ---
+.vscode/
+*.log
+.DS_Store
+Thumbs.db
