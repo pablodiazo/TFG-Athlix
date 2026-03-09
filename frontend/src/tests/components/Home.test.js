@@ -1,36 +1,35 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import React from "react";
+import "@testing-library/jest-dom";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import renderer from "react-test-renderer";
+import { IntlProvider } from "react-intl";
+
 import Home from "../../modules/app/components/Home";
+import messagesEs from "../../i18n/messages/messages_es";
+
+// Mock de useNavigate
+const mockedNavigate = jest.fn();
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useNavigate: () => mockedNavigate,
+}));
 
 describe("Home", () => {
-  it("renders correctly", () => {
-    const tree = renderer
-      .create(
+  const renderComponent = () => {
+    return render(
+      <IntlProvider locale="es" messages={messagesEs}>
         <MemoryRouter>
           <Home />
         </MemoryRouter>
-      )
-      .toJSON();
-    expect(tree).toMatchSnapshot();
-  });
-
-  it("calculates the value as expected", async () => {
-    render(
-      <MemoryRouter>
-        <Home />
-      </MemoryRouter>
+      </IntlProvider>
     );
+  };
 
-    const inputText = screen.getByLabelText(/input some text/i);
-    fireEvent.change(inputText, {
-      target: { value: "Sreenzragnf qr qrfraibyirzragb" },
-    });
-    const calculateButton = screen.getByText(/calculate/i);
-    fireEvent.click(calculateButton);
-    await waitFor(() => {
-      screen.getByText(/Ferramentas de desenvolvemento/);
-    });
+  it("Navega al formulario de login al hacer click en el botón", () => {
+    renderComponent();
+
+    const button = screen.getByTestId("NewHome_3");
+    fireEvent.click(button);
+
+    expect(mockedNavigate).toHaveBeenCalledWith("/users/login");
   });
 });

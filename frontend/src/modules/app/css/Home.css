@@ -1,0 +1,49 @@
+.athlix-home-wrapper {
+  min-height: calc(100vh - 70px); 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0f1115;
+  background-image: radial-gradient(circle at center, #1e2128 0%, #0f1115 100%);
+  padding: 2rem;
+  text-align: center;
+}
+
+.athlix-hero-content {
+  max-width: 1000px;
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.athlix-hero-title {
+  font-size: 4rem;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 2px;
+  margin-bottom: 1rem;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.athlix-hero-subtitle {
+  font-size: 1.25rem;
+  color: #9ca3af;
+  margin-bottom: 2.5rem;
+  font-weight: 400;
+}
+
+.athlix-hero-btn {
+  font-size: 1.1rem;
+  padding: 1rem 2.5rem;
+  border-radius: 50px;
+  margin: 0 auto;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .athlix-hero-title { font-size: 2.5rem; }
+  .athlix-hero-subtitle { font-size: 1rem; }
+}

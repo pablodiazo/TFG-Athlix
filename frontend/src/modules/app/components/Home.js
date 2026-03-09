@@ -1,69 +1,30 @@
-import React, { useState, useEffect } from "react";
-import "./App.css";
-import { config } from "../../../config/constants.js";
-import { Link } from "react-router-dom";
-
-function rot13(s) {
-  return s.replace(
-    /[A-Z]/gi,
-    (c) =>
-      "NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm"[
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".indexOf(c)
-      ]
-  );
-}
+import { useNavigate } from "react-router-dom";
+import "../css/Home.css";
 
 const Home = () => {
-  const [message, setMessage] = useState("");
-  const [someText, setSomeText] = useState("Sreenzragnf");
-  const [answer, setAnswer] = useState(null);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    fetch(config.BASE_PATH + "/hello")
-      .then((response) => response.text())
-      .then((error) => {
-        setMessage(error);
-      });
-  }, []);
-
-  const onSubmit = (ev) => {
-    ev.preventDefault();
-    setAnswer(rot13(someText));
+  const handleClick = () => {
+    navigate("/users/login");
   };
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img
-          src={process.env.PUBLIC_URL + "/assets/logo.svg"}
-          className="App-logo"
-          alt="logo"
-        />
-        <h1 className="App-title">{message}</h1>
-      </header>
-      <p className="App-intro">
-        To get started, edit <code>src/App.js</code> and save to reload.
-      </p>
-      <p>
-        <Link to="test">App route</Link>
-      </p>
-      <form action="" onSubmit={onSubmit}>
-        <p>
-          <label htmlFor="some-text">Input some text: </label>
-          <input
-            name="some-text"
-            id="some-text"
-            value={someText}
-            onChange={(ev) => setSomeText(ev.currentTarget.value)}
-          />
+    <div className="athlix-home-wrapper">
+      <div className="athlix-hero-content">
+        <h1 className="athlix-hero-title" data-testid="NewHome_2">
+          PLANIFICA TU <span className="athlix-accent">RENDIMIENTO</span>
+        </h1>
+        <p className="athlix-hero-subtitle">
+          Una plataforma para la planificación y monitorización de atletas.
         </p>
-        <button>Calculate</button>
-      </form>
-      {answer && (
-        <p>
-          The answer is: <strong>{answer}</strong>
-        </p>
-      )}
+        <button 
+          className="athlix-btn athlix-btn-primary athlix-hero-btn" 
+          data-testid="NewHome_3" 
+          onClick={handleClick}
+        >
+          Acceder
+        </button>
+      </div>
     </div>
   );
 };

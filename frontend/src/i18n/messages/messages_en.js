@@ -1,0 +1,106 @@
+export default {
+
+    // === COMMON / GLOBAL ===
+    'project.common.ErrorDialog.title': 'Error',
+
+    // === GLOBAL BUTTONS ===
+    'project.global.buttons.add': 'Add',
+    'project.global.buttons.addSet': 'Add set',
+    'project.global.buttons.back': 'Back',
+    'project.global.buttons.cancel': 'Cancel',
+    'project.global.buttons.confirm': 'Confirm',
+    'project.global.buttons.close': 'Close',
+    'project.global.buttons.complete': 'Complete',
+    'project.global.buttons.edit': 'Edit',
+    'project.global.buttons.editprofile': 'Edit profile',
+    'project.global.buttons.next': 'Next',
+    'project.global.buttons.previous': 'Previous',
+    'project.global.buttons.remove': 'Remove',
+    'project.global.buttons.removeExercise': 'Remove exercise',
+    'project.global.buttons.removeSet': 'Remove set',
+    'project.global.buttons.save': 'Save',
+    'project.global.buttons.search': 'Search',
+    'project.global.buttons.submit': 'Submit',
+    'project.global.buttons.update': 'Update',
+    'project.global.buttons.updateprofile': 'Update profile',
+    'project.global.buttons.resetFilter': 'Show all',
+
+    // === GLOBAL ERRORS & EXCEPTIONS ===
+    'project.global.errors.formNotFull': 'Uncompleted form',
+    'project.global.exceptions.NetworkError': 'Network error',
+    'project.global.errors.unexpectedError': 'Unexpected error occurred',
+
+    // === GLOBAL FIELDS ===
+    'project.global.fields.creator': 'Created by',
+    'project.global.fields.description': 'Description',
+    'project.global.fields.email': 'Email address',
+    'project.global.fields.exercises': 'Exercises',
+    'project.global.fields.easy': 'Easy',
+    'project.global.fields.firstName': 'First name',
+    'project.global.fields.hard': 'Hard',
+    'project.global.fields.lastName': 'Last name',
+    'project.global.fields.medium': 'Medium',
+    'project.global.fields.name': 'Name',
+    'project.global.fields.password': 'Password',
+    'project.global.fields.passConfirm': 'Repeat password',
+    'project.global.fields.repetitions': 'Repetitions',
+    'project.global.fields.role': 'Role',
+    'project.global.fields.routDescription': 'Description',
+    'project.global.fields.set': 'Set',
+    'project.global.fields.userName': 'Username',
+    'project.global.fields.writeHere': 'Write here',
+    'project.global.fields.startDate': 'Start date',
+    'project.global.fields.endDate': 'End date',
+    'project.global.fields.rest': 'Rest',
+    'project.global.fields.type': 'Type',
+    'project.global.fields.distance': 'Distance',
+    'project.global.fields.totalTime': 'Total time',
+    'project.global.fields.rhythmLow': 'Rhythm low',
+    'project.global.fields.rhythmHigh': 'Rhythm high',
+    'project.global.fields.user': 'User',
+    'project.global.fields.dateFrom': 'From',
+    'project.global.fields.dateTo': 'To',
+    'project.global.fields.status': 'Status',
+    'project.global.fields.actions': 'Actions',
+    'project.global.units.km': 'km',
+    'project.global.units.minutes': 'minutes',
+
+    // === GLOBAL MESSAGES ===
+    'project.global.messages.loading': 'Loading...',
+
+    // === GLOBAL ROLES ===
+    'project.global.users.roles.coach': 'COACH',
+    'project.global.users.roles.user': 'USER',
+
+    // === GLOBAL VALIDATORS ===
+    'project.global.validator.passwordsDoNotMatch': 'Passwords do not match',
+    'project.global.validator.required': 'Required field',
+
+    // === USERS ===
+    'project.users.ChangePassword.fields.confirmNewPassword': 'Confirm new password',
+    'project.users.ChangePassword.fields.newPassword': 'New password',
+    'project.users.ChangePassword.fields.oldPassword': 'Old password',
+    'project.users.ChangePassword.title': 'Change password',
+    'project.users.errors.loadUsers': 'Error loading users',
+    'project.users.exceptions.DuplicateInstanceException': 'That user name is already in use',
+    'project.users.exceptions.IncorrectLoginException': 'User or password incorrect',
+    'project.users.IncorrectPasswordException': 'Incorrect password',
+    'project.users.login.title': 'Log In',
+    'project.users.logout.title': 'Log out',
+    'project.users.profile.title': 'Profile',
+    'project.users.signup.title': 'Sign Up',
+    'project.users.updateProfile.title': 'Update Profile',
+    'project.users.premiumCoach.form.incomplete': 'Please complete all the fields in the form to proceed.',
+    'project.users.premiumCoach.processing': 'Processing...',
+    'project.users.fields.age': 'Age',
+    'project.users.fields.height': 'Height',
+    'project.users.fields.weight': 'Weight',
+    'project.users.fields.imc': 'IMC',
+    'project.users.userprofile.physicalData': 'Physical data',
+    'project.users.fields.birth': 'Birth date',
+
+    // === VALIDATORS (USERS) ===
+    'project.validator.users.incorrectLogin': 'Incorrect Login',
+    'project.validator.users.incorrectPassword': 'Incorrect password',
+    'project.validator.users.incorrectRole': 'Incorrect role',
+}

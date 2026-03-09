@@ -1,0 +1,106 @@
+export default {
+
+    // === COMMON / GLOBAL ===
+    'project.common.ErrorDialog.title': 'Error',
+
+    // === GLOBAL BUTTONS ===
+    'project.global.buttons.add': 'Añadir',
+    'project.global.buttons.addSet': 'Añadir serie',
+    'project.global.buttons.back': 'Volver',
+    'project.global.buttons.cancel': 'Cancelar',
+    'project.global.buttons.confirm': 'Confirmar',
+    'project.global.buttons.close': 'Cerrar',
+    'project.global.buttons.complete': 'Completar',
+    'project.global.buttons.edit': 'Editar',
+    'project.global.buttons.editprofile': 'Editar perfil',
+    'project.global.buttons.next': 'Siguiente',
+    'project.global.buttons.previous': 'Anterior',
+    'project.global.buttons.remove': 'Quitar',
+    'project.global.buttons.removeExercise': 'Quitar ejercicio',
+    'project.global.buttons.removeSet': 'Quitar serie',
+    'project.global.buttons.save': 'Guardar',
+    'project.global.buttons.search': 'Buscar',
+    'project.global.buttons.submit': 'Enviar',
+    'project.global.buttons.update': 'Actualizar',
+    'project.global.buttons.updateprofile': 'Actualizar perfil',
+    'project.global.buttons.resetFilter': 'Mostrar todos',
+
+    // === GLOBAL ERRORS & EXCEPTIONS ===
+    'project.global.errors.formNotFull': 'Formulario incompleto',
+    'project.global.exceptions.NetworkError': 'Fallo de comunicación',
+    'project.global.errors.unexpectedError': 'Ocurrió un error inesperado',
+
+    // === GLOBAL FIELDS ===
+    'project.global.fields.creator': 'Creada por',
+    'project.global.fields.description': 'Descripción',
+    'project.global.fields.email': 'Correo electrónico',
+    'project.global.fields.easy': 'Fácil',
+    'project.global.fields.exercises': 'Ejercicios',
+    'project.global.fields.firstName': 'Nombre',
+    'project.global.fields.hard': 'Difícil',
+    'project.global.fields.lastName': 'Apellidos',
+    'project.global.fields.medium': 'Medio',
+    'project.global.fields.name': 'Nombre',
+    'project.global.fields.password': 'Contraseña',
+    'project.global.fields.passConfirm': 'Repetir contraseña',
+    'project.global.fields.repetitions': 'Repeticiones',
+    'project.global.fields.role': 'Rol',
+    'project.global.fields.routDescription': 'Descripción',
+    'project.global.fields.set': 'Serie',
+    'project.global.fields.userName': 'Nombre de usuario',
+    'project.global.fields.writeHere': 'Escribe aquí',
+    'project.global.fields.startDate': 'Fecha de inicio',
+    'project.global.fields.endDate': 'Fecha de fin',
+    'project.global.fields.rest': 'Descanso',
+    'project.global.fields.type': 'Tipo',
+    'project.global.fields.distance': 'Distancia',
+    'project.global.fields.totalTime': 'Tiempo total',
+    'project.global.fields.rhythmLow': 'Ritmo bajo',
+    'project.global.fields.rhythmHigh': 'Ritmo alto',
+    'project.global.fields.user': 'Usuario',
+    'project.global.fields.dateFrom': 'Desde',
+    'project.global.fields.dateTo': 'Hasta',
+    'project.global.fields.status': 'Estado',
+    'project.global.fields.actions': 'Acciones',
+    'project.global.units.km': 'km',
+    'project.global.units.minutes': 'minutos',
+
+    // === GLOBAL MESSAGES ===
+    'project.global.messages.loading': 'Cargando...',
+
+    // === GLOBAL ROLES ===
+    'project.global.users.roles.coach': 'ENTRENADOR',
+    'project.global.users.roles.athlete': 'ATLETA',
+
+    // === GLOBAL VALIDATORS ===
+    'project.global.validator.passwordsDoNotMatch': 'Las contraseñas no coinciden',
+    'project.global.validator.required': 'Campo requerido',
+
+    // === USERS ===
+    'project.users.ChangePassword.fields.confirmNewPassword': 'Confirmar nueva contraseña',
+    'project.users.ChangePassword.fields.newPassword': 'Nueva contraseña',
+    'project.users.ChangePassword.fields.oldPassword': 'Contraseña antigua',
+    'project.users.ChangePassword.title': 'Cambiar contraseña',
+    'project.users.errors.loadUsers': 'Error cargando usuarios',
+    'project.users.exceptions.DuplicateInstanceException': 'Ese nombre de usuario ya está en uso',
+    'project.users.exceptions.IncorrectLoginException': 'Usuario o contraseña incorrectos',
+    'project.users.exceptions.IncorrectPasswordException': 'Contraseña incorrecta',
+    'project.users.login.title': 'Iniciar sesión',
+    'project.users.logout.title': 'Cerrar sesión',
+    'project.users.profile.title': 'Perfil',
+    'project.users.signup.title': 'Registrarse',
+    'project.users.updateProfile.title': 'Actualizar perfil',
+    'project.users.premiumCoach.form.incomplete': 'Por favor, completa todos los campos del formulario para continuar.',
+    'project.users.premiumCoach.processing': 'Procesando...',
+    'project.users.fields.age': 'Edad',
+    'project.users.fields.height': 'Altura',
+    'project.users.fields.weight': 'Peso',
+    'project.users.fields.imc': 'IMC',
+    'project.users.userprofile.physicalData': 'Datos físicos',
+    'project.users.fields.birth': 'Fecha de nacimiento',
+
+    // === VALIDATORS (USERS) ===
+    'project.validator.users.incorrectLogin': 'Usuario incorrecto',
+    'project.validator.users.incorrectPassword': 'Contraseña incorrecta',
+    'project.validator.users.incorrectRole': 'Rol incorrecto',
+}

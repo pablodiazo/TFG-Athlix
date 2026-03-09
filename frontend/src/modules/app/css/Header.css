@@ -1,0 +1,42 @@
+.athlix-header {
+  background-color: #0f1115;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.athlix-header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  height: 70px;
+}
+
+.athlix-logo-link {
+  text-decoration: none;
+}
+
+.athlix-logo-text {
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  margin: 0;
+  text-transform: uppercase;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.athlix-accent {
+  color: #3b82f6;;
+}
+
+.athlix-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
