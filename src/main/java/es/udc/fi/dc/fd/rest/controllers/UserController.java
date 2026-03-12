@@ -43,7 +43,7 @@ import es.udc.fi.dc.fd.rest.dtos.UserDto;
  * The Class UserController.
  */
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 public class UserController {
 
 	/** The Constant INCORRECT_LOGIN_EXCEPTION_CODE. */

@@ -7,6 +7,6 @@ CREATE TABLE Users (
     firstName VARCHAR(60) NOT NULL,
     lastName VARCHAR(60) NOT NULL, 
     email VARCHAR(60) NOT NULL,
-    role TINYINT NOT NULL
+    role VARCHAR(60) NOT NULL
 );
 

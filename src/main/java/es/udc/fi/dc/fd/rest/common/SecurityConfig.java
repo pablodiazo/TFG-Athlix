@@ -38,15 +38,17 @@ public class SecurityConfig {
 
         // @formatter:off
         http.cors(cors -> cors.disable()).csrf(csrf -> csrf.disable())
+            .headers(headers -> headers.frameOptions(frame -> frame.disable()))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers(antMatcher("/h2-console/**")).permitAll()
                 .requestMatchers(antMatcher("/*")).permitAll()
                 .requestMatchers(antMatcher("/static/**")).permitAll()
                 .requestMatchers(antMatcher("/assets/**")).permitAll()
-                .requestMatchers(antMatcher("/api/hello")).permitAll()
-                .requestMatchers(antMatcher("/api/users/signUp")).permitAll()
-                .requestMatchers(antMatcher("/api/users/login")).permitAll()
-                .requestMatchers(antMatcher("/api/users/loginFromServiceToken")).permitAll()
+                .requestMatchers(antMatcher("/hello")).permitAll()
+                .requestMatchers(antMatcher("/users/signUp")).permitAll()
+                .requestMatchers(antMatcher("/users/login")).permitAll()
+                .requestMatchers(antMatcher("/users/loginFromServiceToken")).permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
