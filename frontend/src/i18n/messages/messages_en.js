@@ -89,6 +89,8 @@ export default {
     'project.users.logout.title': 'Log out',
     'project.users.profile.title': 'Profile',
     'project.users.signup.title': 'Sign Up',
+    'project.users.signup.hasAccount' : 'Do you have an account?',
+    'project.users.signup.loginHere' : 'Click here to login',
     'project.users.updateProfile.title': 'Update Profile',
     'project.users.premiumCoach.form.incomplete': 'Please complete all the fields in the form to proceed.',
     'project.users.premiumCoach.processing': 'Processing...',
