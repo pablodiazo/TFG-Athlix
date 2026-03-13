@@ -1,0 +1,159 @@
+.athlix-profile-wrapper {
+  min-height: calc(100vh - 70px);
+  padding: 3rem 1.5rem;
+  background-color: #0f1115;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.athlix-profile-container {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+.athlix-profile-header-card,
+.athlix-profile-details-card,
+.athlix-profile-actions-card {
+  background-color:  #1e2128;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.athlix-profile-header-card {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.athlix-profile-avatar-large {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  font-weight: 800;
+  box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
+}
+
+.athlix-profile-header-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.athlix-profile-fullname {
+  color:  #ffffff;
+  margin: 0 0 0.25rem 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.athlix-profile-username {
+  color:  #9ca3af;
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+}
+
+.athlix-role-badge {
+  padding: 0.3rem 0.8rem;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.role-user {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.role-coach {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.role-admin {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.athlix-section-title {
+  color: #ffffff;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0 0 1.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 0.75rem;
+}
+
+.athlix-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.athlix-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.athlix-detail-label {
+  color:#9ca3af;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.athlix-detail-value {
+  color: #ffffff;
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+
+.athlix-profile-actions-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.athlix-profile-actions-card .athlix-btn {
+  flex: 1;
+}
+
+@media (max-width: 600px) {
+  .athlix-profile-header-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+  
+  .athlix-profile-header-info {
+    align-items: center;
+  }
+
+  .athlix-details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .athlix-profile-actions-card {
+    flex-direction: column;
+  }
+}
