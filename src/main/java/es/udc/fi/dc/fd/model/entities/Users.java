@@ -1,6 +1,8 @@
 package es.udc.fi.dc.fd.model.entities;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,7 +18,8 @@ public class Users {
 	 */
 	public enum RoleType {
 		/** The user. */
-		USER
+		USER,
+		COACH
 	}
 
 	/** The id. */
@@ -54,14 +57,16 @@ public class Users {
 	 * @param firstName the first name
 	 * @param lastName  the last name
 	 * @param email     the email
+	 * @param role      the role
 	 */
-	public Users(String userName, String password, String firstName, String lastName, String email) {
+	public Users(String userName, String password, String firstName, String lastName, String email, RoleType role) {
 
 		this.userName = userName;
 		this.password = password;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
+		this.role = role;
 
 	}
 
@@ -180,6 +185,7 @@ public class Users {
 	 *
 	 * @return the role
 	 */
+	@Enumerated(EnumType.STRING)
 	public RoleType getRole() {
 		return role;
 	}

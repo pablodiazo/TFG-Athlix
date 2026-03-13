@@ -47,7 +47,11 @@ public class UserServiceImpl implements UserService {
 		}
 
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		user.setRole(Users.RoleType.USER);
+		if (user.getRole() == Users.RoleType.COACH) {
+			user.setRole(Users.RoleType.COACH);
+		} else {
+			user.setRole(Users.RoleType.USER); 
+    	}
 
 		userDao.save(user);
 

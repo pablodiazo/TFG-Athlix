@@ -1,0 +1,125 @@
+.athlix-signup-wrapper {
+  min-height: calc(100vh - 70px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0f1115;
+  padding: 2rem 1.5rem;
+}
+
+.athlix-signup-card {
+  background-color: #1e2128;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 2.5rem 2.5rem;
+  width: 100%;
+  max-width: 650px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+.athlix-signup-title {
+  color: #ffffff;
+  font-size: 1.75rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.athlix-role-selector {
+  display: flex;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 0.3rem;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.athlix-role-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 0.75rem;
+  color: #9ca3af;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.athlix-role-btn:hover {
+  color:  #ffffff;
+}
+
+.athlix-role-btn.active {
+  background-color: #3b82f6;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.athlix-signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.athlix-input-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.athlix-signup-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.athlix-signup-submit {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 1.05rem;
+}
+
+.athlix-signup-footer {
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.athlix-footer-text {
+  color: #9ca3af;
+  margin-right: 0.5rem;
+}
+
+.athlix-btn-link {
+  background: none;
+  border: none;
+  color: #3b82f6;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.athlix-btn-link:hover {
+  text-decoration: underline;
+  color: #60a5fa;
+}
+
+.athlix-signup-error-container {
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .athlix-input-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .athlix-signup-card {
+    padding: 2rem 1.5rem;
+  }
+}

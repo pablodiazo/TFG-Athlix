@@ -33,7 +33,7 @@ public class UserConversor {
 	public static final Users toUser(UserDto userDto) {
 
 		return new Users(userDto.getUserName(), userDto.getPassword(), userDto.getFirstName(), userDto.getLastName(),
-				userDto.getEmail());
+				userDto.getEmail(), Users.RoleType.valueOf(userDto.getRole()));
 	}
 
 	/**
