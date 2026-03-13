@@ -1,0 +1,141 @@
+.athlix-user-menu {
+  position: relative;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.athlix-user-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #ffffff;
+}
+
+.athlix-user-btn:hover, .athlix-user-btn.active {
+  background-color: #1e2128;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.athlix-avatar-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #3b82f6;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.athlix-username {
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.athlix-chevron {
+  transition: transform 0.2s ease;
+  opacity: 0.7;
+}
+
+.athlix-chevron.open {
+  transform: rotate(180deg);
+}
+
+/* Dropdown Menu */
+.athlix-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 240px;
+  background-color: #1e2128;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  animation: slideDown 0.2s ease-out forwards;
+  transform-origin: top right;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: scale(0.95) translateY(-10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.athlix-dropdown-header {
+  padding: 1.25rem 1rem;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.athlix-dropdown-subtitle {
+  display: block;
+  font-size: 0.75rem;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.25rem;
+}
+
+.athlix-dropdown-name {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.athlix-dropdown-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 0;
+}
+
+.athlix-dropdown-group {
+  padding: 0.75rem 1rem 0.25rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.athlix-dropdown-list button {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  padding: 0.6rem 1rem;
+  color: #ffffff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.athlix-dropdown-list button:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #ef4444;
+}
+
+.athlix-dropdown-divider {
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.05);
+  margin: 0.5rem 0;
+}
+
+.athlix-logout-btn {
+  color: #ef4444;
+  font-weight: 500;
+}
+
+.athlix-logout-btn:hover {
+  background-color: rgba(239, 68, 68, 0.1) !important;
+}
