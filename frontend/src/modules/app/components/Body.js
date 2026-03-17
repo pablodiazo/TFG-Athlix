@@ -5,7 +5,7 @@ import { Route, Routes } from "react-router-dom";
 import Home from "./Home";
 import Test from "./Test";
 
-import { Login, Profile, SignUp, ChangePassword } from "../../users";
+import { Login, Profile, SignUp, ChangePassword, UpdateProfile } from "../../users";
 
 const Body = () => {
   return (
@@ -17,6 +17,7 @@ const Body = () => {
         <Route path="/users/profile" element={<Profile />} />
         <Route path="/users/signup" element={<SignUp />} />
         <Route path="/users/changePassword" element={<ChangePassword/>}/>
+        <Route path="/users/updateProfile" element={<UpdateProfile/>}/>
       </Route>
     </Routes>
   );

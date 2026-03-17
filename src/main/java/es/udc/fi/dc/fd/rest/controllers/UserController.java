@@ -179,7 +179,7 @@ public class UserController {
 		}
 
 		return toUserDto(
-				userService.updateProfile(id, userDto.getFirstName(), userDto.getLastName(), userDto.getEmail()));
+				userService.updateProfile(id, userDto.getFirstName(), userDto.getLastName(), userDto.getEmail(), userDto.getRole(), userDto.getUserName()));
 
 	}
 

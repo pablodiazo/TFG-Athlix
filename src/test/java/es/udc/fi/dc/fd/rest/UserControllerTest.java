@@ -30,9 +30,6 @@ import es.udc.fi.dc.fd.rest.dtos.ChangePasswordParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.LoginParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.UserDto;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * The Class UserControllerTest.
  */

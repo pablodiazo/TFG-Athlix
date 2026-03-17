@@ -12,7 +12,6 @@ export default {
     'project.global.buttons.close': 'Cerrar',
     'project.global.buttons.complete': 'Completar',
     'project.global.buttons.edit': 'Editar',
-    'project.global.buttons.editprofile': 'Editar perfil',
     'project.global.buttons.next': 'Siguiente',
     'project.global.buttons.previous': 'Anterior',
     'project.global.buttons.remove': 'Quitar',
@@ -22,7 +21,6 @@ export default {
     'project.global.buttons.search': 'Buscar',
     'project.global.buttons.submit': 'Enviar',
     'project.global.buttons.update': 'Actualizar',
-    'project.global.buttons.updateprofile': 'Actualizar perfil',
     'project.global.buttons.resetFilter': 'Mostrar todos',
 
     // === GLOBAL ERRORS & EXCEPTIONS ===
@@ -88,6 +86,7 @@ export default {
     'project.users.login.title': 'Iniciar sesión',
     'project.users.logout.title': 'Cerrar sesión',
     'project.users.profile.title': 'Perfil',
+    'project.users.profile.details': 'Detalles de la cuenta',
     'project.users.signup.title': 'Registrarse',
     'project.users.signup.hasAccount' : '¿Ya tienes una cuenta?',
     'project.users.signup.loginHere' : 'Inicia sesión aquí',
