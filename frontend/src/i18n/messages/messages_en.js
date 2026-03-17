@@ -88,6 +88,7 @@ export default {
     'project.users.login.title': 'Log In',
     'project.users.logout.title': 'Log out',
     'project.users.profile.title': 'Profile',
+    'project.users.profile.details': 'Account details',
     'project.users.signup.title': 'Sign Up',
     'project.users.signup.hasAccount' : 'Do you have an account?',
     'project.users.signup.loginHere' : 'Click here to login',

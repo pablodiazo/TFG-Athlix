@@ -8,4 +8,5 @@ export { default as UserMenu } from './components/UserMenu';
 export { default as Profile } from './components/Profile';
 export { default as SignUp } from './components/SignUp';
 export {default as ChangePassword } from './components/ChangePassword';
+export {default as UpdateProfile } from './components/UpdateProfile';
 export default { actions, actionTypes, reducer, selectors };

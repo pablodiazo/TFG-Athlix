@@ -18,3 +18,8 @@ export const logout = () => {
     return { type: actionTypes.LOGOUT };
 
 };
+
+export const updateProfileCompleted = user => ({
+    type: actionTypes.UPDATE_PROFILE_COMPLETED,
+    user
+});
