@@ -118,8 +118,10 @@ public class UserServiceTest {
         String newFirstName = "newName";
         String newLastName = "newLastName";
         String newEmail = "newEmail@test.com";
+        String newUserName = "newUserName";
+        String newRole = "USER";
 
-        userService.updateProfile(user.getId(), newFirstName, newLastName, newEmail);
+        userService.updateProfile(user.getId(), newFirstName, newLastName, newEmail, newRole, newUserName);
 
         Users updatedUser = userService.loginFromId(user.getId());
 
@@ -130,7 +132,7 @@ public class UserServiceTest {
 
     @Test
     public void testUpdateProfileWithNonExistentId() throws InstanceNotFoundException {
-        assertThrows(InstanceNotFoundException.class, () -> userService.updateProfile(NON_EXISTENT_ID, "name", "lastName", "email@test.com"));
+        assertThrows(InstanceNotFoundException.class, () -> userService.updateProfile(NON_EXISTENT_ID, "name", "lastName", "email@test.com", "userName", "USER"));
     }
 
 	@Test
