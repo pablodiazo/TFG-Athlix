@@ -88,8 +88,8 @@ const UserMenu = () => {
             {isUser && (
               <>
                 <li>
-                  <button onClick={() => navAndClose("/workouts/progress")}>
-                    Opcion 1
+                  <button onClick={() => navAndClose("/plans/daily")}>
+                    <FormattedMessage id="project.plans.DailyPlan.title" defaultMessage="Plan diario" />
                   </button>
                 </li>
                 <li>
@@ -103,7 +103,7 @@ const UserMenu = () => {
             {isCoach && (
               <li>
                 <button onClick={() => navAndClose("/users/seeFollowers")}>
-                  <FormattedMessage id="project.users.findCoaches.followers" />
+                  Opcion 1
                 </button>
               </li>
             )}

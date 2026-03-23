@@ -106,4 +106,21 @@ export default {
     'project.validator.users.incorrectLogin': 'Incorrect Login',
     'project.validator.users.incorrectPassword': 'Incorrect password',
     'project.validator.users.incorrectRole': 'Incorrect role',
+
+    // === PLANS ===
+    'project.plans.DailyPlan.title': 'Daily plan',
+    'project.plans.DailyPlan.freeDay': 'Free day',
+    'project.plans.DailyPlan.nothingPlanned': 'Anything planned yet',
+    'project.plans.DailyPlan.workouts': 'Workouts',
+    'project.plans.DailyPlan.restDay': 'Rest day (Nothing planned today)',
+    'project.plans.DailyPlan.lifestyle': 'Lyfestyle',
+    'project.plans.DailyPlan.nutrition': 'Nutritión',
+    'project.plans.DailyPlan.proteins': 'Proteíns',
+    'project.plans.DailyPlan.carbs': 'Carbohydrates',
+    'project.plans.DailyPlan.fats': 'Fats',
+    'project.plans.DailyPlan.water': 'Water',
+    'project.plans.DailyPlan.noNutritionPlanned': 'There is no Nutrition Plan for today',
+    'project.plans.DailyPlan.rest': 'Rest and recovery',
+    'project.plans.DailyPlan.sleepTarget': 'Sleep target',
+    'project.plans.DailyPlan.noRestPlanned': 'There is no Rest Plan for today',
 }
