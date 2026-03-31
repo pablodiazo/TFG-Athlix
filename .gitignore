@@ -3,6 +3,7 @@
 # Dependencias
 frontend/node_modules/
 frontend/node_modules/.cache/
+/node_modules/
 
 # Reportes de test/coverage
 frontend/coverage/
