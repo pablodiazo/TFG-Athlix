@@ -49,6 +49,7 @@ public class SecurityConfig {
                 .requestMatchers(antMatcher("/users/signUp")).permitAll()
                 .requestMatchers(antMatcher("/users/login")).permitAll()
                 .requestMatchers(antMatcher("/users/loginFromServiceToken")).permitAll()
+                .requestMatchers(antMatcher("/plans/daily")).permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

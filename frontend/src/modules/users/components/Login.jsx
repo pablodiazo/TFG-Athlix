@@ -47,7 +47,7 @@ const Login = () => {
            if (userRole === "COACH") {
             navigate("/users/profile");
           } else if (userRole === "USER") {
-            navigate("/users/profile");
+            navigate("/plans/daily");
           } else {
             navigate("/");
           }

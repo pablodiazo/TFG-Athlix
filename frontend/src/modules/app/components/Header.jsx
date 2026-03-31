@@ -17,7 +17,7 @@ const Header = () => {
           {isLoggedIn ? (
             <>
             {userRole === "USER" && (
-              <Link className="athlix-logo-link" to="/users/profile">
+              <Link className="athlix-logo-link" to="/plans/daily">
                 <h1 className="athlix-logo-text">
                   ATHLIX<span className="athlix-accent">.</span>
                 </h1>

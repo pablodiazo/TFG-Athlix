@@ -1,0 +1,1 @@
+export { default as DailyPlan } from './components/DailyPlan';

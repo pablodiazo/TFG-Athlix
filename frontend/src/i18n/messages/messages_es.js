@@ -104,4 +104,21 @@ export default {
     'project.validator.users.incorrectLogin': 'Usuario incorrecto',
     'project.validator.users.incorrectPassword': 'Contraseña incorrecta',
     'project.validator.users.incorrectRole': 'Rol incorrecto',
+
+    // === PLANS ===
+    'project.plans.DailyPlan.title': 'Plan diario',
+    'project.plans.DailyPlan.freeDay': 'Día libre',
+    'project.plans.DailyPlan.nothingPlanned': 'Aún no tienes nada planificado para hoy',
+    'project.plans.DailyPlan.workouts': 'Entrenamientos',
+    'project.plans.DailyPlan.restDay': 'Día de descanso (No hay sesiones planificadas)',
+    'project.plans.DailyPlan.lifestyle': 'Estilo de vida',
+    'project.plans.DailyPlan.nutrition': 'Nutrición',
+    'project.plans.DailyPlan.proteins': 'Proteínas',
+    'project.plans.DailyPlan.carbs': 'Hidratos de carbono',
+    'project.plans.DailyPlan.fats': 'Grasas',
+    'project.plans.DailyPlan.water': 'Agua',
+    'project.plans.DailyPlan.noNutritionPlanned': 'No hay plan de nutrición para hoy',
+    'project.plans.DailyPlan.rest': 'Descanso y recuperación',
+    'project.plans.DailyPlan.sleepTarget': 'Objetivo de sueño',
+    'project.plans.DailyPlan.noRestPlanned': 'No hay pautas de descanso para hoy',
 }
