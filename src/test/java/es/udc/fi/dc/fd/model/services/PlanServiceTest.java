@@ -3,9 +3,11 @@ package es.udc.fi.dc.fd.model.services;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThrows;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 import jakarta.transaction.Transactional;
 
@@ -19,6 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import es.udc.fi.dc.fd.model.common.exceptions.InstanceNotFoundException;
 import es.udc.fi.dc.fd.model.entities.*;
 import es.udc.fi.dc.fd.model.entities.Users.RoleType;
+import es.udc.fi.dc.fd.model.services.exceptions.IncorrectRoleException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -123,5 +126,80 @@ public class PlanServiceTest {
         assertEquals(1, dailyPlan.getSessions().size());
         assertFalse(dailyPlan.getNutrition().isPresent());
         assertFalse(dailyPlan.getRest().isPresent());
+    }
+
+    @Test
+    public void testCreateTrainingSession() throws InstanceNotFoundException, IncorrectRoleException {
+        Users athlete = createUser("athlete", RoleType.USER);
+        Users coach = createUser("coach", RoleType.COACH);
+        LocalDate testDate = LocalDate.of(2026, 3, 20);
+
+        TrainingBlock block = new TrainingBlock();
+        block.setBlockOrder(1);
+        block.setName("Calentamiento");
+        block.setSets(1);
+        block.setReps(1);
+        block.setDistanceOrDuration("600m");
+        block.setPace("0");
+        block.setRest("0");
+
+        List<TrainingBlock> blocks = List.of(block);
+
+        TrainingSession savedSession = planService.createTrainingSession(athlete.getId(), coach.getId(), testDate, 
+                LocalTime.of(7, 0), TrainingSession.SportType.SWIM, "Aeróbico", "600m", blocks);
+
+        assertEquals(1, savedSession.getBlocks().size());
+        assertEquals(Integer.valueOf(1), savedSession.getBlocks().get(0).getBlockOrder());
+        assertEquals("Calentamiento", savedSession.getBlocks().get(0).getName());
+        assertEquals(Integer.valueOf(1), savedSession.getBlocks().get(0).getSets());
+        assertEquals(Integer.valueOf(1), savedSession.getBlocks().get(0).getReps());
+        assertEquals("600m", savedSession.getBlocks().get(0).getDistanceOrDuration());
+        assertEquals("0", savedSession.getBlocks().get(0).getPace());
+        assertEquals("0", savedSession.getBlocks().get(0).getRest());
+    }
+
+    @Test
+    public void testCreateTrainingSession_WithIncorrectRole() throws InstanceNotFoundException, IncorrectRoleException {
+        Users athlete = createUser("athlete", RoleType.USER);
+        Users notCoach = createUser("notCoach", RoleType.USER);
+        LocalDate testDate = LocalDate.of(2026, 3, 21);
+
+        TrainingBlock block = new TrainingBlock();
+        block.setBlockOrder(1);
+        block.setName("Calentamiento");
+        block.setSets(1);
+        block.setReps(1);
+        block.setDistanceOrDuration("600m");
+        block.setPace("0");
+        block.setRest("0");
+
+        List<TrainingBlock> blocks = List.of(block);
+
+        assertThrows (IncorrectRoleException.class, () -> {
+            planService.createTrainingSession(athlete.getId(), notCoach.getId(), testDate, 
+                    LocalTime.of(7, 0), TrainingSession.SportType.SWIM, "Aeróbico", "600m", blocks);
+        });
+    }
+
+    @Test
+    public void testCreateTrainingSession_InstanceNotFound() throws InstanceNotFoundException, IncorrectRoleException {
+        Users athlete = createUser("athlete", RoleType.USER);
+        LocalDate testDate = LocalDate.of(2026, 3, 21);
+
+        TrainingBlock block = new TrainingBlock();
+        block.setBlockOrder(1);
+        block.setName("Calentamiento");
+        block.setSets(1);
+        block.setReps(1);
+        block.setDistanceOrDuration("600m");
+        block.setPace("0");
+        block.setRest("0");
+
+        List<TrainingBlock> blocks = List.of(block);
+
+        assertThrows (InstanceNotFoundException.class, () -> {
+            planService.createTrainingSession(athlete.getId(), -1L, testDate,
+                    LocalTime.of(7, 0), TrainingSession.SportType.SWIM, "Aeróbico", "600m", blocks);
+        });
     }
 }
