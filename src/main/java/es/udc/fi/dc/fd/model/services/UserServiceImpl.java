@@ -1,5 +1,6 @@
 package es.udc.fi.dc.fd.model.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -144,5 +145,10 @@ public class UserServiceImpl implements UserService {
 		}
 
 	}
+
+	@Override
+    public List<Users> getAthletesByCoach(Long coachId) {
+        return userDao.findAthletesByCoach(Users.RoleType.USER, coachId);
+    }
 
 }

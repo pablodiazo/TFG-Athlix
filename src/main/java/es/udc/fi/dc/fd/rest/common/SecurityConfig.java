@@ -23,6 +23,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 public class SecurityConfig {
     
+    public static final String ROLE_COACH = "COACH";
+
+    public static final String ROLE_USER = "USER";
+
     @Autowired
     private JwtFilter jwtFilter;
 
@@ -49,7 +53,8 @@ public class SecurityConfig {
                 .requestMatchers(antMatcher("/users/signUp")).permitAll()
                 .requestMatchers(antMatcher("/users/login")).permitAll()
                 .requestMatchers(antMatcher("/users/loginFromServiceToken")).permitAll()
-                .requestMatchers(antMatcher("/plans/daily")).permitAll()
+                .requestMatchers(antMatcher("/plans/daily")).hasRole(ROLE_USER)
+                .requestMatchers(antMatcher("/plans/create-training-session")).hasRole(ROLE_COACH)
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

@@ -1,5 +1,7 @@
 package es.udc.fi.dc.fd.model.services;
 
+import java.util.List;
+
 import es.udc.fi.dc.fd.model.common.exceptions.DuplicateInstanceException;
 import es.udc.fi.dc.fd.model.common.exceptions.InstanceNotFoundException;
 import es.udc.fi.dc.fd.model.entities.Users;
@@ -62,4 +64,6 @@ public interface UserService {
 	void changePassword(Long id, String oldPassword, String newPassword)
 		throws InstanceNotFoundException, IncorrectPasswordException;
 
+	List<Users> getAthletesByCoach(Long coachId);
+	
 }

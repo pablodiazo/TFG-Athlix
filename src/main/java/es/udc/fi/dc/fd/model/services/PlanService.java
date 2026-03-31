@@ -1,10 +1,16 @@
 package es.udc.fi.dc.fd.model.services;
 
-import es.udc.fi.dc.fd.model.entities.DailyPlan;
+import es.udc.fi.dc.fd.model.entities.*;
+import es.udc.fi.dc.fd.model.services.exceptions.IncorrectRoleException;
 import es.udc.fi.dc.fd.model.common.exceptions.InstanceNotFoundException;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
 
 public interface PlanService {
     DailyPlan getDailyPlan(Long userId, LocalDate date) throws InstanceNotFoundException;
+
+    TrainingSession createTrainingSession(Long athleteId, Long coachId, LocalDate date, LocalTime startTime, TrainingSession.SportType sportType, String objective, String totalDistanceOrDuration, List<TrainingBlock> blocks) throws InstanceNotFoundException, IncorrectRoleException;
+
 }

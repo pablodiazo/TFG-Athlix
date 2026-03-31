@@ -5,6 +5,7 @@ import static es.udc.fi.dc.fd.rest.dtos.UserConversor.toUser;
 import static es.udc.fi.dc.fd.rest.dtos.UserConversor.toUserDto;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -219,6 +221,11 @@ public class UserController {
 
 		return jwtGenerator.generate(jwtInfo);
 
+	}
+
+	@GetMapping("/athletes")
+	public List<Users> getAthletesByCoach(@RequestAttribute Long userId){
+		return userService.getAthletesByCoach(userId);
 	}
 
 }
