@@ -102,8 +102,8 @@ const UserMenu = () => {
 
             {isCoach && (
               <li>
-                <button onClick={() => navAndClose("/users/seeFollowers")}>
-                  Opcion 1
+                <button onClick={() => navAndClose("/plans/create-training-session")}>
+                  <FormattedMessage id="project.plans.CreateTrainingSession.title" defaultMessage="Crear sesión de entrenamiento" />
                 </button>
               </li>
             )}
