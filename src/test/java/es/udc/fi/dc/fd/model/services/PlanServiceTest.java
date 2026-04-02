@@ -202,4 +202,27 @@ public class PlanServiceTest {
                     LocalTime.of(7, 0), TrainingSession.SportType.SWIM, "Aeróbico", "600m", blocks);
         });
     }
+
+    @Test
+    public void testCreateTrainingSession_AthleteWithIncorrectRole() throws InstanceNotFoundException, IncorrectRoleException {
+        Users notAthlete = createUser("athlete", RoleType.COACH);
+        Users coach = createUser("coach", RoleType.COACH);
+        LocalDate testDate = LocalDate.of(2026, 3, 21);
+
+        TrainingBlock block = new TrainingBlock();
+        block.setBlockOrder(1);
+        block.setName("Calentamiento");
+        block.setSets(1);
+        block.setReps(1);
+        block.setDistanceOrDuration("600m");
+        block.setPace("0");
+        block.setRest("0");
+
+        List<TrainingBlock> blocks = List.of(block);
+
+        assertThrows (IncorrectRoleException.class, () -> {
+            planService.createTrainingSession(notAthlete.getId(), coach.getId(), testDate, 
+                    LocalTime.of(7, 0), TrainingSession.SportType.SWIM, "Aeróbico", "600m", blocks);
+        });
+    }
 }
