@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 /**
  * The Interface UserDao.
  */
-public interface UserDao extends JpaRepository<Users, Long> {
+public interface UserDao extends JpaRepository<Users, Long>, CustomizedUserDao {
 
 	/**
 	 * Exists by user name.

@@ -40,6 +40,9 @@ public class UserDto {
 	/** The role. */
 	private String role;
 
+	/** The coach id. */
+	private Long coachId;
+
 	/**
 	 * Instantiates a new user dto.
 	 */
@@ -54,8 +57,9 @@ public class UserDto {
 	 * @param lastName the last name
 	 * @param email the email
 	 * @param role the role
+	 * @param coachId the coach id
 	 */
-	public UserDto(Long id, String userName, String firstName, String lastName, String email, String role) {
+	public UserDto(Long id, String userName, String firstName, String lastName, String email, String role, Long coachId) {
 
 		this.id = id;
 		this.userName = userName != null ? userName.trim() : null;
@@ -63,6 +67,7 @@ public class UserDto {
 		this.lastName = lastName.trim();
 		this.email = email.trim();
 		this.role = role;
+		this.coachId = coachId;
 		
 	}
 
@@ -201,6 +206,24 @@ public class UserDto {
 	 */
 	public void setRole(String role) {
 		this.role = role;
+	}
+
+	/**
+	 * Gets the coach id.
+	 *
+	 * @return the coach id
+	 */
+	public Long getCoachId() {
+		return coachId;
+	}
+
+	/**
+	 * Sets the coach id.
+	 *
+	 * @param coachId the new coach id
+	 */
+	public void setCoachId(Long coachId) {
+		this.coachId = coachId;
 	}
 
 }

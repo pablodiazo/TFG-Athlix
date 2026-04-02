@@ -79,3 +79,6 @@ export const changePassword = (
     onSuccess,
     onErrors
   );
+
+export const getAthletesByCoach = (onSuccess, onErrors) =>
+  appFetch("/users/athletes", fetchConfig("GET"), onSuccess, onErrors);

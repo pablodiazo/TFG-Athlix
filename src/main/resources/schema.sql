@@ -11,24 +11,24 @@ CREATE TABLE Users (
     firstName VARCHAR(60) NOT NULL,
     lastName VARCHAR(60) NOT NULL, 
     email VARCHAR(60) NOT NULL,
-    role VARCHAR(60) NOT NULL
+    role VARCHAR(60) NOT NULL,
+    coachId BIGINT,
+    CONSTRAINT fk_user_coach FOREIGN KEY (coachId) REFERENCES Users(id)
 );
 
--- 1. Sesión de Entrenamiento (Puede haber varias al día)
 CREATE TABLE TrainingSession (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     userId BIGINT NOT NULL,
     coachId BIGINT NOT NULL,
     sessionDate DATE NOT NULL,
-    startTime TIME NOT NULL,           -- Hora a la que se debe realizar (ej. '07:00:00')
-    sport VARCHAR(20) NOT NULL,        -- 'SWIM', 'BIKE', 'RUN', 'STRENGTH', 'BRICK'
-    objective VARCHAR(100),            -- ej. 'Series VO2Max' o 'Rodaje regenerativo'
-    totalDistanceOrDuration VARCHAR(50), -- ej. '5km', '1h30m'
+    startTime TIME NOT NULL,
+    sport VARCHAR(20) NOT NULL,
+    objective VARCHAR(100),
+    totalDistanceOrDuration VARCHAR(50),
     CONSTRAINT fk_session_user FOREIGN KEY (userId) REFERENCES Users(id),
     CONSTRAINT fk_session_coach FOREIGN KEY (coachId) REFERENCES Users(id)
 );
 
--- 2. Bloques/Ejercicios dentro de UNA Sesión
 CREATE TABLE TrainingBlock (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     trainingSessionId BIGINT NOT NULL,
@@ -42,7 +42,6 @@ CREATE TABLE TrainingBlock (
     CONSTRAINT fk_block_session FOREIGN KEY (trainingSessionId) REFERENCES TrainingSession(id)
 );
 
--- 3. Plan de Nutrición (Este sí suele ser uno por día)
 CREATE TABLE NutritionPlan (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     userId BIGINT NOT NULL,
@@ -59,7 +58,6 @@ CREATE TABLE NutritionPlan (
     CONSTRAINT uq_nutrition_user_date UNIQUE (userId, planDate)
 );
 
--- 4. Plan de Descanso (Uno por día)
 CREATE TABLE RestPlan (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     userId BIGINT NOT NULL,

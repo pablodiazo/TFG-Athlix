@@ -6,7 +6,7 @@ import Home from "./Home";
 import Test from "./Test";
 
 import { Login, Profile, SignUp, ChangePassword, UpdateProfile } from "../../users";
-import { DailyPlan } from "../../plans";
+import { DailyPlan, CreateTrainingSession, CreateSessionSuccess } from "../../plans";
 
 const Body = () => {
   return (
@@ -20,6 +20,8 @@ const Body = () => {
         <Route path="/users/changePassword" element={<ChangePassword/>}/>
         <Route path="/users/updateProfile" element={<UpdateProfile/>}/>
         <Route path="/plans/daily" element={<DailyPlan />} />
+        <Route path="/plans/create-training-session" element={<CreateTrainingSession />} />
+        <Route path="/plans/create-session-success" element={<CreateSessionSuccess />} />
       </Route>
     </Routes>
   );

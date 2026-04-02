@@ -4,11 +4,11 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-import  es.udc.fi.dc.fd.model.entities.TrainingSession;
+import es.udc.fi.dc.fd.model.entities.TrainingSession;
 
-public class TrainingSessionDto {
+public class CreateSessionParamsDto {
     
-    private Long id;
+    private Long athleteId;
     private LocalDate sessionDate;
     private LocalTime startTime;
     private TrainingSession.SportType sport;
@@ -16,11 +16,11 @@ public class TrainingSessionDto {
     private String totalDistanceOrDuration;
     private List<TrainingBlockDto> blocks;
 
-    public TrainingSessionDto() {}
+    public CreateSessionParamsDto() {}
 
-    public TrainingSessionDto(Long id, LocalDate sessionDate, LocalTime startTime, TrainingSession.SportType sport, 
-                              String objective, String totalDistanceOrDuration, List<TrainingBlockDto> blocks) {
-        this.id = id;
+    public CreateSessionParamsDto(Long athleteId, LocalDate sessionDate, LocalTime startTime, TrainingSession.SportType sport, 
+                                  String objective, String totalDistanceOrDuration, List<TrainingBlockDto> blocks) {
+        this.athleteId = athleteId;
         this.sessionDate = sessionDate;
         this.startTime = startTime;
         this.sport = sport;
@@ -29,8 +29,8 @@ public class TrainingSessionDto {
         this.blocks = blocks;
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getAthleteId() { return athleteId; }
+    public void setAthleteId(Long athleteId) { this.athleteId = athleteId; }
 
     public LocalDate getSessionDate() { return sessionDate; }
     public void setSessionDate(LocalDate sessionDate) { this.sessionDate = sessionDate; }

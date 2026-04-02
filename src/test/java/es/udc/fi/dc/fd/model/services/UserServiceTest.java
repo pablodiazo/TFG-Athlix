@@ -41,7 +41,7 @@ public class UserServiceTest {
 	 * @return the user
 	 */
 	private Users createUser(String userName, RoleType roleType) throws DuplicateInstanceException {
-		Users user = new Users(userName, "password", "firstName", "lastName", userName + "@" + userName + ".com", roleType);
+		Users user = new Users(userName, "password", "firstName", "lastName", userName + "@" + userName + ".com", roleType, null);
 		return user;
 	}
 

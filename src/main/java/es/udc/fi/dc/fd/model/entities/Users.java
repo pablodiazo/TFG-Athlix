@@ -43,6 +43,9 @@ public class Users {
 	/** The role. */
 	private RoleType role;
 
+	/** The coach id. */
+	private Long coachId;
+
 	/**
 	 * Instantiates a new user.
 	 */
@@ -58,8 +61,9 @@ public class Users {
 	 * @param lastName  the last name
 	 * @param email     the email
 	 * @param role      the role
+	 * @param coachId   the coach id
 	 */
-	public Users(String userName, String password, String firstName, String lastName, String email, RoleType role) {
+	public Users(String userName, String password, String firstName, String lastName, String email, RoleType role, Long coachId) {
 
 		this.userName = userName;
 		this.password = password;
@@ -67,6 +71,7 @@ public class Users {
 		this.lastName = lastName;
 		this.email = email;
 		this.role = role;
+		this.coachId = coachId;
 
 	}
 
@@ -197,6 +202,24 @@ public class Users {
 	 */
 	public void setRole(RoleType role) {
 		this.role = role;
+	}
+
+	/**
+	 * Gets the coach id.
+	 *
+	 * @return the coach id
+	 */
+	public Long getCoachId() {
+		return coachId;
+	}
+
+	/**
+	 * Sets the coach id.
+	 *
+	 * @param coachId the new coach id
+	 */
+	public void setCoachId(Long coachId) {
+		this.coachId = coachId;
 	}
 
 }
