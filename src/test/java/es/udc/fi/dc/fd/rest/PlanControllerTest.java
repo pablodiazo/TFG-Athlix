@@ -32,6 +32,7 @@ import es.udc.fi.dc.fd.model.services.PlanService;
 import es.udc.fi.dc.fd.model.services.exceptions.IncorrectLoginException;
 import es.udc.fi.dc.fd.rest.controllers.UserController;
 import es.udc.fi.dc.fd.rest.dtos.AuthenticatedUserDto;
+import es.udc.fi.dc.fd.rest.dtos.CreateNutritionPlanParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.CreateSessionParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.LoginParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.TrainingBlockDto;
@@ -156,6 +157,9 @@ public class PlanControllerTest {
         AuthenticatedUserDto fakeCoach = createAuthenticatedUser("fakeCoach", RoleType.USER);
         AuthenticatedUserDto athlete = createAuthenticatedUser("athleteTarget", RoleType.USER);
 
+        TrainingBlockDto blockDto = new TrainingBlockDto(null, 1, "Series Pista", 8, 1, "400m", "Z4", "1 min");
+
+
         CreateSessionParamsDto params = new CreateSessionParamsDto(
                 athlete.getUserDto().getId(),
                 LocalDate.now(),
@@ -163,7 +167,7 @@ public class PlanControllerTest {
                 TrainingSession.SportType.SWIM,
                 "Intento Ilegal",
                 "1000m",
-                new ArrayList<>()
+                Arrays.asList(blockDto)
         );
 
         mockMvc.perform(post("/plans/create-training-session")
@@ -173,5 +177,60 @@ public class PlanControllerTest {
                 .andExpect(status().is4xxClientError());
     }
 
-    
+    @Test
+    public void testCreateNutritionPlan_Ok() throws Exception {
+        AuthenticatedUserDto coach = createAuthenticatedUser("coachCreator", RoleType.COACH);
+        AuthenticatedUserDto athlete = createAuthenticatedUser("athleteReceiver", RoleType.USER);
+
+        LocalDate testDate = LocalDate.of(2026, 6, 1);
+
+        CreateNutritionPlanParamsDto params = new CreateNutritionPlanParamsDto(
+                athlete.getUserDto().getId(),
+                testDate,
+                3000,
+                100,
+                200,
+                300,
+                4.5,
+                "guidelines"
+        );
+
+        mockMvc.perform(post("/plans/create-nutrition-plan")
+                .header("Authorization", "Bearer " + coach.getServiceToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(params)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.targetCalories", is(3000)))
+                .andExpect(jsonPath("$.proteinGrams", is(100)))
+                .andExpect(jsonPath("$.carbsGrams", is(200)))
+                .andExpect(jsonPath("$.fatGrams", is(300)))
+                .andExpect(jsonPath("$.hydrationLiters", is(4.5)))
+                .andExpect(jsonPath("$.guidelines", is("guidelines")));
+    }
+
+    @Test
+    public void testCreateNutritionPlan_IncorrectRole() throws Exception {
+        AuthenticatedUserDto fakeCoach = createAuthenticatedUser("fakeCoach", RoleType.USER);
+        AuthenticatedUserDto athlete = createAuthenticatedUser("athleteTarget", RoleType.USER);
+
+        LocalDate testDate = LocalDate.of(2026, 6, 1);
+
+        CreateNutritionPlanParamsDto params = new CreateNutritionPlanParamsDto(
+            athlete.getUserDto().getId(),
+            testDate,
+            3000,
+            100,
+            200,
+            300,
+            4.5,
+            "guidelines"
+        );
+
+        mockMvc.perform(post("/plans/create-nutrition-plan")
+                .header("Authorization", "Bearer " + fakeCoach.getServiceToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(params)))
+                .andExpect(status().is4xxClientError());
+
+    }
 }

@@ -204,6 +204,28 @@ public class PlanServiceTest {
     }
 
     @Test
+    public void testCreateTrainingSession_AthleteNotFound() throws InstanceNotFoundException, IncorrectRoleException {
+        Users coach = createUser("coach", RoleType.COACH);
+        LocalDate testDate = LocalDate.of(2026, 3, 21);
+
+        TrainingBlock block = new TrainingBlock();
+        block.setBlockOrder(1);
+        block.setName("Calentamiento");
+        block.setSets(1);
+        block.setReps(1);
+        block.setDistanceOrDuration("600m");
+        block.setPace("0");
+        block.setRest("0");
+
+        List<TrainingBlock> blocks = List.of(block);
+
+        assertThrows (InstanceNotFoundException.class, () -> {
+            planService.createTrainingSession(-1L,coach.getId(), testDate,
+                    LocalTime.of(7, 0), TrainingSession.SportType.SWIM, "Aeróbico", "600m", blocks);
+        });
+    }
+
+    @Test
     public void testCreateTrainingSession_AthleteWithIncorrectRole() throws InstanceNotFoundException, IncorrectRoleException {
         Users notAthlete = createUser("athlete", RoleType.COACH);
         Users coach = createUser("coach", RoleType.COACH);
@@ -224,5 +246,70 @@ public class PlanServiceTest {
             planService.createTrainingSession(notAthlete.getId(), coach.getId(), testDate, 
                     LocalTime.of(7, 0), TrainingSession.SportType.SWIM, "Aeróbico", "600m", blocks);
         });
+    }
+
+
+    @Test
+    public void testCreateNutritionPlan_WithIncorrectRole() throws InstanceNotFoundException, IncorrectRoleException {
+        Users athlete = createUser("athlete", RoleType.USER);
+        Users notCoach = createUser("notCoach", RoleType.USER);
+        LocalDate testDate = LocalDate.of(2026, 3, 21);
+
+        assertThrows (IncorrectRoleException.class, () -> {
+            planService.createNutritionPlan(athlete.getId(), notCoach.getId(), testDate, 3000, 100, 200, 300, 1.0, "guidelines");
+        });
+
+    }
+
+    @Test
+    public void testCreateNutritionPlan_InstanceNotFound() throws InstanceNotFoundException, IncorrectRoleException {
+        Users athlete = createUser("athlete", RoleType.USER);
+        LocalDate testDate = LocalDate.of(2026, 3, 21);
+
+        assertThrows (InstanceNotFoundException.class, () -> {
+            planService.createNutritionPlan(athlete.getId(), -1L, testDate, 3000, 100, 200, 300, 1.0, "guidelines");
+        });
+
+    }
+
+    @Test
+    public void testCreateNutritionPlan_AthleteNotFound() throws InstanceNotFoundException, IncorrectRoleException {
+        Users coach = createUser("coach", RoleType.COACH);
+        LocalDate testDate = LocalDate.of(2026, 3, 21);
+
+        assertThrows (InstanceNotFoundException.class, () -> {
+            planService.createNutritionPlan(-1L, coach.getId(), testDate, 3000, 100, 200, 300, 1.0, "guidelines");
+        });
+
+    }
+
+    @Test
+    public void testCreateNutritionPlan_AthleteWithIncorrectRole() throws InstanceNotFoundException, IncorrectRoleException {
+        Users notAthlete = createUser("athlete", RoleType.COACH);
+        Users coach = createUser("coach", RoleType.COACH);
+        LocalDate testDate = LocalDate.of(2026, 3, 21);
+
+        assertThrows (IncorrectRoleException.class, () -> {
+            planService.createNutritionPlan(notAthlete.getId(), coach.getId(), testDate, 3000, 100, 200, 300, 1.0, "guidelines");
+        });
+    }
+
+    @Test
+    public void testCreateNutritionPlan() throws InstanceNotFoundException, IncorrectRoleException {
+        Users athlete = createUser("athlete", RoleType.USER);
+        Users coach = createUser("coach", RoleType.COACH);
+        LocalDate testDate = LocalDate.of(2026, 3, 21);
+
+        NutritionPlan nutritionPlan = planService.createNutritionPlan(athlete.getId(), coach.getId(), testDate, 3000, 100, 200, 300, 1.0, "guidelines");
+
+        assertEquals(athlete.getId(), nutritionPlan.getUser().getId());
+        assertEquals(coach.getId(), nutritionPlan.getCoach().getId());
+        assertEquals(testDate, nutritionPlan.getPlanDate());
+        assertEquals(Integer.valueOf(3000), nutritionPlan.getTargetCalories());
+        assertEquals(Integer.valueOf(100), nutritionPlan.getProteinGrams());
+        assertEquals(Integer.valueOf(200), nutritionPlan.getCarbsGrams());
+        assertEquals(Integer.valueOf(300), nutritionPlan.getFatGrams());
+        assertEquals(Double.valueOf(1.0), nutritionPlan.getHydrationLiters());
+        assertEquals("guidelines", nutritionPlan.getGuidelines());
     }
 }
