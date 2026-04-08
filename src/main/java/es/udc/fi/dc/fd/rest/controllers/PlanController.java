@@ -16,17 +16,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 import es.udc.fi.dc.fd.model.services.PlanService;
 import es.udc.fi.dc.fd.model.services.exceptions.IncorrectRoleException;
+import es.udc.fi.dc.fd.model.common.exceptions.DuplicateInstanceException;
 import es.udc.fi.dc.fd.model.common.exceptions.InstanceNotFoundException;
 import es.udc.fi.dc.fd.model.entities.DailyPlan;
+import es.udc.fi.dc.fd.model.entities.NutritionPlan;
 import es.udc.fi.dc.fd.model.entities.TrainingBlock;
 import es.udc.fi.dc.fd.model.entities.TrainingSession;
 import es.udc.fi.dc.fd.rest.dtos.CreateSessionParamsDto;
+import es.udc.fi.dc.fd.rest.dtos.CreateNutritionPlanParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.DailyPlanDto;
 import es.udc.fi.dc.fd.rest.dtos.NutritionPlanDto;
 import es.udc.fi.dc.fd.rest.dtos.RestPlanDto;
 import es.udc.fi.dc.fd.rest.dtos.TrainingSessionDto;
 import es.udc.fi.dc.fd.rest.dtos.TrainingBlockDto;
 import static es.udc.fi.dc.fd.rest.dtos.TrainingSessionConversor.toTrainingSessionDto;
+import static es.udc.fi.dc.fd.rest.dtos.PlanConversor.toNutritionPlanDto;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -94,6 +98,18 @@ public class PlanController {
                                                  params.getTotalDistanceOrDuration(), blocks);
 
         return toTrainingSessionDto(trainingSession);
+
+    }
+
+    @PostMapping("/create-nutrition-plan")
+    public NutritionPlanDto createNutritionPlan(@RequestAttribute Long userId,
+        @Validated @RequestBody CreateNutritionPlanParamsDto params) throws InstanceNotFoundException, IncorrectRoleException, DuplicateInstanceException{
+        
+        NutritionPlan nutritionPlan = planService.createNutritionPlan(params.getAthleteId(), userId, params.getPlanDate(), 
+                                                 params.getTargetCalories(), params.getProteinGrams(), params.getCarbsGrams(), 
+                                                 params.getFatGrams(), params.getHydrationLiters(), params.getGuidelines());
+
+        return toNutritionPlanDto(nutritionPlan);
 
     }
     

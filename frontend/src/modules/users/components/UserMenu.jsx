@@ -101,11 +101,18 @@ const UserMenu = () => {
             )}
 
             {isCoach && (
-              <li>
-                <button onClick={() => navAndClose("/plans/create-training-session")}>
-                  <FormattedMessage id="project.plans.CreateTrainingSession.title" defaultMessage="Crear sesión de entrenamiento" />
-                </button>
-              </li>
+              <>
+                <li>
+                  <button onClick={() => navAndClose("/plans/create-training-session")}>
+                    <FormattedMessage id="project.plans.CreateTrainingSession.title" defaultMessage="Crear sesión de entrenamiento" />
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => navAndClose("/plans/create-nutrition-plan")}>
+                    <FormattedMessage id="project.plans.CreateNutritionPlan.title" defaultMessage="Crear plan de nutrición" />
+                  </button>
+                </li>
+              </>
             )}
 
             <li className="athlix-dropdown-divider"></li>

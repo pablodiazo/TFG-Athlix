@@ -1,0 +1,151 @@
+.athlix-create-wrapper {
+  margin: 0 auto;
+  padding: 2rem 3.5rem;
+  background-color: #0f1115;
+  color: var(--athlix-text, #ffffff);
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.athlix-create-header {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 1rem;
+}
+
+.athlix-create-header h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0 0 0.5rem 0;
+}
+
+.athlix-create-header p {
+  color: #9ca3af;
+  margin: 0;
+}
+
+.athlix-alert.error { 
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  font-weight: 600;
+  background-color: rgba(239, 68, 68, 0.2); 
+  color: #f87171; 
+  border: 1px solid #ef4444; 
+}
+
+.athlix-form-section {
+  background-color: #1e2128;
+  padding: 2rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.athlix-section-title {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.2rem;
+  color: #d1d5db;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.athlix-form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.athlix-macro-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.athlix-form-grid-1 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+.athlix-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.athlix-input-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.athlix-input-group input,
+.athlix-input-group textarea {
+  background-color: #0f1115;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.athlix-input-group textarea {
+  resize: vertical;
+  font-family: inherit;
+}
+
+.athlix-input-group input:focus,
+.athlix-input-group textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.icon-orange { color: #f97316; }
+.icon-purple { color: #a855f7; }
+.icon-yellow { color: #eab308; }
+.icon-green { color: #22c55e; }
+.icon-blue { color: #3b82f6; }
+.icon-red { color: #ef4444; }
+
+.athlix-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2rem;
+}
+
+.athlix-btn-primary {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.athlix-btn-primary:hover:not(:disabled) {
+  background-color: #2563eb;
+}
+
+.athlix-btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .athlix-form-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}

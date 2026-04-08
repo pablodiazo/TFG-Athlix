@@ -25,7 +25,7 @@ const CreateSessionSuccess = () => {
         <div className="athlix-success-actions">
           <button 
             className="athlix-btn-primary" 
-            onClick={() => navigate('/plans/create-training-session')}
+            onClick={() => navigate(-1)}
           >
             <FaPlus /> <FormattedMessage id="project.plans.CreateSessionSuccess.actions" />
           </button>

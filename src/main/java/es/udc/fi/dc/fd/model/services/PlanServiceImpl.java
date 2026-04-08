@@ -76,4 +76,42 @@ public class PlanServiceImpl implements PlanService {
         return trainingSessionDao.save(session);
     }
 
+    @Override
+    public NutritionPlan createNutritionPlan(Long athleteId, Long coachId, LocalDate date, Integer targetCalories, Integer proteinGrams, Integer carbsGrams,
+        Integer fatGrams, Double hydrationLiters, String guidelines) throws InstanceNotFoundException, IncorrectRoleException, DuplicateInstanceException {
+        
+        Users coach = userDao.findById(coachId)
+                .orElseThrow(() -> new InstanceNotFoundException("user", coachId));
+
+        
+        if (coach.getRole() != Users.RoleType.COACH) {
+            throw new IncorrectRoleException();
+        }
+
+        Users athlete = userDao.findById(athleteId)
+                .orElseThrow(() -> new InstanceNotFoundException("user", athleteId));
+        
+        
+        if (athlete.getRole() != Users.RoleType.USER) {
+            throw new IncorrectRoleException();
+        }
+
+        Optional<NutritionPlan> existingPlan = nutritionPlanDao.findByUserIdAndPlanDate(athleteId, date);
+        if (existingPlan.isPresent()) {
+            throw new DuplicateInstanceException("NutritionPlan", athleteId);
+        }
+
+        NutritionPlan nutrition = new NutritionPlan();
+        nutrition.setUser(athlete);
+        nutrition.setCoach(coach);
+        nutrition.setPlanDate(date);
+        nutrition.setTargetCalories(targetCalories);
+        nutrition.setProteinGrams(proteinGrams);
+        nutrition.setCarbsGrams(carbsGrams);
+        nutrition.setFatGrams(fatGrams);
+        nutrition.setHydrationLiters(hydrationLiters);
+        nutrition.setGuidelines(guidelines);
+        return nutritionPlanDao.save(nutrition);
+    }
+
 }
