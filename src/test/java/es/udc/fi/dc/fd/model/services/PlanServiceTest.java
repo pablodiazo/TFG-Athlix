@@ -18,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import es.udc.fi.dc.fd.model.common.exceptions.DuplicateInstanceException;
 import es.udc.fi.dc.fd.model.common.exceptions.InstanceNotFoundException;
 import es.udc.fi.dc.fd.model.entities.*;
 import es.udc.fi.dc.fd.model.entities.Users.RoleType;
@@ -295,7 +296,7 @@ public class PlanServiceTest {
     }
 
     @Test
-    public void testCreateNutritionPlan() throws InstanceNotFoundException, IncorrectRoleException {
+    public void testCreateNutritionPlan() throws InstanceNotFoundException, IncorrectRoleException, DuplicateInstanceException {
         Users athlete = createUser("athlete", RoleType.USER);
         Users coach = createUser("coach", RoleType.COACH);
         LocalDate testDate = LocalDate.of(2026, 3, 21);

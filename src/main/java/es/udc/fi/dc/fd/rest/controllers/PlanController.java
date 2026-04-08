@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import es.udc.fi.dc.fd.model.services.PlanService;
 import es.udc.fi.dc.fd.model.services.exceptions.IncorrectRoleException;
+import es.udc.fi.dc.fd.model.common.exceptions.DuplicateInstanceException;
 import es.udc.fi.dc.fd.model.common.exceptions.InstanceNotFoundException;
 import es.udc.fi.dc.fd.model.entities.DailyPlan;
 import es.udc.fi.dc.fd.model.entities.NutritionPlan;
@@ -102,7 +103,7 @@ public class PlanController {
 
     @PostMapping("/create-nutrition-plan")
     public NutritionPlanDto createNutritionPlan(@RequestAttribute Long userId,
-        @Validated @RequestBody CreateNutritionPlanParamsDto params) throws InstanceNotFoundException, IncorrectRoleException{
+        @Validated @RequestBody CreateNutritionPlanParamsDto params) throws InstanceNotFoundException, IncorrectRoleException, DuplicateInstanceException{
         
         NutritionPlan nutritionPlan = planService.createNutritionPlan(params.getAthleteId(), userId, params.getPlanDate(), 
                                                  params.getTargetCalories(), params.getProteinGrams(), params.getCarbsGrams(), 

@@ -78,7 +78,7 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     public NutritionPlan createNutritionPlan(Long athleteId, Long coachId, LocalDate date, Integer targetCalories, Integer proteinGrams, Integer carbsGrams,
-        Integer fatGrams, Double hydrationLiters, String guidelines) throws InstanceNotFoundException, IncorrectRoleException {
+        Integer fatGrams, Double hydrationLiters, String guidelines) throws InstanceNotFoundException, IncorrectRoleException, DuplicateInstanceException {
         
         Users coach = userDao.findById(coachId)
                 .orElseThrow(() -> new InstanceNotFoundException("user", coachId));
@@ -94,6 +94,11 @@ public class PlanServiceImpl implements PlanService {
         
         if (athlete.getRole() != Users.RoleType.USER) {
             throw new IncorrectRoleException();
+        }
+
+        Optional<NutritionPlan> existingPlan = nutritionPlanDao.findByUserIdAndPlanDate(athleteId, date);
+        if (existingPlan.isPresent()) {
+            throw new DuplicateInstanceException("NutritionPlan", athleteId);
         }
 
         NutritionPlan nutrition = new NutritionPlan();
