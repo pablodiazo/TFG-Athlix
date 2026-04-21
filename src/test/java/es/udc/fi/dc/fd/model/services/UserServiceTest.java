@@ -2,6 +2,9 @@ package es.udc.fi.dc.fd.model.services;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
 
 import jakarta.transaction.Transactional;
 
@@ -161,6 +164,17 @@ public class UserServiceTest {
     @Test
     public void testChangePasswordWithNonExistentId() throws InstanceNotFoundException, IncorrectPasswordException {
         assertThrows(InstanceNotFoundException.class, () -> userService.changePassword(NON_EXISTENT_ID, "password", "newPassword"));
+    }
+
+    @Test
+    public void testGetAthletesByCoach() throws InstanceNotFoundException, DuplicateInstanceException {
+        Users coach = createUser("coach", RoleType.COACH);
+
+        userService.signUp(coach);
+
+        List<Users> athletes = userService.getAthletesByCoach(coach.getId());
+
+        assertEquals(0, athletes.size());
     }
 
 }

@@ -296,6 +296,19 @@ public class PlanServiceTest {
     }
 
     @Test
+    public void testCreateNutritionPlan_DuplicateInstance() throws InstanceNotFoundException, IncorrectRoleException, DuplicateInstanceException {
+        Users athlete = createUser("athlete", RoleType.USER);
+        Users coach = createUser("coach", RoleType.COACH);
+        LocalDate testDate = LocalDate.of(2026, 3, 21);
+
+        planService.createNutritionPlan(athlete.getId(), coach.getId(), testDate, 3000, 100, 200, 300, 1.0, "guidelines");
+
+        assertThrows (DuplicateInstanceException.class, () -> {
+            planService.createNutritionPlan(athlete.getId(), coach.getId(), testDate, 3000, 100, 200, 300, 1.0, "guidelines");
+        });
+    }
+
+    @Test
     public void testCreateNutritionPlan() throws InstanceNotFoundException, IncorrectRoleException, DuplicateInstanceException {
         Users athlete = createUser("athlete", RoleType.USER);
         Users coach = createUser("coach", RoleType.COACH);
@@ -313,4 +326,78 @@ public class PlanServiceTest {
         assertEquals(Double.valueOf(1.0), nutritionPlan.getHydrationLiters());
         assertEquals("guidelines", nutritionPlan.getGuidelines());
     }
+    
+    @Test
+    public void testCreateRestPlan_WithIncorrectRole() throws InstanceNotFoundException, IncorrectRoleException {
+        Users athlete = createUser("athlete", RoleType.USER);
+        Users notCoach = createUser("notCoach", RoleType.USER);
+        LocalDate testDate = LocalDate.of(2026, 3, 21);
+
+        assertThrows (IncorrectRoleException.class, () -> {
+            planService.createRestPlan(athlete.getId(), notCoach.getId(), testDate, 8.45, "guidelines");
+        });
+
+    }
+
+    @Test
+    public void testCreateRestPlan_InstanceNotFound() throws InstanceNotFoundException, IncorrectRoleException {
+        Users athlete = createUser("athlete", RoleType.USER);
+        LocalDate testDate = LocalDate.of(2026, 3, 21);
+
+        assertThrows (InstanceNotFoundException.class, () -> {
+            planService.createRestPlan(athlete.getId(), -1L, testDate, 8.45, "guidelines");
+        });
+
+    }
+
+    @Test
+    public void testCreateRestPlan_AthleteNotFound() throws InstanceNotFoundException, IncorrectRoleException {
+        Users coach = createUser("coach", RoleType.COACH);
+        LocalDate testDate = LocalDate.of(2026, 3, 21);
+
+        assertThrows (InstanceNotFoundException.class, () -> {
+            planService.createRestPlan(-1L, coach.getId(), testDate, 8.45, "guidelines");
+        });
+
+    }
+
+    @Test
+    public void testCreateRestPlan_AthleteWithIncorrectRole() throws InstanceNotFoundException, IncorrectRoleException {
+        Users notAthlete = createUser("athlete", RoleType.COACH);
+        Users coach = createUser("coach", RoleType.COACH);
+        LocalDate testDate = LocalDate.of(2026, 3, 21);
+
+        assertThrows (IncorrectRoleException.class, () -> {
+            planService.createRestPlan(notAthlete.getId(), coach.getId(), testDate, 8.45, "guidelines");
+        });
+    }
+
+    @Test
+    public void testCreateRestPlan_DuplicateInstance() throws InstanceNotFoundException, IncorrectRoleException, DuplicateInstanceException {
+        Users athlete = createUser("athlete", RoleType.USER);
+        Users coach = createUser("coach", RoleType.COACH);
+        LocalDate testDate = LocalDate.of(2026, 3, 21);
+
+        planService.createRestPlan(athlete.getId(), coach.getId(), testDate, 8.45, "guidelines");
+
+        assertThrows (DuplicateInstanceException.class, () -> {
+            planService.createRestPlan(athlete.getId(), coach.getId(), testDate, 8.45, "guidelines");
+        });
+    }
+
+    @Test
+    public void testCreateRestPlan() throws InstanceNotFoundException, IncorrectRoleException, DuplicateInstanceException {
+        Users athlete = createUser("athlete", RoleType.USER);
+        Users coach = createUser("coach", RoleType.COACH);
+        LocalDate testDate = LocalDate.of(2026, 3, 21);
+
+        RestPlan restPlan = planService.createRestPlan(athlete.getId(), coach.getId(), testDate, 8.45, "guidelines");
+
+        assertEquals(athlete.getId(), restPlan.getUser().getId());
+        assertEquals(coach.getId(), restPlan.getCoach().getId());
+        assertEquals(testDate, restPlan.getPlanDate());
+        assertEquals(Double.valueOf(8.45), restPlan.getTargetSleepHours());
+        assertEquals("guidelines", restPlan.getGuidelines());
+    }
+    
 }
