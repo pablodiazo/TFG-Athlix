@@ -34,6 +34,7 @@ import es.udc.fi.dc.fd.rest.controllers.UserController;
 import es.udc.fi.dc.fd.rest.dtos.AuthenticatedUserDto;
 import es.udc.fi.dc.fd.rest.dtos.CreateNutritionPlanParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.CreateSessionParamsDto;
+import es.udc.fi.dc.fd.rest.dtos.CreateRestPlanParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.LoginParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.TrainingBlockDto;
 
@@ -153,6 +154,34 @@ public class PlanControllerTest {
     }
 
     @Test
+    public void testCreateTrainingSession_Ok_EmptyBlocks() throws Exception {
+        AuthenticatedUserDto coach = createAuthenticatedUser("coachCreator", RoleType.COACH);
+        AuthenticatedUserDto athlete = createAuthenticatedUser("athleteReceiver", RoleType.USER);
+
+        LocalDate testDate = LocalDate.of(2026, 6, 1);
+        LocalTime testTime = LocalTime.of(18, 30);
+
+        CreateSessionParamsDto params = new CreateSessionParamsDto(
+                athlete.getUserDto().getId(),
+                testDate,
+                testTime,
+                TrainingSession.SportType.SWIM,
+                "Series de Velocidad",
+                "",
+                new ArrayList<>()
+        );
+
+        mockMvc.perform(post("/plans/create-training-session")
+                .header("Authorization", "Bearer " + coach.getServiceToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(params)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.sport", is("SWIM")))
+                .andExpect(jsonPath("$.objective", is("Series de Velocidad")))
+                .andExpect(jsonPath("$.blocks.length()", is(0)));
+    }
+
+    @Test
     public void testCreateTrainingSession_IncorrectRole() throws Exception {
         AuthenticatedUserDto fakeCoach = createAuthenticatedUser("fakeCoach", RoleType.USER);
         AuthenticatedUserDto athlete = createAuthenticatedUser("athleteTarget", RoleType.USER);
@@ -232,5 +261,49 @@ public class PlanControllerTest {
                 .content(mapper.writeValueAsString(params)))
                 .andExpect(status().is4xxClientError());
 
+    }
+
+    @Test
+    public void testCreateRestPlan_Ok() throws Exception {
+        AuthenticatedUserDto coach = createAuthenticatedUser("coachCreator", RoleType.COACH);
+        AuthenticatedUserDto athlete = createAuthenticatedUser("athleteReceiver", RoleType.USER);
+
+        LocalDate testDate = LocalDate.of(2026, 6, 1);
+
+        CreateRestPlanParamsDto params = new CreateRestPlanParamsDto(
+                athlete.getUserDto().getId(),
+                testDate,
+                4.5,
+                "guidelines"
+        );
+
+        mockMvc.perform(post("/plans/create-rest-plan")
+                .header("Authorization", "Bearer " + coach.getServiceToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(params)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.targetSleepHours", is(4.5)))
+                .andExpect(jsonPath("$.guidelines", is("guidelines")));
+    }
+
+    @Test
+    public void testCreateRestPlan_IncorrectRole() throws Exception {
+        AuthenticatedUserDto fakeCoach = createAuthenticatedUser("fakeCoach", RoleType.USER);
+        AuthenticatedUserDto athlete = createAuthenticatedUser("athleteTarget", RoleType.USER);
+
+        LocalDate testDate = LocalDate.of(2026, 6, 1);
+
+        CreateRestPlanParamsDto params = new CreateRestPlanParamsDto(
+            athlete.getUserDto().getId(),
+            testDate,
+            4.5,
+            "guidelines"
+        );
+
+        mockMvc.perform(post("/plans/create-rest-plan")
+                .header("Authorization", "Bearer " + fakeCoach.getServiceToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(params)))
+                .andExpect(status().is4xxClientError());
     }
 }

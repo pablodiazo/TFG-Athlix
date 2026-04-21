@@ -114,4 +114,37 @@ public class PlanServiceImpl implements PlanService {
         return nutritionPlanDao.save(nutrition);
     }
 
+    @Override
+    public RestPlan createRestPlan(Long athleteId, Long coachId, LocalDate date, Double targetSleepHours, String guidelines) throws InstanceNotFoundException, IncorrectRoleException, DuplicateInstanceException {
+        
+        Users coach = userDao.findById(coachId)
+                .orElseThrow(() -> new InstanceNotFoundException("user", coachId));
+
+        
+        if (coach.getRole() != Users.RoleType.COACH) {
+            throw new IncorrectRoleException();
+        }
+
+        Users athlete = userDao.findById(athleteId)
+                .orElseThrow(() -> new InstanceNotFoundException("user", athleteId));
+        
+        
+        if (athlete.getRole() != Users.RoleType.USER) {
+            throw new IncorrectRoleException();
+        }
+
+        Optional<RestPlan> existingPlan = restPlanDao.findByUserIdAndPlanDate(athleteId, date);
+        if (existingPlan.isPresent()) {
+            throw new DuplicateInstanceException("RestPlan", athleteId);
+        }
+
+        RestPlan rest = new RestPlan();
+        rest.setUser(athlete);
+        rest.setCoach(coach);
+        rest.setPlanDate(date);
+        rest.setTargetSleepHours(targetSleepHours);
+        rest.setGuidelines(guidelines);
+        return restPlanDao.save(rest);
+    }
+
 }

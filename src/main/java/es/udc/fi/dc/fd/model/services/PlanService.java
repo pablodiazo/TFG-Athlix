@@ -15,4 +15,6 @@ public interface PlanService {
     TrainingSession createTrainingSession(Long athleteId, Long coachId, LocalDate date, LocalTime startTime, TrainingSession.SportType sportType, String objective, String totalDistanceOrDuration, List<TrainingBlock> blocks) throws InstanceNotFoundException, IncorrectRoleException;
 
     NutritionPlan createNutritionPlan(Long athleteId, Long coachId, LocalDate date, Integer targetCalories, Integer proteinGrams, Integer carbsGrams, Integer fatGrams, Double hydrationLiters, String guidelines) throws InstanceNotFoundException, IncorrectRoleException, DuplicateInstanceException;
+
+    RestPlan createRestPlan(Long athleteId, Long coachId, LocalDate date, Double targetSleepHours, String guidelines) throws InstanceNotFoundException, IncorrectRoleException, DuplicateInstanceException;
 }
