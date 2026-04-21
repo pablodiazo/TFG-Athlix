@@ -56,6 +56,7 @@ public class SecurityConfig {
                 .requestMatchers(antMatcher("/plans/daily")).hasRole(ROLE_USER)
                 .requestMatchers(antMatcher("/plans/create-training-session")).hasRole(ROLE_COACH)
                 .requestMatchers(antMatcher("/plans/create-nutrition-plan")).hasRole(ROLE_COACH)
+                .requestMatchers(antMatcher("/plans/create-rest-plan")).hasRole(ROLE_COACH)
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
