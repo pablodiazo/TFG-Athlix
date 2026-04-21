@@ -112,6 +112,11 @@ const UserMenu = () => {
                     <FormattedMessage id="project.plans.CreateNutritionPlan.title" defaultMessage="Crear plan de nutrición" />
                   </button>
                 </li>
+                <li>
+                  <button onClick={() => navAndClose("/plans/create-rest-plan")}>
+                    <FormattedMessage id="project.plans.CreateRestPlan.title" defaultMessage="Crear plan de descanso" />
+                  </button>
+                </li>
               </>
             )}
 

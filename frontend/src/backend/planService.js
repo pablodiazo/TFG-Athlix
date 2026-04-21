@@ -11,3 +11,7 @@ export const createTrainingSession = (trainingSessionData, onSuccess, onErrors) 
 export const createNutritionPlan = (nutritionPlanData, onSuccess, onErrors) => {
     appFetch(`/plans/create-nutrition-plan`, fetchConfig('POST', nutritionPlanData), onSuccess, onErrors);
 };
+
+export const createRestPlan = (restPlanData, onSuccess, onErrors) => {
+    appFetch(`/plans/create-rest-plan`, fetchConfig('POST', restPlanData), onSuccess, onErrors);
+};

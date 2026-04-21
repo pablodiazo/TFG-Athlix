@@ -125,7 +125,7 @@ const CreateNutritionPlan = () => {
           <h3 className="athlix-section-title"><FormattedMessage id="project.plans.CreateNutritionPlan.extras"></FormattedMessage></h3>
           <div className="athlix-form-grid-1">
             <div className="athlix-input-group">
-              <label><GiWaterBottle className="icon-blue" /> <FormattedMessage id="project.plans.CreateNutritionPlan.hydration"></FormattedMessage> (Litros)</label>
+              <label><GiWaterBottle className="icon-blue" /> <FormattedMessage id="project.plans.CreateNutritionPlan.hidratation"></FormattedMessage></label>
               <input type="number" min="0" step="0.1" name="hydrationLiters" value={planData.hydrationLiters} onChange={handleMainChange} required placeholder="Ej: 3.5" />
             </div>
             <div className="athlix-input-group">
@@ -145,7 +145,7 @@ const CreateNutritionPlan = () => {
 
         <div className="athlix-form-actions">
           <button type="submit" className="athlix-btn-primary" disabled={isSubmitting}>
-            {isSubmitting ? "Guardando Plan..." : "Asignar Nutrición"}
+            {isSubmitting ? "Guardando plan..." : "Asignar nutrición"}
           </button>
         </div>
 
