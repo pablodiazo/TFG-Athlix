@@ -184,7 +184,7 @@ const DailyPlan = () => {
     return (
       <div className="daily-wrapper loading">
         <div className="spinner"></div>
-        <p>Cargando plan...</p>
+        <p><FormattedMessage id="project.global.messages.loading" /></p>
       </div>
     );
   }
@@ -196,14 +196,14 @@ const DailyPlan = () => {
       
       <div className="date-navigator">
         <button className="nav-btn" onClick={handlePrevDay}>
-          Anterior
+          <FormattedMessage id="project.global.buttons.previous" />
         </button>
         <div className="current-date-display">
           <h2 className="date-text">{getDisplayDate(currentDate)}</h2>
           <button className="today-btn" onClick={handleToday}>Hoy</button>
         </div>
         <button className="nav-btn" onClick={handleNextDay}>
-          Siguiente
+          <FormattedMessage id="project.global.buttons.next" />
         </button>
       </div>
 
