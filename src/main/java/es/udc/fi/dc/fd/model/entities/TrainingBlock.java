@@ -13,6 +13,7 @@ public class TrainingBlock {
     private String distanceOrDuration;
     private String pace;
     private String rest;
+    private Double done;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,4 +45,7 @@ public class TrainingBlock {
 
     public String getRest() { return rest; }
     public void setRest(String rest) { this.rest = rest; }
+
+    public Double getDone() { return done; }
+    public void setDone(Double done) { this.done = done; }
 }

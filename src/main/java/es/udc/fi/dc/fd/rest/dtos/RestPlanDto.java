@@ -8,14 +8,16 @@ public class RestPlanDto {
     private LocalDate planDate;
     private Double targetSleepHours;
     private String guidelines;
+    private Double done;
 
     public RestPlanDto() {}
 
-    public RestPlanDto(Long id, LocalDate planDate, Double targetSleepHours, String guidelines) {
+    public RestPlanDto(Long id, LocalDate planDate, Double targetSleepHours, String guidelines, Double done) {
         this.id = id;
         this.planDate = planDate;
         this.targetSleepHours = targetSleepHours;
         this.guidelines = guidelines;
+        this.done = done;
     }
 
     public Long getId() { return id; }
@@ -29,4 +31,7 @@ public class RestPlanDto {
 
     public String getGuidelines() { return guidelines; }                                 
     public void setGuidelines(String guidelines) { this.guidelines = guidelines; }
+
+    public Double getDone() { return done; }
+    public void setDone(Double done) { this.done = done; }
 }

@@ -24,6 +24,9 @@ public class PlanServiceImpl implements PlanService {
     private TrainingSessionDao trainingSessionDao;
 
     @Autowired
+    private TrainingBlockDao trainingBlockDao;
+
+    @Autowired
     private NutritionPlanDao nutritionPlanDao;
 
     @Autowired
@@ -145,6 +148,48 @@ public class PlanServiceImpl implements PlanService {
         rest.setTargetSleepHours(targetSleepHours);
         rest.setGuidelines(guidelines);
         return restPlanDao.save(rest);
+    }
+
+    @Override
+    public TrainingBlock updateTrainingBlockDone(Long userId, Long blockId, Double done) throws InstanceNotFoundException, PermissionException {
+        
+        TrainingBlock block = trainingBlockDao.findById(blockId)
+                .orElseThrow(() -> new InstanceNotFoundException("TrainingBlock", blockId));
+        
+        if (!block.getTrainingSession().getUser().getId().equals(userId)) {
+            throw new PermissionException();
+        }
+        
+        block.setDone(done);
+        return trainingBlockDao.save(block);
+    }
+
+    @Override
+    public NutritionPlan updateNutritionPlanDone(Long userId, Long planId, Double done) throws InstanceNotFoundException, PermissionException {
+        
+        NutritionPlan nutritionPlan = nutritionPlanDao.findById(planId)
+                .orElseThrow(() -> new InstanceNotFoundException("NutritionPlan", planId));
+        
+        if (!nutritionPlan.getUser().getId().equals(userId)) {
+            throw new PermissionException();
+        }
+        
+        nutritionPlan.setDone(done);
+        return nutritionPlanDao.save(nutritionPlan);
+    }
+
+    @Override
+    public RestPlan updateRestPlanDone(Long userId, Long planId, Double done) throws InstanceNotFoundException, PermissionException {
+        
+        RestPlan restPlan = restPlanDao.findById(planId)
+                .orElseThrow(() -> new InstanceNotFoundException("RestPlan", planId));
+        
+        if (!restPlan.getUser().getId().equals(userId)) {
+            throw new PermissionException();
+        }
+        
+        restPlan.setDone(done);
+        return restPlanDao.save(restPlan);
     }
 
 }

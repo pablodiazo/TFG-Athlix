@@ -10,11 +10,12 @@ public class TrainingBlockDto {
     private String distanceOrDuration;
     private String pace;
     private String rest;
+    private Double done;
 
     public TrainingBlockDto() {}
 
     public TrainingBlockDto(Long id, Integer blockOrder, String name, Integer sets, Integer reps, 
-                            String distanceOrDuration, String pace, String rest) {
+                            String distanceOrDuration, String pace, String rest, Double done) {
         this.id = id;
         this.blockOrder = blockOrder;
         this.name = name;
@@ -23,6 +24,7 @@ public class TrainingBlockDto {
         this.distanceOrDuration = distanceOrDuration;
         this.pace = pace;
         this.rest = rest;
+        this.done = done;
     }
 
     public Long getId() { return id; }
@@ -48,4 +50,7 @@ public class TrainingBlockDto {
 
     public String getRest() { return rest; }                                 
     public void setRest(String rest) { this.rest = rest; }
+
+    public Double getDone() { return done; }
+    public void setDone(Double done) { this.done = done; }
 }

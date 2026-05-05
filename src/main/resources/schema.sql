@@ -38,7 +38,8 @@ CREATE TABLE TrainingBlock (
     reps INT DEFAULT 1,                
     distanceOrDuration VARCHAR(50),    
     pace VARCHAR(50),                  
-    rest VARCHAR(50),                  
+    rest VARCHAR(50),
+    done DOUBLE DEFAULT 0.0,                  
     CONSTRAINT fk_block_session FOREIGN KEY (trainingSessionId) REFERENCES TrainingSession(id)
 );
 
@@ -53,6 +54,7 @@ CREATE TABLE NutritionPlan (
     fatGrams INT,
     hydrationLiters DECIMAL(3,1),
     guidelines VARCHAR(500),
+    done DOUBLE DEFAULT 0.0,
     CONSTRAINT fk_nutrition_user FOREIGN KEY (userId) REFERENCES Users(id),
     CONSTRAINT fk_nutrition_coach FOREIGN KEY (coachId) REFERENCES Users(id),
     CONSTRAINT uq_nutrition_user_date UNIQUE (userId, planDate)
@@ -64,7 +66,8 @@ CREATE TABLE RestPlan (
     coachId BIGINT NOT NULL,
     planDate DATE NOT NULL,
     targetSleepHours DECIMAL(4,1),     
-    guidelines VARCHAR(500),           
+    guidelines VARCHAR(500),
+    done DOUBLE DEFAULT 0.0,
     CONSTRAINT fk_rest_user FOREIGN KEY (userId) REFERENCES Users(id),
     CONSTRAINT fk_rest_coach FOREIGN KEY (coachId) REFERENCES Users(id),
     CONSTRAINT uq_rest_user_date UNIQUE (userId, planDate)

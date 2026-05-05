@@ -8,11 +8,11 @@ public class PlanConversor {
     public static NutritionPlanDto toNutritionPlanDto(NutritionPlan nutritionPlan) {
         return new NutritionPlanDto(nutritionPlan.getId(), nutritionPlan.getPlanDate(), nutritionPlan.getTargetCalories(), 
                                     nutritionPlan.getProteinGrams(), nutritionPlan.getCarbsGrams(), nutritionPlan.getFatGrams(), 
-                                    nutritionPlan.getHydrationLiters(), nutritionPlan.getGuidelines());
+                                    nutritionPlan.getHydrationLiters(), nutritionPlan.getGuidelines(), nutritionPlan.getDone());
     }
 
     public static RestPlanDto toRestPlanDto(RestPlan restPlan) {
-        return new RestPlanDto(restPlan.getId(), restPlan.getPlanDate(), restPlan.getTargetSleepHours(), restPlan.getGuidelines());
+        return new RestPlanDto(restPlan.getId(), restPlan.getPlanDate(), restPlan.getTargetSleepHours(), restPlan.getGuidelines(), restPlan.getDone());
     }
     
 }
