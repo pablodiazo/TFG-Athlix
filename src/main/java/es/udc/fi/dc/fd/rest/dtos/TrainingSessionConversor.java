@@ -12,7 +12,7 @@ public class TrainingSessionConversor {
     public static TrainingSessionDto toTrainingSessionDto(TrainingSession trainingSession) {
         List<TrainingBlockDto> blocks = trainingSession.getBlocks().stream().map(b -> 
             new TrainingBlockDto(b.getId(), b.getBlockOrder(), b.getName(), b.getSets(), 
-                                 b.getReps(), b.getDistanceOrDuration(), b.getPace(), b.getRest())
+                                 b.getReps(), b.getDistanceOrDuration(), b.getPace(), b.getRest(), b.getDone())
         ).collect(Collectors.toList());
 
         return new TrainingSessionDto(trainingSession.getId(), trainingSession.getSessionDate(), 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import backend from "../../../backend"; 
 
-import { FaSwimmer, FaBicycle, FaRunning, FaDumbbell, FaClock, FaSync } from "react-icons/fa";
+import { FaSwimmer, FaBicycle, FaRunning, FaDumbbell, FaClock, FaSync, FaCheck, FaTimes } from "react-icons/fa";
 import "../css/DailyPlan.css";
 
 const SPORT_INFO = {
@@ -18,6 +18,72 @@ const DailyPlan = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [planData, setPlanData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const [popoverState, setPopoverState] = useState({
+    activeId: null,
+    type: null,
+    entityId: null,
+    currentValue: 0,
+    isSaving: false
+  });
+
+  const openPopover = (id, type, entityId, currentDecimalValue) => {
+    setPopoverState({
+      activeId: id,
+      type: type,
+      entityId: entityId,
+      currentValue: Math.round((currentDecimalValue || 0) * 100),
+      isSaving: false
+    });
+  };
+
+  const closePopover = (e) => {
+    if (e) e.stopPropagation();
+    setPopoverState({ activeId: null, type: null, entityId: null, currentValue: 0, isSaving: false });
+  };
+
+  const handleSavePopover = (e) => {
+    if (e) e.stopPropagation();
+    setPopoverState(prev => ({ ...prev, isSaving: true }));
+    
+    const decimalDone = popoverState.currentValue / 100;
+    
+    const payload = { planId: popoverState.entityId, done: decimalDone };
+
+    const onSuccess = () => {
+      setPlanData(prevData => {
+        const newData = { ...prevData };
+        if (popoverState.type === 'BLOCK') {
+          newData.sessions = newData.sessions.map(session => ({
+            ...session,
+            blocks: session.blocks ? session.blocks.map(b => 
+              b.id === popoverState.entityId ? { ...b, done: decimalDone } : b
+            ) : []
+          }));
+        } else if (popoverState.type === 'NUTRITION') {
+          newData.nutrition = { ...newData.nutrition, done: decimalDone };
+        } else if (popoverState.type === 'REST') {
+          newData.rest = { ...newData.rest, done: decimalDone };
+        }
+        return newData;
+      });
+      closePopover();
+    };
+
+    const onErrors = (error) => {
+      console.error("Error al actualizar progreso:", error);
+      setPopoverState(prev => ({ ...prev, isSaving: false }));
+      alert("No se pudo actualizar el progreso. Inténtalo de nuevo.");
+    };
+
+    if (popoverState.type === 'BLOCK') {
+      backend.planService.updateTrainingBlockDone(payload, onSuccess, onErrors);
+    } else if (popoverState.type === 'NUTRITION') {
+      backend.planService.updateNutritionPlanDone(payload, onSuccess, onErrors);
+    } else if (popoverState.type === 'REST') {
+      backend.planService.updateRestPlanDone(payload, onSuccess, onErrors);
+    }
+  };
 
   const getApiDateString = (dateObj) => {
     const year = dateObj.getFullYear();
@@ -38,6 +104,15 @@ const DailyPlan = () => {
   const formatTime = (timeString) => {
     if (!timeString) return "";
     return timeString.substring(0, 5);
+  };
+
+  const getDynamicBadgeStyle = (decimalValue) => {
+    const percentage = Math.round((decimalValue || 0) * 100);
+    const hue = Math.round(percentage * 1.2);
+    return {
+      color: `hsl(${hue}, 80%, 50%)`,
+      backgroundColor: `hsla(${hue}, 80%, 50%, 0.15)`
+    };
   };
 
   useEffect(() => {
@@ -77,15 +152,39 @@ const DailyPlan = () => {
     });
   };
 
-  const handleToday = () => {
-    setCurrentDate(new Date());
+  const handleToday = () => { setCurrentDate(new Date()); };
+  const renderPopover = (id) => {
+    if (popoverState.activeId !== id) return null;
+
+    const hue = Math.round(popoverState.currentValue * 1.2);
+    const dynamicColor = `hsl(${hue}, 80%, 50%)`;
+
+    return (
+      <div className="slider-popover" onClick={e => e.stopPropagation()}>
+        <input type="range" min="0" max="100"value={popoverState.currentValue}
+          onChange={(e) => setPopoverState({...popoverState, currentValue: Number(e.target.value)})}
+          style={{ background: `linear-gradient(to right, ${dynamicColor} ${popoverState.currentValue}%, #0f1115 ${popoverState.currentValue}%)`,'--thumb-color': dynamicColor }}
+        />
+        <span className="slider-val" style={{ color: dynamicColor }}>
+          {popoverState.currentValue}%
+        </span>
+        <div className="slider-actions">
+          <button className="slider-btn save" onClick={handleSavePopover} disabled={popoverState.isSaving}>
+            <FaCheck />
+          </button>
+          <button className="slider-btn cancel" onClick={closePopover} disabled={popoverState.isSaving}>
+            <FaTimes />
+          </button>
+        </div>
+      </div>
+    );
   };
 
   if (isLoading) {
     return (
       <div className="daily-wrapper loading">
         <div className="spinner"></div>
-        <p>Cargando plan...</p>
+        <p><FormattedMessage id="project.global.messages.loading" /></p>
       </div>
     );
   }
@@ -97,14 +196,14 @@ const DailyPlan = () => {
       
       <div className="date-navigator">
         <button className="nav-btn" onClick={handlePrevDay}>
-          Anterior
+          <FormattedMessage id="project.global.buttons.previous" />
         </button>
         <div className="current-date-display">
           <h2 className="date-text">{getDisplayDate(currentDate)}</h2>
           <button className="today-btn" onClick={handleToday}>Hoy</button>
         </div>
         <button className="nav-btn" onClick={handleNextDay}>
-          Siguiente
+          <FormattedMessage id="project.global.buttons.next" />
         </button>
       </div>
 
@@ -142,16 +241,24 @@ const DailyPlan = () => {
                         <div className="blocks-container">
                         {session.blocks && session.blocks.map((block) => (
                             <div key={block.id} className="block-row">
-                            <div className="block-main">
-                                <span className="block-sets">
-                                {block.sets > 1 ? `${block.sets} x` : ''} {block.reps > 1 ? `${block.reps} x` : ''} {block.distanceOrDuration}
-                                </span>
-                                <span className="block-name">{block.name}</span>
-                            </div>
-                            <div className="block-details">
+                              <div className="block-left">
+                                <div className="badge-wrapper">
+                                  <span className="badge done clickable" style={getDynamicBadgeStyle(block.done)} onClick={() => openPopover(`BLOCK-${block.id}`, 'BLOCK', block.id, block.done)} title="Actualizar cumplimiento">
+                                    {Math.round((block.done || 0) * 100)}%
+                                  </span>
+                                  {renderPopover(`BLOCK-${block.id}`)}
+                                </div>
+                                <div className="block-main">
+                                  <span className="block-sets">
+                                    {block.sets > 1 ? `${block.sets} x` : ''} {block.reps > 1 ? `${block.reps} x` : ''} {block.distanceOrDuration}
+                                  </span>
+                                  <span className="block-name">{block.name}</span>
+                                </div>
+                              </div>
+                              <div className="block-details">
                                 {block.pace && block.pace !== "0" && <span className="badge pace">{block.pace}</span>}
                                 {block.rest && block.rest !== "0" && <span className="badge rest">Recuperación: {block.rest}</span>}
-                            </div>
+                              </div>
                             </div>
                         ))}
                         </div>
@@ -165,11 +272,20 @@ const DailyPlan = () => {
           {/* NUTRICIÓN Y DESCANSO */}
           <div className="section-block">
             <h3 className="section-title"><FormattedMessage id="project.plans.DailyPlan.lifestyle" /></h3>
-            
             <div className="lifestyle-row">
                 {/* NUTRICIÓN */}
                 <div className="lifestyle-card">
-                    <h3 className="card-title"><FormattedMessage id="project.plans.DailyPlan.nutrition" /></h3>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+                        <h3 className="card-title" style={{ margin: 0 }}><FormattedMessage id="project.plans.DailyPlan.nutrition" /></h3>
+                        {planData.nutrition && (
+                          <div className="badge-wrapper">
+                            <span className="badge done clickable" style={getDynamicBadgeStyle(planData.nutrition.done)} onClick={() => openPopover(`NUTRITION-${planData.nutrition.id}`, 'NUTRITION', planData.nutrition.id, planData.nutrition.done)}>
+                              {Math.round((planData.nutrition.done || 0) * 100)}%
+                            </span>
+                            {renderPopover(`NUTRITION-${planData.nutrition.id}`)}
+                          </div>
+                        )}
+                    </div>
                     {planData.nutrition ? (
                         <div className="nutrition-content">
                         <div className="calories-huge">
@@ -206,11 +322,21 @@ const DailyPlan = () => {
 
                 {/* DESCANSO */}
                 <div className="lifestyle-card">
-                    <h3 className="card-title"><FormattedMessage id="project.plans.DailyPlan.rest" /></h3>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+                        <h3 className="card-title" style={{ margin: 0 }}><FormattedMessage id="project.plans.DailyPlan.rest" /></h3>
+                        {planData.rest && (
+                           <div className="badge-wrapper">
+                             <span className="badge done clickable" style={getDynamicBadgeStyle(planData.rest.done)} onClick={() => openPopover(`REST-${planData.rest.id}`, 'REST', planData.rest.id, planData.rest.done)}>
+                               {Math.round((planData.rest.done || 0) * 100)}%
+                             </span>
+                             {renderPopover(`REST-${planData.rest.id}`)}
+                           </div>
+                        )}
+                    </div>
                     {planData.rest ? (
                         <div className="rest-content">
                         <div className="sleep-huge">
-                            {planData.rest.targetSleepHours} <span>h</span>
+                            {planData.rest.targetSleepHours} <span>h</span>                            
                         </div>
                         <p className="sleep-label"><FormattedMessage id="project.plans.DailyPlan.sleepTarget" /></p>
                         

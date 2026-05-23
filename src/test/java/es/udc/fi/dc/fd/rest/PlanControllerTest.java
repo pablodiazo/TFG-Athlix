@@ -130,7 +130,7 @@ public class PlanControllerTest {
         LocalDate testDate = LocalDate.of(2026, 6, 1);
         LocalTime testTime = LocalTime.of(18, 30);
 
-        TrainingBlockDto blockDto = new TrainingBlockDto(null, 1, "Series Pista", 8, 1, "400m", "Z4", "1 min");
+        TrainingBlockDto blockDto = new TrainingBlockDto(null, 1, "Series Pista", 8, 1, "400m", "Z4", "1 min", 0.0);
         
         CreateSessionParamsDto params = new CreateSessionParamsDto(
                 athlete.getUserDto().getId(),
@@ -186,7 +186,7 @@ public class PlanControllerTest {
         AuthenticatedUserDto fakeCoach = createAuthenticatedUser("fakeCoach", RoleType.USER);
         AuthenticatedUserDto athlete = createAuthenticatedUser("athleteTarget", RoleType.USER);
 
-        TrainingBlockDto blockDto = new TrainingBlockDto(null, 1, "Series Pista", 8, 1, "400m", "Z4", "1 min");
+        TrainingBlockDto blockDto = new TrainingBlockDto(null, 1, "Series Pista", 8, 1, "400m", "Z4", "1 min", 0.0);
 
 
         CreateSessionParamsDto params = new CreateSessionParamsDto(

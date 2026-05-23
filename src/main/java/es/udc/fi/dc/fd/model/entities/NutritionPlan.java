@@ -17,6 +17,7 @@ public class NutritionPlan {
     private Integer fatGrams;
     private Double hydrationLiters;
     private String guidelines;
+    private Double done;
 
     public NutritionPlan() {}
 
@@ -55,5 +56,8 @@ public class NutritionPlan {
     
     public String getGuidelines() { return guidelines; }                                 
     public void setGuidelines(String guidelines) { this.guidelines = guidelines; }
+
+    public Double getDone() { return done; }
+    public void setDone(Double done) { this.done = done; }
     
 }

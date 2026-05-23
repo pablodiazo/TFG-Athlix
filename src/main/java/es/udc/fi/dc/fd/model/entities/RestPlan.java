@@ -13,6 +13,7 @@ public class RestPlan {
     private LocalDate planDate;
     private Double targetSleepHours;
     private String guidelines;
+    private Double done;
 
     public RestPlan() {}
 
@@ -39,4 +40,7 @@ public class RestPlan {
 
     public String getGuidelines() { return guidelines; }                                 
     public void setGuidelines(String guidelines) { this.guidelines = guidelines; }
+
+    public Double getDone() { return done; }
+    public void setDone(Double done) { this.done = done; }
 }

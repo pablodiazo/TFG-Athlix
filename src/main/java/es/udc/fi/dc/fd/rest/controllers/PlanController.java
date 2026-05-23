@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.udc.fi.dc.fd.model.services.PlanService;
-import es.udc.fi.dc.fd.model.services.exceptions.IncorrectRoleException;
+import es.udc.fi.dc.fd.model.services.exceptions.*;
 import es.udc.fi.dc.fd.model.common.exceptions.DuplicateInstanceException;
 import es.udc.fi.dc.fd.model.common.exceptions.InstanceNotFoundException;
 import es.udc.fi.dc.fd.model.entities.DailyPlan;
@@ -31,7 +31,9 @@ import es.udc.fi.dc.fd.rest.dtos.NutritionPlanDto;
 import es.udc.fi.dc.fd.rest.dtos.RestPlanDto;
 import es.udc.fi.dc.fd.rest.dtos.TrainingSessionDto;
 import es.udc.fi.dc.fd.rest.dtos.TrainingBlockDto;
+import es.udc.fi.dc.fd.rest.dtos.UpdatePlanDoneParamsDto;
 import static es.udc.fi.dc.fd.rest.dtos.TrainingSessionConversor.toTrainingSessionDto;
+import static es.udc.fi.dc.fd.rest.dtos.TrainingBlockConversor.toTrainingBlockDto;
 import static es.udc.fi.dc.fd.rest.dtos.PlanConversor.toNutritionPlanDto;
 import static es.udc.fi.dc.fd.rest.dtos.PlanConversor.toRestPlanDto;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,7 +59,7 @@ public class PlanController {
         List<TrainingSessionDto> sessionDtos = info.getSessions().stream().map(s -> {
             List<TrainingBlockDto> blockDtos = s.getBlocks().stream().map(b -> 
                 new TrainingBlockDto(b.getId(), b.getBlockOrder(), b.getName(), b.getSets(), 
-                                     b.getReps(), b.getDistanceOrDuration(), b.getPace(), b.getRest())
+                                     b.getReps(), b.getDistanceOrDuration(), b.getPace(), b.getRest(), b.getDone())
             ).collect(Collectors.toList());
 
             return new TrainingSessionDto(s.getId(), s.getSessionDate(), s.getStartTime(), s.getSport(), 
@@ -66,11 +68,11 @@ public class PlanController {
 
         NutritionPlanDto nutritionDto = info.getNutrition().map(n -> 
             new NutritionPlanDto(n.getId(), n.getPlanDate(), n.getTargetCalories(), n.getProteinGrams(), 
-                                 n.getCarbsGrams(), n.getFatGrams(), n.getHydrationLiters(), n.getGuidelines())
+                                 n.getCarbsGrams(), n.getFatGrams(), n.getHydrationLiters(), n.getGuidelines(), n.getDone())
         ).orElse(null);
 
         RestPlanDto restDto = info.getRest().map(r -> 
-            new RestPlanDto(r.getId(), r.getPlanDate(), r.getTargetSleepHours(), r.getGuidelines())
+            new RestPlanDto(r.getId(), r.getPlanDate(), r.getTargetSleepHours(), r.getGuidelines(), r.getDone())
         ).orElse(null);
 
         return new DailyPlanDto(date.toString(), sessionDtos, nutritionDto, restDto);
@@ -122,6 +124,33 @@ public class PlanController {
 
         RestPlan restPlan = planService.createRestPlan(params.getAthleteId(), userId, params.getPlanDate(), 
                                                 params.getTargetSleepHours(), params.getGuidelines());
+
+        return toRestPlanDto(restPlan);
+    }
+
+    @PostMapping("/update-training-block-done")
+    public TrainingBlockDto updateTrainingBlockDone(@RequestAttribute Long userId,
+        @Validated @RequestBody UpdatePlanDoneParamsDto params) throws InstanceNotFoundException, PermissionException{
+
+        TrainingBlock trainingBlock = planService.updateTrainingBlockDone(userId, params.getPlanId(), params.getDone());
+
+        return toTrainingBlockDto(trainingBlock);
+    }
+
+    @PostMapping("/update-nutrition-plan-done")
+    public NutritionPlanDto updateNutritionPlanDone(@RequestAttribute Long userId,
+        @Validated @RequestBody UpdatePlanDoneParamsDto params) throws InstanceNotFoundException, PermissionException{
+
+        NutritionPlan nutritionPlan = planService.updateNutritionPlanDone(userId, params.getPlanId(), params.getDone());
+
+        return toNutritionPlanDto(nutritionPlan);
+    }
+
+    @PostMapping("/update-rest-plan-done")
+    public RestPlanDto updateRestPlanDone(@RequestAttribute Long userId,
+        @Validated @RequestBody UpdatePlanDoneParamsDto params) throws InstanceNotFoundException, PermissionException{
+
+        RestPlan restPlan = planService.updateRestPlanDone(userId, params.getPlanId(), params.getDone());
 
         return toRestPlanDto(restPlan);
     }

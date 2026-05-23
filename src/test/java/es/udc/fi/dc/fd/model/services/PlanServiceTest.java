@@ -22,7 +22,7 @@ import es.udc.fi.dc.fd.model.common.exceptions.DuplicateInstanceException;
 import es.udc.fi.dc.fd.model.common.exceptions.InstanceNotFoundException;
 import es.udc.fi.dc.fd.model.entities.*;
 import es.udc.fi.dc.fd.model.entities.Users.RoleType;
-import es.udc.fi.dc.fd.model.services.exceptions.IncorrectRoleException;
+import es.udc.fi.dc.fd.model.services.exceptions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -38,6 +38,9 @@ public class PlanServiceTest {
 
     @Autowired
     private TrainingSessionDao trainingSessionDao;
+
+    @Autowired
+    private TrainingBlockDao trainingBlockDao;
 
     @Autowired
     private NutritionPlanDao nutritionPlanDao;
@@ -399,5 +402,158 @@ public class PlanServiceTest {
         assertEquals(Double.valueOf(8.45), restPlan.getTargetSleepHours());
         assertEquals("guidelines", restPlan.getGuidelines());
     }
+
+    @Test
+    public void testUpdateTrainingBlockDone() throws InstanceNotFoundException, PermissionException {
+        Users athlete = createUser("athlete", RoleType.USER);
+        Users coach = createUser("coach", RoleType.COACH);
+        LocalDate testDate = LocalDate.of(2026, 3, 22);
+
+        TrainingSession session = createAndSaveTrainingSession(athlete, coach, testDate, "Aeróbico");
+
+        TrainingBlock block = new TrainingBlock();
+        block.setBlockOrder(1);
+        block.setName("Calentamiento");
+        block.setSets(1);
+        block.setReps(1);
+        block.setDistanceOrDuration("600m");
+        block.setPace("0");
+        block.setRest("0");
+        block.setTrainingSession(session);
+        trainingBlockDao.save(block);
+
+        TrainingBlock updatedBlock = planService.updateTrainingBlockDone(athlete.getId(), block.getId(), 1.0);
+
+        assertEquals(Double.valueOf(1.0), updatedBlock.getDone());
+    }
+
+    @Test
+    public void testUpdateTrainingBlockDone_WithNoPermission() throws InstanceNotFoundException, PermissionException {
+        Users athlete = createUser("athlete", RoleType.USER);
+        Users coach = createUser("coach", RoleType.COACH);
+        LocalDate testDate = LocalDate.of(2026, 3, 22);
+
+        TrainingSession session = createAndSaveTrainingSession(athlete, coach, testDate, "Aeróbico");
+
+        TrainingBlock block = new TrainingBlock();
+        block.setBlockOrder(1);
+        block.setName("Calentamiento");
+        block.setSets(1);
+        block.setReps(1);
+        block.setDistanceOrDuration("600m");
+        block.setPace("0");
+        block.setRest("0");
+        block.setTrainingSession(session);
+        trainingBlockDao.save(block);
+
+        assertThrows(PermissionException.class, () -> {
+            planService.updateTrainingBlockDone(-1L, block.getId(), 1.0);
+        });
+    }
+
+    @Test
+    public void testUpdateTrainingBlockDone_InstanceNotFound() throws InstanceNotFoundException, PermissionException {
+        Users athlete = createUser("athlete", RoleType.USER);
+        Users coach = createUser("coach", RoleType.COACH);
+        LocalDate testDate = LocalDate.of(2026, 3, 22);
+
+        TrainingSession session = createAndSaveTrainingSession(athlete, coach, testDate, "Aeróbico");
+
+        TrainingBlock block = new TrainingBlock();
+        block.setBlockOrder(1);
+        block.setName("Calentamiento");
+        block.setSets(1);
+        block.setReps(1);
+        block.setDistanceOrDuration("600m");
+        block.setPace("0");
+        block.setRest("0");
+        block.setTrainingSession(session);
+        trainingBlockDao.save(block);
+
+        assertThrows(InstanceNotFoundException.class, () -> {
+            planService.updateTrainingBlockDone(athlete.getId(), -1L, 1.0);
+        });
+    }
     
+    @Test
+    public void testUpdateNutritionPlanDone() throws InstanceNotFoundException, PermissionException {
+        Users athlete = createUser("athlete", RoleType.USER);
+        Users coach = createUser("coach", RoleType.COACH);
+        LocalDate testDate = LocalDate.of(2026, 3, 22);
+
+        NutritionPlan nutritionPlan = createAndSaveNutritionPlan(athlete, coach, testDate, 3000);
+
+
+        NutritionPlan updatedPlan = planService.updateNutritionPlanDone(athlete.getId(), nutritionPlan.getId(), 1.0);
+
+        assertEquals(Double.valueOf(1.0), updatedPlan.getDone());
+    }
+
+    @Test
+    public void testUpdateNutritionPlanDone_WithNoPermission() throws InstanceNotFoundException, PermissionException {
+        Users athlete = createUser("athlete", RoleType.USER);
+        Users coach = createUser("coach", RoleType.COACH);
+        LocalDate testDate = LocalDate.of(2026, 3, 22);
+
+        NutritionPlan nutritionPlan = createAndSaveNutritionPlan(athlete, coach, testDate, 3000);
+
+        assertThrows(PermissionException.class, () -> {
+            planService.updateNutritionPlanDone(-1L, nutritionPlan.getId(), 1.0);
+        });
+    }
+
+    @Test
+    public void testUpdateNutritionPlanDone_InstanceNotFound() throws InstanceNotFoundException, PermissionException {
+        Users athlete = createUser("athlete", RoleType.USER);
+        Users coach = createUser("coach", RoleType.COACH);
+        LocalDate testDate = LocalDate.of(2026, 3, 22);
+
+        createAndSaveNutritionPlan(athlete, coach, testDate, 3000);
+
+
+        assertThrows(InstanceNotFoundException.class, () -> {
+            planService.updateNutritionPlanDone(athlete.getId(), -1L, 1.0);
+        });
+    }
+
+    @Test
+    public void testUpdateRestPlanDone() throws InstanceNotFoundException, PermissionException {
+        Users athlete = createUser("athlete", RoleType.USER);
+        Users coach = createUser("coach", RoleType.COACH);
+        LocalDate testDate = LocalDate.of(2026, 3, 22);
+
+        RestPlan restPlan = createAndSaveRestPlan(athlete, coach, testDate, 8.45);
+
+
+        RestPlan updatedPlan = planService.updateRestPlanDone(athlete.getId(), restPlan.getId(), 1.0);
+
+        assertEquals(Double.valueOf(1.0), updatedPlan.getDone());
+    }
+
+    @Test
+    public void testUpdateRestPlanDone_WithNoPermission() throws InstanceNotFoundException, PermissionException {
+        Users athlete = createUser("athlete", RoleType.USER);
+        Users coach = createUser("coach", RoleType.COACH);
+        LocalDate testDate = LocalDate.of(2026, 3, 22);
+
+        RestPlan restPlan = createAndSaveRestPlan(athlete, coach, testDate, 8.45);
+
+        assertThrows(PermissionException.class, () -> {
+            planService.updateRestPlanDone(-1L, restPlan.getId(), 1.0);
+        });
+    }
+
+    @Test
+    public void testUpdateRestPlanDone_InstanceNotFound() throws InstanceNotFoundException, PermissionException {
+        Users athlete = createUser("athlete", RoleType.USER);
+        Users coach = createUser("coach", RoleType.COACH);
+        LocalDate testDate = LocalDate.of(2026, 3, 22);
+
+        createAndSaveRestPlan(athlete, coach, testDate, 8.45);
+
+
+        assertThrows(InstanceNotFoundException.class, () -> {
+            planService.updateRestPlanDone(athlete.getId(), -1L, 1.0);
+        });
+    }
 }

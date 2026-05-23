@@ -12,11 +12,12 @@ public class NutritionPlanDto {
     private Integer fatGrams;
     private Double hydrationLiters;
     private String guidelines;
+    private Double done;
 
     public NutritionPlanDto() {}
 
     public NutritionPlanDto(Long id, LocalDate planDate, Integer targetCalories, Integer proteinGrams, 
-                            Integer carbsGrams, Integer fatGrams, Double hydrationLiters, String guidelines) {
+                            Integer carbsGrams, Integer fatGrams, Double hydrationLiters, String guidelines, Double done) {
         this.id = id;
         this.planDate = planDate;
         this.targetCalories = targetCalories;
@@ -25,6 +26,7 @@ public class NutritionPlanDto {
         this.fatGrams = fatGrams;
         this.hydrationLiters = hydrationLiters;
         this.guidelines = guidelines;
+        this.done = done;
     }
 
     public Long getId() { return id; }
@@ -50,4 +52,8 @@ public class NutritionPlanDto {
 
     public String getGuidelines() { return guidelines; }
     public void setGuidelines(String guidelines) { this.guidelines = guidelines; }
+
+    public Double getDone() { return done; }
+    public void setDone(Double done) { this.done = done; }
+    
 }
