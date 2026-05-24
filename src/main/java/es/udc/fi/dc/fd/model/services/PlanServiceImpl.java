@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -222,6 +223,21 @@ public class PlanServiceImpl implements PlanService {
         }
 
         return weeklyPlan;
+    }
+
+    @Override
+    public TrainingSession rescheduleTrainingSession(Long userId, Long sessionId, LocalDate newDate, LocalTime newStartTime) throws InstanceNotFoundException, PermissionException {
+        
+        TrainingSession session = trainingSessionDao.findById(sessionId)
+                .orElseThrow(() -> new InstanceNotFoundException("TrainingSession", sessionId));
+        
+        if (!session.getUser().getId().equals(userId)) {
+            throw new PermissionException();
+        }
+        
+        session.setSessionDate(newDate);
+        session.setStartTime(newStartTime);
+        return trainingSessionDao.save(session);
     }
 
 }
