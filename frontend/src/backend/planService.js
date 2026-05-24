@@ -31,3 +31,7 @@ export const updateNutritionPlanDone = (nutritionPlanData, onSuccess, onErrors) 
 export const updateRestPlanDone = (restPlanData, onSuccess, onErrors) => {
     appFetch(`/plans/update-rest-plan-done`, fetchConfig('POST', restPlanData), onSuccess, onErrors);
 };
+
+export const rescheduleTrainingSession = (rescheduleData, onSuccess, onErrors) => {
+    appFetch(`/plans/reschedule-training-session`, fetchConfig('POST', rescheduleData), onSuccess, onErrors);
+};

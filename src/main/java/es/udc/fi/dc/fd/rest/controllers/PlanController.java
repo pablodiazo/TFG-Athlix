@@ -28,6 +28,7 @@ import es.udc.fi.dc.fd.rest.dtos.CreateNutritionPlanParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.CreateRestPlanParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.DailyPlanDto;
 import es.udc.fi.dc.fd.rest.dtos.NutritionPlanDto;
+import es.udc.fi.dc.fd.rest.dtos.RescheduleParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.RestPlanDto;
 import es.udc.fi.dc.fd.rest.dtos.TrainingSessionDto;
 import es.udc.fi.dc.fd.rest.dtos.TrainingBlockDto;
@@ -197,5 +198,14 @@ public class PlanController {
         return toRestPlanDto(restPlan);
     }
     
+
+    @PostMapping("/reschedule-training-session")
+    public TrainingSessionDto rescheduleTrainingSession(@RequestAttribute Long userId,
+        @Validated @RequestBody RescheduleParamsDto params) throws InstanceNotFoundException, PermissionException{
+
+        TrainingSession trainingSession = planService.rescheduleTrainingSession(userId, params.getSessionId(), params.getNewDate(), params.getNewStartTime());
+
+        return toTrainingSessionDto(trainingSession);
+    }
     
 }
