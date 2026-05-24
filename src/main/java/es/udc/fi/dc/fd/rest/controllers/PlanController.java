@@ -78,6 +78,48 @@ public class PlanController {
         return new DailyPlanDto(date.toString(), sessionDtos, nutritionDto, restDto);
     }
 
+    // GET /plans/weekly?startDate=2026-03-16
+    @GetMapping("/weekly")
+    public List<DailyPlanDto> getWeeklyPlan(
+            @RequestAttribute Long userId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate)
+            throws InstanceNotFoundException {
+        
+        List<DailyPlan> weeklyInfo = planService.getWeeklyPlan(userId, startDate);
+        List<DailyPlanDto> weeklyDtos = new ArrayList<>();
+
+        // Usamos startDate para ir sabiendo qué fecha corresponde a cada DailyPlan de la lista
+        LocalDate currentDate = startDate;
+
+        for (DailyPlan info : weeklyInfo) {
+            
+            List<TrainingSessionDto> sessionDtos = info.getSessions().stream().map(s -> {
+                List<TrainingBlockDto> blockDtos = s.getBlocks().stream().map(b -> 
+                    new TrainingBlockDto(b.getId(), b.getBlockOrder(), b.getName(), b.getSets(), 
+                                         b.getReps(), b.getDistanceOrDuration(), b.getPace(), b.getRest(), b.getDone())
+                ).collect(Collectors.toList());
+
+                return new TrainingSessionDto(s.getId(), s.getSessionDate(), s.getStartTime(), s.getSport(), 
+                                              s.getObjective(), s.getTotalDistanceOrDuration(), blockDtos);
+            }).collect(Collectors.toList());
+
+            NutritionPlanDto nutritionDto = info.getNutrition().map(n -> 
+                new NutritionPlanDto(n.getId(), n.getPlanDate(), n.getTargetCalories(), n.getProteinGrams(), 
+                                     n.getCarbsGrams(), n.getFatGrams(), n.getHydrationLiters(), n.getGuidelines(), n.getDone())
+            ).orElse(null);
+
+            RestPlanDto restDto = info.getRest().map(r -> 
+                new RestPlanDto(r.getId(), r.getPlanDate(), r.getTargetSleepHours(), r.getGuidelines(), r.getDone())
+            ).orElse(null);
+
+            weeklyDtos.add(new DailyPlanDto(currentDate.toString(), sessionDtos, nutritionDto, restDto));
+            
+            currentDate = currentDate.plusDays(1); // Avanzamos al siguiente día
+        }
+
+        return weeklyDtos;
+    }
+
     @PostMapping("/create-training-session")
     public TrainingSessionDto createTrainingSession(@RequestAttribute Long userId,
         @Validated @RequestBody CreateSessionParamsDto params) throws InstanceNotFoundException, IncorrectRoleException{

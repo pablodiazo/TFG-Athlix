@@ -6,4 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface TrainingSessionDao extends CrudRepository<TrainingSession, Long> {
     List<TrainingSession> findByUserIdAndSessionDateOrderByStartTimeAsc(Long userId, LocalDate sessionDate);
+
+    List<TrainingSession> findByUserIdAndSessionDateBetweenOrderByStartTimeAsc(Long userId, LocalDate startDate, LocalDate endDate);
 }
