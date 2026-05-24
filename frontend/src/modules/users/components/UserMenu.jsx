@@ -93,8 +93,8 @@ const UserMenu = () => {
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => navAndClose("/users/seeFollowing")}>
-                    Opción 2
+                  <button onClick={() => navAndClose("/plans/weekly")}>
+                    <FormattedMessage id="project.plans.WeeklyPlan.title" defaultMessage="Plan semanal" />
                   </button>
                 </li>
               </>
