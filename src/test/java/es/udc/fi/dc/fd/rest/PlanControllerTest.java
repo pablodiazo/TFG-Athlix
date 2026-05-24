@@ -38,6 +38,7 @@ import es.udc.fi.dc.fd.rest.dtos.CreateRestPlanParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.LoginParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.TrainingBlockDto;
 import es.udc.fi.dc.fd.rest.dtos.UpdatePlanDoneParamsDto;
+import es.udc.fi.dc.fd.rest.dtos.RescheduleParamsDto;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -409,5 +410,32 @@ public class PlanControllerTest {
                 .content(mapper.writeValueAsString(params)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.done", is(0.5)));
+    }
+
+    @Test
+    public void testRescheduleTrainingSession_Ok() throws Exception {
+        AuthenticatedUserDto athlete = createAuthenticatedUser("athleteReschedCtrl", RoleType.USER);
+        AuthenticatedUserDto coach = createAuthenticatedUser("coachReschedCtrl", RoleType.COACH);
+
+        TrainingSession session = planService.createTrainingSession(
+            athlete.getUserDto().getId(), coach.getUserDto().getId(),
+            LocalDate.now(), LocalTime.now(), TrainingSession.SportType.BIKE,
+            "Mover esta sesión", "2h", new ArrayList<>()
+        );
+
+        LocalDate newDate = LocalDate.now().plusDays(2);
+        LocalTime newStartTime = LocalTime.of(8, 0);
+
+        RescheduleParamsDto params = new RescheduleParamsDto();
+        params.setSessionId(session.getId());
+        params.setNewStartTime(newStartTime);
+        params.setNewDate(newDate);
+
+        mockMvc.perform(post("/plans/reschedule-training-session")
+                .header("Authorization", "Bearer " + athlete.getServiceToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(params)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.sessionDate", is(newDate.toString())));
     }
 }

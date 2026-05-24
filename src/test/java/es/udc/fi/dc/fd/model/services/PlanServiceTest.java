@@ -636,4 +636,48 @@ public class PlanServiceTest {
         assertEquals(1, weeklyPlan.get(6).getSessions().size());
         assertEquals("Domingo Fin", weeklyPlan.get(6).getSessions().get(0).getObjective());
     }
+
+    @Test
+    public void testRescheduleTrainingSession() throws InstanceNotFoundException, PermissionException {
+        Users athlete = createUser("athleteReschedule", RoleType.USER);
+        Users coach = createUser("coachReschedule", RoleType.COACH);
+        LocalDate originalDate = LocalDate.of(2026, 4, 10);
+        LocalDate newDate = LocalDate.of(2026, 4, 12);
+        LocalTime newStartTime = LocalTime.of(8, 0);
+
+        TrainingSession session = createAndSaveTrainingSession(athlete, coach, originalDate, "Original Obj");
+
+        TrainingSession rescheduledSession = planService.rescheduleTrainingSession(athlete.getId(), session.getId(), newDate, newStartTime);
+
+        assertEquals(newDate, rescheduledSession.getSessionDate());
+        assertEquals(newStartTime, rescheduledSession.getStartTime());
+    }
+
+    @Test
+    public void testRescheduleTrainingSession_NoPermission() throws InstanceNotFoundException, PermissionException {
+        Users athlete = createUser("athleteOwner", RoleType.USER);
+        Users fakeAthlete = createUser("athleteHacker", RoleType.USER);
+        Users coach = createUser("coachReschedule", RoleType.COACH);
+        LocalDate originalDate = LocalDate.of(2026, 4, 10);
+        LocalDate newDate = LocalDate.of(2026, 4, 12);
+        LocalTime newStartTime = LocalTime.of(8, 0);
+
+        TrainingSession session = createAndSaveTrainingSession(athlete, coach, originalDate, "Original Obj");
+
+        assertThrows(PermissionException.class, () -> {
+            planService.rescheduleTrainingSession(fakeAthlete.getId(), session.getId(), newDate, newStartTime);
+        });
+    }
+
+    @Test
+    public void testRescheduleTrainingSession_InstanceNotFound() {
+        Users athlete = createUser("athleteReschedule", RoleType.USER);
+        LocalDate newDate = LocalDate.of(2026, 4, 12);
+        LocalTime newStartTime = LocalTime.of(8, 0);
+
+
+        assertThrows(InstanceNotFoundException.class, () -> {
+            planService.rescheduleTrainingSession(athlete.getId(), -1L, newDate, newStartTime);
+        });
+    }
 }
