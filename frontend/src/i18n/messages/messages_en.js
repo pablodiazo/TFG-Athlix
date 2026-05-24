@@ -119,6 +119,13 @@ export default {
     'project.plans.DailyPlan.rest': 'Rest and recovery',
     'project.plans.DailyPlan.sleepTarget': 'Sleep target',
     'project.plans.DailyPlan.noRestPlanned': 'There is no Rest Plan for today',
+    'project.plans.WeeklyPlan.title': 'Weekly plan',
+    'project.plans.WeeklyPlan.previousWeek': 'Previous week',
+    'project.plans.WeeklyPlan.nextWeek': 'Next week',
+    'project.plans.WeeklyPlan.returnToCurrentWeek': 'Return to current week',
+    'project.plans.WeeklyPlan.totalVolumeAcumulated': 'Total volume accumulated',
+    'project.plans.WeeklyPlan.time': 'Time',
+    'project.plans.WeeklyPlan.dailyDistribution': 'Daily distribution',
 
     'project.plans.CreateTrainingSession.title': 'Create training session',
     'project.plans.CreateTrainingSession.header': 'Design training session',
