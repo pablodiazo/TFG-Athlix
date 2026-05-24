@@ -119,6 +119,13 @@ export default {
     'project.plans.DailyPlan.rest': 'Descanso y recuperación',
     'project.plans.DailyPlan.sleepTarget': 'Objetivo de sueño',
     'project.plans.DailyPlan.noRestPlanned': 'No hay pautas de descanso para hoy',
+    'project.plans.WeeklyPlan.title': 'Plan semanal',
+    'project.plans.WeeklyPlan.previousWeek': 'Semana anterior',
+    'project.plans.WeeklyPlan.nextWeek': 'Semana siguiente',
+    'project.plans.WeeklyPlan.returnToCurrentWeek': 'Volver a esta semana',
+    'project.plans.WeeklyPlan.totalVolumeAcumulated': 'Volumen total acumulado',
+    'project.plans.WeeklyPlan.time': 'Tiempo',
+    'project.plans.WeeklyPlan.dailyDistribution': 'Distribución diaria',
 
     'project.plans.CreateTrainingSession.title': 'Crear sesión de entrenamiento',
     'project.plans.CreateTrainingSession.header': 'Diseñar sesión de entrenamiento',

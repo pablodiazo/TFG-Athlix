@@ -2,8 +2,10 @@ package es.udc.fi.dc.fd.model.services;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -190,6 +192,36 @@ public class PlanServiceImpl implements PlanService {
         
         restPlan.setDone(done);
         return restPlanDao.save(restPlan);
+    }
+
+    @Override
+    public List<DailyPlan> getWeeklyPlan(Long userId, LocalDate startDate) throws InstanceNotFoundException {
+        
+        List<TrainingSession> allSessions = trainingSessionDao.findByUserIdAndSessionDateBetweenOrderByStartTimeAsc(userId, startDate, startDate.plusDays(6));
+        List<NutritionPlan> allNutrition = nutritionPlanDao.findByUserIdAndPlanDateBetween(userId, startDate, startDate.plusDays(6));
+        List<RestPlan> allRest = restPlanDao.findByUserIdAndPlanDateBetween(userId, startDate, startDate.plusDays(6));
+
+        List<DailyPlan> weeklyPlan = new ArrayList<>();
+
+        for (LocalDate date = startDate; !date.isAfter(startDate.plusDays(6)); date = date.plusDays(1)) {
+            final LocalDate currentDate = date;
+            
+            List<TrainingSession> dailySessions = allSessions.stream()
+                .filter(s -> s.getSessionDate().equals(currentDate))
+                .collect(Collectors.toList());
+                
+            Optional<NutritionPlan> dailyNutrition = allNutrition.stream()
+                .filter(n -> n.getPlanDate().equals(currentDate))
+                .findFirst();
+                
+            Optional<RestPlan> dailyRest = allRest.stream()
+                .filter(r -> r.getPlanDate().equals(currentDate))
+                .findFirst();
+
+            weeklyPlan.add(new DailyPlan(dailySessions, dailyNutrition, dailyRest));
+        }
+
+        return weeklyPlan;
     }
 
 }

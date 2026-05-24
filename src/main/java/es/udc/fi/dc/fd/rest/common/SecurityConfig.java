@@ -54,6 +54,7 @@ public class SecurityConfig {
                 .requestMatchers(antMatcher("/users/login")).permitAll()
                 .requestMatchers(antMatcher("/users/loginFromServiceToken")).permitAll()
                 .requestMatchers(antMatcher("/plans/daily")).hasRole(ROLE_USER)
+                .requestMatchers(antMatcher("/plans/weekly")).hasRole(ROLE_USER)
                 .requestMatchers(antMatcher("/plans/create-training-session")).hasRole(ROLE_COACH)
                 .requestMatchers(antMatcher("/plans/create-nutrition-plan")).hasRole(ROLE_COACH)
                 .requestMatchers(antMatcher("/plans/create-rest-plan")).hasRole(ROLE_COACH)

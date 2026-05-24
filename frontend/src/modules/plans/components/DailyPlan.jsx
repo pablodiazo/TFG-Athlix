@@ -250,7 +250,7 @@ const DailyPlan = () => {
                                 </div>
                                 <div className="block-main">
                                   <span className="block-sets">
-                                    {block.sets > 1 ? `${block.sets} x` : ''} {block.reps > 1 ? `${block.reps} x` : ''} {block.distanceOrDuration}
+                                    {block.sets > 1 ? `${block.sets} x` : ''} {block.reps > 1 ? `${block.reps}` : ''} {block.reps > 1 && block.distanceOrDuration !== '-' ? 'x' : ''} {block.distanceOrDuration !== '-' ? `${block.distanceOrDuration}` : ''}
                                   </span>
                                   <span className="block-name">{block.name}</span>
                                 </div>

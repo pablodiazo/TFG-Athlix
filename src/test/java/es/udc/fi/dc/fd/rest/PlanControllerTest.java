@@ -37,6 +37,7 @@ import es.udc.fi.dc.fd.rest.dtos.CreateSessionParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.CreateRestPlanParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.LoginParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.TrainingBlockDto;
+import es.udc.fi.dc.fd.rest.dtos.UpdatePlanDoneParamsDto;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -305,5 +306,108 @@ public class PlanControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(params)))
                 .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    public void testGetWeeklyPlan_Ok() throws Exception {
+        AuthenticatedUserDto athlete = createAuthenticatedUser("athleteWeeklyGet", RoleType.USER);
+        AuthenticatedUserDto coach = createAuthenticatedUser("coachWeeklyGet", RoleType.COACH);
+        
+        LocalDate startDate = LocalDate.of(2026, 3, 16); 
+        LocalTime testTime = LocalTime.of(8, 0);
+
+        planService.createTrainingSession(
+                athlete.getUserDto().getId(), 
+                coach.getUserDto().getId(), 
+                startDate, testTime, 
+                TrainingSession.SportType.SWIM, 
+                "Semana Test", "1000m", new ArrayList<>()
+        );
+
+        mockMvc.perform(get("/plans/weekly")
+                .param("startDate", startDate.toString())
+                .header("Authorization", "Bearer " + athlete.getServiceToken())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(7)))
+                .andExpect(jsonPath("$[0].date", is(startDate.toString())))
+                .andExpect(jsonPath("$[0].sessions[0].sport", is("SWIM")));
+    }
+
+    @Test
+    public void testUpdateTrainingBlockDone_Ok() throws Exception {
+        AuthenticatedUserDto athlete = createAuthenticatedUser("athleteBlockUpd", RoleType.USER);
+        AuthenticatedUserDto coach = createAuthenticatedUser("coachBlockUpd", RoleType.COACH);
+
+        es.udc.fi.dc.fd.model.entities.TrainingBlock block = new es.udc.fi.dc.fd.model.entities.TrainingBlock();
+        block.setBlockOrder(1);
+        block.setName("Bloque de Prueba");
+        block.setSets(1);
+        block.setDistanceOrDuration("1km");
+        block.setPace("Z1");
+        block.setRest("0");
+
+        TrainingSession session = planService.createTrainingSession(
+            athlete.getUserDto().getId(), coach.getUserDto().getId(),
+            LocalDate.now(), LocalTime.now(), TrainingSession.SportType.RUN,
+            "Test Obj", "1km", Arrays.asList(block)
+        );
+
+        Long blockId = session.getBlocks().get(0).getId();
+
+        UpdatePlanDoneParamsDto params = new UpdatePlanDoneParamsDto();
+        params.setPlanId(blockId);
+        params.setDone(0.85);
+
+        mockMvc.perform(post("/plans/update-training-block-done")
+                .header("Authorization", "Bearer " + athlete.getServiceToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(params)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.done", is(0.85)));
+    }
+
+    @Test
+    public void testUpdateNutritionPlanDone_Ok() throws Exception {
+        AuthenticatedUserDto athlete = createAuthenticatedUser("athleteNutriUpd", RoleType.USER);
+        AuthenticatedUserDto coach = createAuthenticatedUser("coachNutriUpd", RoleType.COACH);
+
+        es.udc.fi.dc.fd.model.entities.NutritionPlan plan = planService.createNutritionPlan(
+            athlete.getUserDto().getId(), coach.getUserDto().getId(),
+            LocalDate.now(), 2000, 100, 200, 50, 2.0, "Tips"
+        );
+
+        UpdatePlanDoneParamsDto params = new UpdatePlanDoneParamsDto();
+        params.setPlanId(plan.getId());
+        params.setDone(1.0);
+
+        mockMvc.perform(post("/plans/update-nutrition-plan-done")
+                .header("Authorization", "Bearer " + athlete.getServiceToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(params)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.done", is(1.0)));
+    }
+
+    @Test
+    public void testUpdateRestPlanDone_Ok() throws Exception {
+        AuthenticatedUserDto athlete = createAuthenticatedUser("athleteRestUpd", RoleType.USER);
+        AuthenticatedUserDto coach = createAuthenticatedUser("coachRestUpd", RoleType.COACH);
+
+        es.udc.fi.dc.fd.model.entities.RestPlan plan = planService.createRestPlan(
+            athlete.getUserDto().getId(), coach.getUserDto().getId(),
+            LocalDate.now(), 8.0, "Sleep well"
+        );
+
+        UpdatePlanDoneParamsDto params = new UpdatePlanDoneParamsDto();
+        params.setPlanId(plan.getId());
+        params.setDone(0.5);
+
+        mockMvc.perform(post("/plans/update-rest-plan-done")
+                .header("Authorization", "Bearer " + athlete.getServiceToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(params)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.done", is(0.5)));
     }
 }

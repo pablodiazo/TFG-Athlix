@@ -6,7 +6,7 @@ import Home from "./Home";
 import Test from "./Test";
 
 import { Login, Profile, SignUp, ChangePassword, UpdateProfile } from "../../users";
-import { DailyPlan, CreateTrainingSession, CreateSessionSuccess, CreateNutritionPlan, CreateRestPlan } from "../../plans";
+import { DailyPlan, WeeklyPlan, CreateTrainingSession, CreateSessionSuccess, CreateNutritionPlan, CreateRestPlan } from "../../plans";
 
 const Body = () => {
   return (
@@ -20,6 +20,7 @@ const Body = () => {
         <Route path="/users/changePassword" element={<ChangePassword/>}/>
         <Route path="/users/updateProfile" element={<UpdateProfile/>}/>
         <Route path="/plans/daily" element={<DailyPlan />} />
+        <Route path="/plans/weekly" element={<WeeklyPlan />} />
         <Route path="/plans/create-training-session" element={<CreateTrainingSession />} />
         <Route path="/plans/create-session-success" element={<CreateSessionSuccess />} />
         <Route path="/plans/create-nutrition-plan" element={<CreateNutritionPlan />} />
