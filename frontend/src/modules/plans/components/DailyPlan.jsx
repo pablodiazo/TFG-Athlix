@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import backend from "../../../backend"; 
 
-import { FaSwimmer, FaBicycle, FaRunning, FaDumbbell, FaClock, FaSync, FaCheck, FaTimes } from "react-icons/fa";
+import { FaSwimmer, FaBicycle, FaRunning, FaDumbbell, FaClock, FaSync, FaCheck, FaTimes, FaCalendarDay } from "react-icons/fa";
 import "../css/DailyPlan.css";
 
 const SPORT_INFO = {
@@ -27,7 +27,60 @@ const DailyPlan = () => {
     isSaving: false
   });
 
-  const openPopover = (id, type, entityId, currentDecimalValue) => {
+  const [reschedulePopover, setReschedulePopover] = useState({
+    activeId: null,
+    newDate: "",
+    newStartTime: "",
+    isSaving: false
+  });
+
+  const openReschedulePopover = (e, sessionId, currentStartTime) => {
+    e.stopPropagation();
+    const tomorrow = new Date(currentDate);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    setReschedulePopover({
+      activeId: sessionId,
+      newDate: getApiDateString(tomorrow),
+      newStartTime: currentStartTime ? currentStartTime.substring(0, 5) : "12:00",
+      isSaving: false
+    });
+  };
+
+  const closeReschedulePopover = (e) => {
+    if (e) e.stopPropagation();
+    setReschedulePopover({ activeId: null, newDate: "", newStartTime: "", isSaving: false });
+  };
+
+  const handleSaveReschedule = (e) => {
+    if (e) e.stopPropagation();
+    setReschedulePopover(prev => ({ ...prev, isSaving: true }));
+
+    const payload = {
+      sessionId: reschedulePopover.activeId,
+      newDate: reschedulePopover.newDate,
+      newStartTime: reschedulePopover.newStartTime.length === 5 ? `${reschedulePopover.newStartTime}:00` : reschedulePopover.newStartTime
+    };
+
+    backend.planService.rescheduleTrainingSession(
+      payload,
+      () => {
+        setPlanData(prevData => ({
+          ...prevData,
+          sessions: prevData.sessions.filter(s => s.id !== reschedulePopover.activeId)
+        }));
+        closeReschedulePopover();
+      },
+      (error) => {
+        console.error("Error al reprogramar:", error);
+        setReschedulePopover(prev => ({ ...prev, isSaving: false }));
+        alert("No se pudo mover la sesión.");
+      }
+    );
+  };
+
+  const openPopover = (e, id, type, entityId, currentDecimalValue) => {
+    e.stopPropagation();
     setPopoverState({
       activeId: id,
       type: type,
@@ -136,6 +189,18 @@ const DailyPlan = () => {
     fetchPlan();
   }, [currentDate]);
 
+  useEffect(() => {
+    const closeAllPopovers = () => {
+      setReschedulePopover({ activeId: null, newDate: "", newTime: "", isSaving: false });
+      
+      setPopoverState({ activeId: null, type: null, entityId: null, currentValue: 0, isSaving: false });
+    };
+
+    document.addEventListener("click", closeAllPopovers);
+    
+    return () => document.removeEventListener("click", closeAllPopovers);
+  }, []);
+
   const handlePrevDay = () => {
     setCurrentDate((prev) => {
       const newDate = new Date(prev);
@@ -234,16 +299,47 @@ const DailyPlan = () => {
                             <SportIcon style={{ fontSize: "1.4rem" }} />
                             <h4>{sportInfo.name}</h4>
                             <span className="session-time">{formatTime(session.startTime)}</span>
+                            
+                            <div className="badge-wrapper" style={{ marginLeft: "auto" }}>
+                              <button className="reschedule-icon-btn" onClick={(e) => openReschedulePopover(e, session.id, session.startTime)}title="Mover a otro día">
+                                <FaCalendarDay />
+                              </button>
+
+                              {reschedulePopover.activeId === session.id && (
+                                <div className="slider-popover reschedule-popover" onClick={e => e.stopPropagation()}>
+                                  
+                                  <div className="reschedule-inputs-column">
+                                    <input type="date" value={reschedulePopover.newDate} 
+                                      onChange={(e) => setReschedulePopover({...reschedulePopover, newDate: e.target.value})}
+                                      className="reschedule-input"
+                                    />
+                                    <input type="time" value={reschedulePopover.newStartTime} 
+                                      onChange={(e) => setReschedulePopover({...reschedulePopover, newStartTime: e.target.value})}
+                                      className="reschedule-input"
+                                    />
+                                  </div>
+
+                                  <div className="slider-actions">
+                                    <button className="slider-btn save" onClick={handleSaveReschedule} disabled={reschedulePopover.isSaving}>
+                                      <FaCheck />
+                                    </button>
+                                    <button className="slider-btn cancel" onClick={closeReschedulePopover} disabled={reschedulePopover.isSaving}>
+                                      <FaTimes />
+                                    </button>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
                         </div>
                         <p className="session-objective">{session.totalDistanceOrDuration} - {session.objective}</p>
-                        </div>
+                      </div>
 
                         <div className="blocks-container">
                         {session.blocks && session.blocks.map((block) => (
                             <div key={block.id} className="block-row">
                               <div className="block-left">
                                 <div className="badge-wrapper">
-                                  <span className="badge done clickable" style={getDynamicBadgeStyle(block.done)} onClick={() => openPopover(`BLOCK-${block.id}`, 'BLOCK', block.id, block.done)} title="Actualizar cumplimiento">
+                                  <span className="badge done clickable" style={getDynamicBadgeStyle(block.done)} onClick={(e) => openPopover(e, `BLOCK-${block.id}`, 'BLOCK', block.id, block.done)} title="Actualizar cumplimiento">
                                     {Math.round((block.done || 0) * 100)}%
                                   </span>
                                   {renderPopover(`BLOCK-${block.id}`)}
@@ -279,7 +375,7 @@ const DailyPlan = () => {
                         <h3 className="card-title" style={{ margin: 0 }}><FormattedMessage id="project.plans.DailyPlan.nutrition" /></h3>
                         {planData.nutrition && (
                           <div className="badge-wrapper">
-                            <span className="badge done clickable" style={getDynamicBadgeStyle(planData.nutrition.done)} onClick={() => openPopover(`NUTRITION-${planData.nutrition.id}`, 'NUTRITION', planData.nutrition.id, planData.nutrition.done)}>
+                            <span className="badge done clickable" style={getDynamicBadgeStyle(planData.nutrition.done)} onClick={(e) => openPopover(e, `NUTRITION-${planData.nutrition.id}`, 'NUTRITION', planData.nutrition.id, planData.nutrition.done)}>
                               {Math.round((planData.nutrition.done || 0) * 100)}%
                             </span>
                             {renderPopover(`NUTRITION-${planData.nutrition.id}`)}
@@ -326,7 +422,7 @@ const DailyPlan = () => {
                         <h3 className="card-title" style={{ margin: 0 }}><FormattedMessage id="project.plans.DailyPlan.rest" /></h3>
                         {planData.rest && (
                            <div className="badge-wrapper">
-                             <span className="badge done clickable" style={getDynamicBadgeStyle(planData.rest.done)} onClick={() => openPopover(`REST-${planData.rest.id}`, 'REST', planData.rest.id, planData.rest.done)}>
+                             <span className="badge done clickable" style={getDynamicBadgeStyle(planData.rest.done)} onClick={(e) => openPopover(e, `REST-${planData.rest.id}`, 'REST', planData.rest.id, planData.rest.done)}>
                                {Math.round((planData.rest.done || 0) * 100)}%
                              </span>
                              {renderPopover(`REST-${planData.rest.id}`)}

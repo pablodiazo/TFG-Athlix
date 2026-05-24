@@ -464,6 +464,69 @@
   color: white;
 }
 
+.reschedule-icon-btn {
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.3rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.reschedule-icon-btn:hover {
+  color: #3b82f6;
+  background-color: rgba(59, 130, 246, 0.1);
+  transform: scale(1.1);
+}
+
+.slider-popover.reschedule-popover {
+  left: auto;
+  right: 0;
+  transform: translateY(10px) scale(0.9);
+  animation: popInRight 0.2s ease-out forwards;
+  min-width: 210px;
+}
+
+.slider-popover.reschedule-popover::after {
+  left: auto;
+  right: 12px;
+  transform: none;
+}
+
+@keyframes popInRight {
+  from { opacity: 0; transform: translateY(10px) scale(0.9); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.reschedule-inputs-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex-grow: 1;
+}
+
+.reschedule-input {
+  background-color: #0f1115;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 0.5rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  outline: none;
+  width: 100%;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.reschedule-input:focus {
+  border-color: #3b82f6;
+}
+
 @media (max-width: 900px) {
   .lifestyle-row {
     grid-template-columns: 1fr;
