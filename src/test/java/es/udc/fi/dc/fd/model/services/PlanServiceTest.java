@@ -556,4 +556,84 @@ public class PlanServiceTest {
             planService.updateRestPlanDone(athlete.getId(), -1L, 1.0);
         });
     }
+
+    @Test
+    public void testGetWeeklyPlan_WithData() throws InstanceNotFoundException {
+        Users athlete = createUser("athlete", RoleType.USER);
+        Users coach = createUser("coach", RoleType.COACH);
+        
+        LocalDate startDate = LocalDate.of(2026, 3, 16); 
+
+        createAndSaveTrainingSession(athlete, coach, startDate, "Run Lunes");
+        createAndSaveNutritionPlan(athlete, coach, startDate, 2500);
+
+        createAndSaveTrainingSession(athlete, coach, startDate.plusDays(3), "Swim Jueves AM");
+        createAndSaveTrainingSession(athlete, coach, startDate.plusDays(3), "Fuerza Jueves PM");
+        createAndSaveRestPlan(athlete, coach, startDate.plusDays(3), 8.5);
+
+        createAndSaveNutritionPlan(athlete, coach, startDate.plusDays(6), 4000);
+        createAndSaveRestPlan(athlete, coach, startDate.plusDays(6), 10.0);
+
+        List<DailyPlan> weeklyPlan = planService.getWeeklyPlan(athlete.getId(), startDate);
+
+        assertEquals(7, weeklyPlan.size());
+
+        assertEquals(1, weeklyPlan.get(0).getSessions().size());
+        assertTrue(weeklyPlan.get(0).getNutrition().isPresent());
+        assertFalse(weeklyPlan.get(0).getRest().isPresent());
+
+        assertEquals(0, weeklyPlan.get(1).getSessions().size());
+        assertFalse(weeklyPlan.get(1).getNutrition().isPresent());
+        assertFalse(weeklyPlan.get(1).getRest().isPresent());
+
+        assertEquals(2, weeklyPlan.get(3).getSessions().size());
+        assertFalse(weeklyPlan.get(3).getNutrition().isPresent());
+        assertTrue(weeklyPlan.get(3).getRest().isPresent());
+
+        assertEquals(0, weeklyPlan.get(6).getSessions().size());
+        assertTrue(weeklyPlan.get(6).getNutrition().isPresent());
+        assertTrue(weeklyPlan.get(6).getRest().isPresent());
+    }
+
+    @Test
+    public void testGetWeeklyPlan_EmptyWeek() throws InstanceNotFoundException {
+        Users athlete = createUser("athlete", RoleType.USER);
+        LocalDate startDate = LocalDate.of(2026, 3, 16);
+
+        List<DailyPlan> weeklyPlan = planService.getWeeklyPlan(athlete.getId(), startDate);
+
+        assertEquals(7, weeklyPlan.size());
+
+        for (DailyPlan dailyPlan : weeklyPlan) {
+            assertEquals(0, dailyPlan.getSessions().size());
+            assertFalse(dailyPlan.getNutrition().isPresent());
+            assertFalse(dailyPlan.getRest().isPresent());
+        }
+    }
+
+    @Test
+    public void testGetWeeklyPlan_CheckLimits() throws InstanceNotFoundException {
+        Users athlete = createUser("athlete", RoleType.USER);
+        Users coach = createUser("coach", RoleType.COACH);
+        
+        LocalDate startDate = LocalDate.of(2026, 3, 16);
+        
+        createAndSaveTrainingSession(athlete, coach, startDate.minusDays(1), "Domingo Anterior");
+        createAndSaveTrainingSession(athlete, coach, startDate.plusDays(7), "Lunes Siguiente");
+        
+        createAndSaveTrainingSession(athlete, coach, startDate, "Lunes Inicio");
+        createAndSaveTrainingSession(athlete, coach, startDate.plusDays(6), "Domingo Fin");
+
+        List<DailyPlan> weeklyPlan = planService.getWeeklyPlan(athlete.getId(), startDate);
+
+        assertEquals(7, weeklyPlan.size());
+
+        assertEquals(1, weeklyPlan.get(0).getSessions().size());
+        assertEquals("Lunes Inicio", weeklyPlan.get(0).getSessions().get(0).getObjective());
+
+        assertEquals(0, weeklyPlan.get(1).getSessions().size());
+        
+        assertEquals(1, weeklyPlan.get(6).getSessions().size());
+        assertEquals("Domingo Fin", weeklyPlan.get(6).getSessions().get(0).getObjective());
+    }
 }
