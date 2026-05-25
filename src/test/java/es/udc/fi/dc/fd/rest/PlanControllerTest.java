@@ -482,4 +482,35 @@ public class PlanControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
     }
+
+    @Test
+    public void testGetAthleteWeeklyPlan_Ok() throws Exception {
+        AuthenticatedUserDto coach = createAuthenticatedUser("coachWeeklyCtrl", RoleType.COACH);
+        AuthenticatedUserDto athlete = createAuthenticatedUser("athleteWeeklyCtrl", RoleType.USER);
+
+        Users athleteEntity = userDao.findById(athlete.getUserDto().getId()).get();
+        Users coachEntity = userDao.findById(coach.getUserDto().getId()).get();
+        athleteEntity.setCoachId(coachEntity.getId());
+        userDao.save(athleteEntity);
+        
+        LocalDate startDate = LocalDate.of(2026, 4, 13); 
+        LocalTime testTime = LocalTime.of(8, 0);
+
+        planService.createTrainingSession(
+                athlete.getUserDto().getId(), 
+                coach.getUserDto().getId(), 
+                startDate, testTime, 
+                TrainingSession.SportType.BIKE, 
+                "Ruta Controlada", "3h", new ArrayList<>()
+        );
+
+        mockMvc.perform(get("/plans/athletes/" + athlete.getUserDto().getId() + "/weekly")
+                .param("startDate", startDate.toString())
+                .header("Authorization", "Bearer " + coach.getServiceToken())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(7)))
+                .andExpect(jsonPath("$[0].date", is(startDate.toString())))
+                .andExpect(jsonPath("$[0].sessions[0].objective", is("Ruta Controlada")));
+    }
 }

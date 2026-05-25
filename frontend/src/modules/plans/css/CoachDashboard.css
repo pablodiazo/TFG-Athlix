@@ -63,7 +63,6 @@
 
 .coach-main-content {
   flex-grow: 1;
-  /* El DailyPlan ya tiene su propio padding, así que lo dejamos crecer */
   overflow-y: auto; 
 }
 
@@ -79,6 +78,45 @@
 .empty-dashboard h2 {
   color: #ffffff;
   margin-bottom: 0.5rem;
+}
+
+.coach-main-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1.5rem 3rem 0;
+}
+
+.view-toggle-group {
+  display: flex;
+  background-color: #1e2128;
+  border-radius: 8px;
+  padding: 0.3rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.view-toggle-btn {
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+}
+
+.view-toggle-btn:hover {
+  color: #ffffff;
+}
+
+.view-toggle-btn.active {
+  background-color: #3b82f6;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
 }
 
 @media (max-width: 768px) {
