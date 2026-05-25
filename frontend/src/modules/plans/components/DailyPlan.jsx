@@ -14,7 +14,7 @@ const SPORT_INFO = {
   OTHER: { name: "Otro", color: "#9ca3af", icon: FaClock }
 };
 
-const DailyPlan = () => {
+const DailyPlan = ({ athleteId }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [planData, setPlanData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -173,21 +173,24 @@ const DailyPlan = () => {
       setIsLoading(true);
       const apiDate = getApiDateString(currentDate);
       
-      backend.planService.getDailyPlan(
-        apiDate,
-        (data) => {
+      const onSuccess = (data) => {
           setPlanData(data);
           setIsLoading(false);
-        },
-        (error) => {
+      };
+      const onError = (error) => {
           console.error("Error fetching plan:", error);
           setIsLoading(false);
-        }
-      );
+      };
+
+      if (athleteId) {
+          backend.planService.getAthleteDailyPlan(athleteId, apiDate, onSuccess, onError);
+      } else {
+          backend.planService.getDailyPlan(apiDate, onSuccess, onError);
+      }
     };
 
     fetchPlan();
-  }, [currentDate]);
+  }, [currentDate, athleteId]);
 
   useEffect(() => {
     const closeAllPopovers = () => {

@@ -65,12 +65,12 @@ const UserMenu = () => {
       {isOpen && (
         <div className="athlix-dropdown-menu">
           <div className="athlix-dropdown-header">
-            <span className="athlix-dropdown-subtitle">Sesión iniciada como</span>
+            <span className="athlix-dropdown-subtitle"><FormattedMessage id="project.users.login.confirmation" /></span>
             <span className="athlix-dropdown-name">{userName}</span>
           </div>
 
           <ul className="athlix-dropdown-list">
-            <li className="athlix-dropdown-group">Gestión de Cuenta</li>
+            <li className="athlix-dropdown-group"><FormattedMessage id="project.users.userMenu.accountManagement" /></li>
             <li>
               <button onClick={() => navAndClose("/users/profile")}>
                 <FormattedMessage id="project.users.profile.title" />
@@ -83,7 +83,7 @@ const UserMenu = () => {
             </li>
 
             <li className="athlix-dropdown-divider"></li>
-            <li className="athlix-dropdown-group">Planificacion</li>
+            <li className="athlix-dropdown-group"><FormattedMessage id="project.users.userMenu.trainingPlans" /></li>
 
             {isUser && (
               <>
@@ -115,6 +115,17 @@ const UserMenu = () => {
                 <li>
                   <button onClick={() => navAndClose("/plans/create-rest-plan")}>
                     <FormattedMessage id="project.plans.CreateRestPlan.title" defaultMessage="Crear plan de descanso" />
+                  </button>
+                </li>
+              </>
+            )}
+
+            {isCoach && (
+              <>
+                <li className="athlix-dropdown-group"><FormattedMessage id="project.users.userMenu.coachManagement" /></li>
+                <li>
+                  <button onClick={() => navAndClose("/plans/athletes")}>
+                    <FormattedMessage id="project.plans.CoachDashboard.title" defaultMessage="Revisar planificación atletas" />
                   </button>
                 </li>
               </>

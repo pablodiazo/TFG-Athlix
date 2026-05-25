@@ -1,0 +1,93 @@
+.coach-dashboard-wrapper {
+  display: flex;
+  min-height: calc(100vh - 70px);
+  background-color: #0f1115;
+  color: white;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.coach-sidebar {
+  width: 280px;
+  background-color: #1e2128;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-title {
+  margin-top: 0;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.athlete-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.athlete-item-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #d1d5db;
+  padding: 1rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.athlete-item-btn:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.athlete-item-btn.active {
+  background-color: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.5);
+  color: #ffffff;
+}
+
+.athlete-avatar {
+  font-size: 1.8rem;
+  color: #3b82f6;
+}
+
+.coach-main-content {
+  flex-grow: 1;
+  /* El DailyPlan ya tiene su propio padding, así que lo dejamos crecer */
+  overflow-y: auto; 
+}
+
+.empty-dashboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #9ca3af;
+}
+
+.empty-dashboard h2 {
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .coach-dashboard-wrapper {
+    flex-direction: column;
+  }
+  .coach-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+}
