@@ -82,6 +82,7 @@ export default {
     'project.users.exceptions.IncorrectLoginException': 'User or password incorrect',
     'project.users.IncorrectPasswordException': 'Incorrect password',
     'project.users.login.title': 'Log In',
+    'project.users.login.confirmation': 'Session started as',
     'project.users.logout.title': 'Log out',
     'project.users.profile.title': 'Profile',
     'project.users.profile.details': 'Account details',
@@ -97,6 +98,9 @@ export default {
     'project.users.fields.imc': 'IMC',
     'project.users.userprofile.physicalData': 'Physical data',
     'project.users.fields.birth': 'Birth date',
+    'project.users.userMenu.accountManagement' : 'Account management',
+    'project.users.userMenu.trainingPlans' : 'Training plans',
+    'project.users.userMenu.coachManagement' : 'Coach management',
 
     // === VALIDATORS (USERS) ===
     'project.validator.users.incorrectLogin': 'Incorrect Login',
@@ -119,6 +123,7 @@ export default {
     'project.plans.DailyPlan.rest': 'Rest and recovery',
     'project.plans.DailyPlan.sleepTarget': 'Sleep target',
     'project.plans.DailyPlan.noRestPlanned': 'There is no Rest Plan for today',
+
     'project.plans.WeeklyPlan.title': 'Weekly plan',
     'project.plans.WeeklyPlan.previousWeek': 'Previous week',
     'project.plans.WeeklyPlan.nextWeek': 'Next week',
@@ -180,4 +185,10 @@ export default {
     'project.plans.CreateRestPlan.principalData': 'Rest and recommendations',
     'project.plans.CreateRestPlan.restHours': 'Rest time',
     'project.plans.CreateRestPlan.guidelines': 'Additional guidelines',
+
+    'project.plans.CoachDashboard.title': 'Review athletes planning',
+    'project.plans.CoachDashboard.loading': 'Loading athletes...',
+    'project.plans.CoachDashboard.noAthletes': 'No athletes assigned yet.',
+    'project.plans.CoachDashboard.selectAthlete': 'Select athlete',
+    'project.plans.CoachDashboard.chooseAthlete': 'Select an athlete from the sidebar to view and manage your daily plan.',
 }

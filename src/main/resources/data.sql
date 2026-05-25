@@ -22,6 +22,17 @@ VALUES (
     1
 );
 
+INSERT INTO Users (userName, password, firstName, lastName, email, role, coachId)
+VALUES (
+    'user_user2',
+    '$2a$10$V5QjEd9hDENFwC2bMUmgGehZoffn/JkyLJzpkRC2ChESG4C9a5Oye', -- pa2425
+    'User',
+    'User2',
+    'testuser2@example.com',
+    'USER',
+    1
+);
+
 
 -- ============================================================================
 -- ============================ HACE 7 DÍAS ===================================

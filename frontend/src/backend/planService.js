@@ -35,3 +35,7 @@ export const updateRestPlanDone = (restPlanData, onSuccess, onErrors) => {
 export const rescheduleTrainingSession = (rescheduleData, onSuccess, onErrors) => {
     appFetch(`/plans/reschedule-training-session`, fetchConfig('POST', rescheduleData), onSuccess, onErrors);
 };
+
+export const getAthleteDailyPlan = (athleteId, date, onSuccess, onErrors) => {
+    appFetch(`/plans/athletes/${athleteId}/daily?date=${date}`, fetchConfig('GET'), onSuccess, onErrors);
+};

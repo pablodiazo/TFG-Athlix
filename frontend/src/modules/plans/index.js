@@ -4,3 +4,4 @@ export { default as CreateTrainingSession } from './components/CreateTrainingSes
 export { default as CreateSessionSuccess } from './components/CreateSessionSuccess';
 export { default as CreateNutritionPlan } from './components/CreateNutritionPlan';
 export { default as CreateRestPlan } from './components/CreateRestPlan';
+export { default as CoachDashboard } from './components/CoachDashboard';
