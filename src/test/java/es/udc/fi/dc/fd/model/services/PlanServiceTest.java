@@ -736,4 +736,48 @@ public class PlanServiceTest {
             planService.getAthleteDailyPlan(coach.getId(), -1L, testDate);
         });
     }
+
+    @Test
+    public void testGetAthleteWeeklyPlan_Ok() throws InstanceNotFoundException, PermissionException {
+        Users coach = createUser("coachAthWkly", RoleType.COACH);
+        
+        Users athlete = new Users("athleteAthWkly", "password", "firstName", "lastName", 
+                "athWkly@test.com", RoleType.USER, coach.getId());
+        userDao.save(athlete);
+
+        LocalDate startDate = LocalDate.of(2026, 4, 13);
+        createAndSaveTrainingSession(athlete, coach, startDate, "Lunes con mi entrenador");
+
+        List<DailyPlan> weeklyPlan = planService.getAthleteWeeklyPlan(coach.getId(), athlete.getId(), startDate);
+
+        assertEquals(7, weeklyPlan.size());
+        assertEquals(1, weeklyPlan.get(0).getSessions().size());
+        assertEquals("Lunes con mi entrenador", weeklyPlan.get(0).getSessions().get(0).getObjective());
+    }
+
+    @Test
+    public void testGetAthleteWeeklyPlan_NoPermission() throws InstanceNotFoundException {
+        Users coachIntruso = createUser("coachNoPerm", RoleType.COACH);
+        Users coachReal = createUser("coach", RoleType.COACH);
+        
+        Users athlete = new Users("athleteNoPerm", "password", "firstName", "lastName", 
+                "athNoPerm@test.com", RoleType.USER, coachReal.getId());
+        userDao.save(athlete);
+
+        LocalDate startDate = LocalDate.of(2026, 4, 13);
+
+        assertThrows(PermissionException.class, () -> {
+            planService.getAthleteWeeklyPlan(coachIntruso.getId(), athlete.getId(), startDate);
+        });
+    }
+
+    @Test
+    public void testGetAthleteWeeklyPlan_InstanceNotFound() {
+        Users coach = createUser("coachNotFound", RoleType.COACH);
+        LocalDate startDate = LocalDate.of(2026, 4, 13);
+
+        assertThrows(InstanceNotFoundException.class, () -> {
+            planService.getAthleteWeeklyPlan(coach.getId(), -1L, startDate);
+        });
+    }
 }
