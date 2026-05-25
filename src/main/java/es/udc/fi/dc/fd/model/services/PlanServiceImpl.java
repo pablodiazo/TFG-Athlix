@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -238,6 +237,23 @@ public class PlanServiceImpl implements PlanService {
         session.setSessionDate(newDate);
         session.setStartTime(newStartTime);
         return trainingSessionDao.save(session);
+    }
+
+    @Override
+    public DailyPlan getAthleteDailyPlan(Long coachId, Long athleteId, LocalDate date) throws InstanceNotFoundException, PermissionException {
+        
+        Users athlete = userDao.findById(athleteId)
+                .orElseThrow(() -> new InstanceNotFoundException("user", athleteId));
+        
+        if (athlete.getCoachId() == null || !athlete.getCoachId().equals(coachId)) {
+            throw new PermissionException();
+        }
+
+        List<TrainingSession> sessions = trainingSessionDao.findByUserIdAndSessionDateOrderByStartTimeAsc(athleteId, date);
+        Optional<NutritionPlan> nutrition = nutritionPlanDao.findByUserIdAndPlanDate(athleteId, date);
+        Optional<RestPlan> rest = restPlanDao.findByUserIdAndPlanDate(athleteId, date);
+
+        return new DailyPlan(sessions, nutrition, rest);
     }
 
 }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -206,6 +207,38 @@ public class PlanController {
         TrainingSession trainingSession = planService.rescheduleTrainingSession(userId, params.getSessionId(), params.getNewDate(), params.getNewStartTime());
 
         return toTrainingSessionDto(trainingSession);
+    }
+
+    // GET /plans/athletes/{athleteId}/daily?date=2026-03-17
+    @GetMapping("/athletes/{athleteId}/daily")
+    public DailyPlanDto getAthleteDailyPlan(
+            @RequestAttribute Long userId,
+            @PathVariable Long athleteId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) 
+            throws InstanceNotFoundException, PermissionException {
+        
+        DailyPlan info = planService.getAthleteDailyPlan(userId, athleteId, date);
+
+        List<TrainingSessionDto> sessionDtos = info.getSessions().stream().map(s -> {
+            List<TrainingBlockDto> blockDtos = s.getBlocks().stream().map(b -> 
+                new TrainingBlockDto(b.getId(), b.getBlockOrder(), b.getName(), b.getSets(), 
+                                     b.getReps(), b.getDistanceOrDuration(), b.getPace(), b.getRest(), b.getDone())
+            ).collect(Collectors.toList());
+
+            return new TrainingSessionDto(s.getId(), s.getSessionDate(), s.getStartTime(), s.getSport(), 
+                                          s.getObjective(), s.getTotalDistanceOrDuration(), blockDtos);
+        }).collect(Collectors.toList());
+
+        NutritionPlanDto nutritionDto = info.getNutrition().map(n -> 
+            new NutritionPlanDto(n.getId(), n.getPlanDate(), n.getTargetCalories(), n.getProteinGrams(), 
+                                 n.getCarbsGrams(), n.getFatGrams(), n.getHydrationLiters(), n.getGuidelines(), n.getDone())
+        ).orElse(null);
+
+        RestPlanDto restDto = info.getRest().map(r -> 
+            new RestPlanDto(r.getId(), r.getPlanDate(), r.getTargetSleepHours(), r.getGuidelines(), r.getDone())
+        ).orElse(null);
+
+        return new DailyPlanDto(date.toString(), sessionDtos, nutritionDto, restDto);
     }
     
 }
