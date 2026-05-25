@@ -58,6 +58,8 @@ export default {
     'project.global.fields.dateTo': 'Hasta',
     'project.global.fields.status': 'Estado',
     'project.global.fields.actions': 'Acciones',
+    'project.global.fields.day': 'Día',
+    'project.global.fields.week': 'Semana',
     'project.global.units.km': 'km',
     'project.global.units.minutes': 'minutos',
 
@@ -187,6 +189,7 @@ export default {
     'project.plans.CreateRestPlan.guidelines': 'Pautas adicionales',
 
     'project.plans.CoachDashboard.title': 'Revisar planificación de atletas',
+    'project.plans.CoachDashboard.myAthletes': 'Mis atletas',
     'project.plans.CoachDashboard.loading': 'Cargando atletas...',
     'project.plans.CoachDashboard.noAthletes': 'Aún no tienes atletas asignados.',
     'project.plans.CoachDashboard.selectAthlete': 'Selecciona un atleta',

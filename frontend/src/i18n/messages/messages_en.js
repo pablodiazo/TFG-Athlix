@@ -58,6 +58,8 @@ export default {
     'project.global.fields.dateTo': 'To',
     'project.global.fields.status': 'Status',
     'project.global.fields.actions': 'Actions',
+    'project.global.fields.day': 'Day',
+    'project.global.fields.week': 'Week',
     'project.global.units.km': 'km',
     'project.global.units.minutes': 'minutes',
 
@@ -187,6 +189,7 @@ export default {
     'project.plans.CreateRestPlan.guidelines': 'Additional guidelines',
 
     'project.plans.CoachDashboard.title': 'Review athletes planning',
+    'project.plans.CoachDashboard.myAthletes': 'My athletes',
     'project.plans.CoachDashboard.loading': 'Loading athletes...',
     'project.plans.CoachDashboard.noAthletes': 'No athletes assigned yet.',
     'project.plans.CoachDashboard.selectAthlete': 'Select athlete',
