@@ -256,4 +256,41 @@ public class PlanServiceImpl implements PlanService {
         return new DailyPlan(sessions, nutrition, rest);
     }
 
+
+    @Override
+    public List<DailyPlan> getAthleteWeeklyPlan(Long coachId, Long athleteId, LocalDate startDate) throws InstanceNotFoundException, PermissionException {
+        
+        Users athlete = userDao.findById(athleteId)
+                .orElseThrow(() -> new InstanceNotFoundException("user", athleteId));
+        
+        if (athlete.getCoachId() == null || !athlete.getCoachId().equals(coachId)) {
+            throw new PermissionException();
+        }
+
+        List<TrainingSession> allSessions = trainingSessionDao.findByUserIdAndSessionDateBetweenOrderByStartTimeAsc(athleteId, startDate, startDate.plusDays(6));
+        List<NutritionPlan> allNutrition = nutritionPlanDao.findByUserIdAndPlanDateBetween(athleteId, startDate, startDate.plusDays(6));
+        List<RestPlan> allRest = restPlanDao.findByUserIdAndPlanDateBetween(athleteId, startDate, startDate.plusDays(6));
+
+        List<DailyPlan> weeklyPlan = new ArrayList<>();
+
+        for (LocalDate date = startDate; !date.isAfter(startDate.plusDays(6)); date = date.plusDays(1)) {
+            final LocalDate currentDate = date;
+            
+            List<TrainingSession> dailySessions = allSessions.stream()
+                .filter(s -> s.getSessionDate().equals(currentDate))
+                .collect(Collectors.toList());
+                
+            Optional<NutritionPlan> dailyNutrition = allNutrition.stream()
+                .filter(n -> n.getPlanDate().equals(currentDate))
+                .findFirst();
+                
+            Optional<RestPlan> dailyRest = allRest.stream()
+                .filter(r -> r.getPlanDate().equals(currentDate))
+                .findFirst();
+
+            weeklyPlan.add(new DailyPlan(dailySessions, dailyNutrition, dailyRest));
+        }
+
+        return weeklyPlan;
+    }
 }
