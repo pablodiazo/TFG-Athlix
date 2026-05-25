@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { FaUserCircle } from "react-icons/fa";
-import DailyPlan from "./DailyPlan"; 
+import { FaUserCircle, FaCalendarDay, FaCalendarWeek } from "react-icons/fa";
+import DailyPlan from "./DailyPlan";
+import WeeklyPlan from "./WeeklyPlan";
 import backend from "../../../backend";
 import "../css/CoachDashboard.css"; 
 import { FormattedMessage } from "react-intl";
@@ -9,6 +10,8 @@ const CoachDashboard = () => {
   const [selectedAthleteId, setSelectedAthleteId] = useState(null);
   const [athletes, setAthletes] = useState([]);
   const [isLoadingAthletes, setIsLoadingAthletes] = useState(true);
+
+  const [viewMode, setViewMode] = useState('daily');
 
   useEffect(() => {
     setIsLoadingAthletes(true);
@@ -30,7 +33,7 @@ const CoachDashboard = () => {
       
       {/* BARRA LATERAL (SIDEBAR) */}
       <aside className="coach-sidebar">
-        <h3 className="sidebar-title">Mis Atletas</h3>
+        <h3 className="sidebar-title"><FormattedMessage id="project.plans.CoachDashboard.myAthletes" /></h3>
         
         <div className="athlete-list">
           {isLoadingAthletes ? (
@@ -57,7 +60,30 @@ const CoachDashboard = () => {
       {/* ÁREA PRINCIPAL */}
       <main className="coach-main-content">
         {selectedAthleteId ? (
-          <DailyPlan athleteId={selectedAthleteId} />
+          <>
+            <div className="coach-main-toolbar">
+              <div className="view-toggle-group">
+                <button 
+                  className={`view-toggle-btn ${viewMode === 'daily' ? 'active' : ''}`}
+                  onClick={() => setViewMode('daily')}
+                >
+                  <FaCalendarDay /> <FormattedMessage id="project.global.fields.day" />
+                </button>
+                <button 
+                  className={`view-toggle-btn ${viewMode === 'weekly' ? 'active' : ''}`}
+                  onClick={() => setViewMode('weekly')}
+                >
+                  <FaCalendarWeek /> <FormattedMessage id="project.global.fields.week" />
+                </button>
+              </div>
+            </div>
+
+            {viewMode === 'daily' ? (
+              <DailyPlan athleteId={selectedAthleteId} />
+            ) : (
+              <WeeklyPlan athleteId={selectedAthleteId} />
+            )}
+          </>
         ) : (
           <div className="empty-dashboard">
             <FaUserCircle style={{ fontSize: "4rem", color: "#3b82f6", marginBottom: "1rem" }} />

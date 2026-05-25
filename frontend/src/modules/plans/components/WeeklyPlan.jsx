@@ -14,7 +14,7 @@ const SPORT_INFO = {
   OTHER: { name: "Otro", color: "#9ca3af", icon: FaClock }
 };
 
-const WeeklyPlan = () => {
+const WeeklyPlan = ({athleteId}) => {
   const [currentMonday, setCurrentMonday] = useState(() => {
     const today = new Date();
     const day = today.getDay();
@@ -159,23 +159,27 @@ const WeeklyPlan = () => {
     const fetchWeeklyPlan = () => {
       setIsLoading(true);
       const startDateStr = getApiDateString(currentMonday);
-      
-      backend.planService.getWeeklyPlan(
-        startDateStr, 
-        (data) => {
-          const processed = processBackendData(data);
-          setWeeklyData(processed);
-          setIsLoading(false);
-        },
-        (error) => {
-          console.error("Error fetching weekly plan:", error);
-          setIsLoading(false); 
-        }
-      );
+
+      const onSuccess = (data) => {
+        const processed = processBackendData(data);
+        setWeeklyData(processed);
+        setIsLoading(false);
+      };
+
+      const onError = (error) => {
+        console.error("Error fetching weekly plan:", error);
+        setIsLoading(false); 
+      };
+
+      if (athleteId) {
+        backend.planService.getAthleteWeeklyPlan(athleteId, startDateStr, onSuccess, onError);
+      } else {
+        backend.planService.getWeeklyPlan(startDateStr, onSuccess, onError);
+      }
     };
 
     fetchWeeklyPlan();
-  }, [currentMonday]);
+  }, [currentMonday, athleteId]);
 
   const handlePrevWeek = () => {
     setCurrentMonday((prev) => {
