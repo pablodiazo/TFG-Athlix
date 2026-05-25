@@ -680,4 +680,60 @@ public class PlanServiceTest {
             planService.rescheduleTrainingSession(athlete.getId(), -1L, newDate, newStartTime);
         });
     }
+
+    @Test
+    public void testGetAthleteDailyPlan_Ok() throws InstanceNotFoundException, PermissionException {
+        Users coach = createUser("coach", RoleType.COACH);
+        Users athlete = createUser("athlete", RoleType.USER);
+        
+        athlete.setCoachId(coach.getId());
+        userDao.save(athlete);
+
+        LocalDate testDate = LocalDate.of(2026, 3, 25);
+
+        createAndSaveTrainingSession(athlete, coach, testDate, "Test Entrenador");
+
+        DailyPlan dailyPlan = planService.getAthleteDailyPlan(coach.getId(), athlete.getId(), testDate);
+
+        assertEquals(1, dailyPlan.getSessions().size());
+        assertEquals("Test Entrenador", dailyPlan.getSessions().get(0).getObjective());
+    }
+
+    @Test
+    public void testGetAthleteDailyPlan_NoPermission_DifferentCoach() {
+        Users coach = createUser("coach", RoleType.COACH);
+        Users actualCoach = createUser("coachReal", RoleType.COACH);
+        Users athlete = createUser("athlete", RoleType.USER);
+        
+        athlete.setCoachId(actualCoach.getId());
+        userDao.save(athlete);
+
+        LocalDate testDate = LocalDate.of(2026, 3, 25);
+
+        assertThrows(PermissionException.class, () -> {
+            planService.getAthleteDailyPlan(coach.getId(), athlete.getId(), testDate);
+        });
+    }
+
+    @Test
+    public void testGetAthleteDailyPlan_NoPermission_NoCoachAssigned() {
+        Users coach = createUser("coach", RoleType.COACH);
+        Users athlete = createUser("athlete", RoleType.USER);
+        
+        LocalDate testDate = LocalDate.of(2026, 3, 25);
+
+        assertThrows(PermissionException.class, () -> {
+            planService.getAthleteDailyPlan(coach.getId(), athlete.getId(), testDate);
+        });
+    }
+
+    @Test
+    public void testGetAthleteDailyPlan_AthleteNotFound() {
+        Users coach = createUser("coach", RoleType.COACH);
+        LocalDate testDate = LocalDate.of(2026, 3, 25);
+
+        assertThrows(InstanceNotFoundException.class, () -> {
+            planService.getAthleteDailyPlan(coach.getId(), -1L, testDate);
+        });
+    }
 }

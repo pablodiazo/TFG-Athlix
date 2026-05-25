@@ -438,4 +438,48 @@ public class PlanControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.sessionDate", is(newDate.toString())));
     }
+
+    @Test
+    public void testGetAthleteDailyPlan_Ok() throws Exception {
+        AuthenticatedUserDto coachAuth = createAuthenticatedUser("coachCtrlAccess", RoleType.COACH);
+        AuthenticatedUserDto athleteAuth = createAuthenticatedUser("athleteCtrlAccess", RoleType.USER);
+        
+        Users athlete = userDao.findById(athleteAuth.getUserDto().getId()).get();
+        Users coach = userDao.findById(coachAuth.getUserDto().getId()).get();
+        athlete.setCoachId(coach.getId());
+        userDao.save(athlete);
+
+        LocalDate testDate = LocalDate.of(2026, 5, 20);
+        LocalTime testTime = LocalTime.of(9, 0);
+
+        planService.createTrainingSession(
+                athlete.getId(), 
+                coach.getId(), 
+                testDate, testTime, 
+                TrainingSession.SportType.BIKE, 
+                "Ruta supervisada", "3h", new ArrayList<>()
+        );
+
+        mockMvc.perform(get("/plans/athletes/" + athlete.getId() + "/daily")
+                .param("date", testDate.toString())
+                .header("Authorization", "Bearer " + coachAuth.getServiceToken())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.date", is(testDate.toString())))
+                .andExpect(jsonPath("$.sessions[0].sport", is("BIKE")))
+                .andExpect(jsonPath("$.sessions[0].objective", is("Ruta supervisada")));
+    }
+
+    @Test
+    public void testGetAthleteDailyPlan_NoPermission() throws Exception {
+        AuthenticatedUserDto coachNoAuth = createAuthenticatedUser("noCoachCtrl", RoleType.COACH);
+        AuthenticatedUserDto athleteAuth = createAuthenticatedUser("privateAthleteCtrl", RoleType.USER);
+        
+        LocalDate testDate = LocalDate.of(2026, 5, 20);
+        mockMvc.perform(get("/plans/athletes/" + athleteAuth.getUserDto().getId() + "/daily")
+                .param("date", testDate.toString())
+                .header("Authorization", "Bearer " + coachNoAuth.getServiceToken())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
+    }
 }
