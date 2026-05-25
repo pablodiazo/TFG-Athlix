@@ -82,6 +82,7 @@ export default {
     'project.users.exceptions.IncorrectLoginException': 'Usuario o contraseña incorrectos',
     'project.users.exceptions.IncorrectPasswordException': 'Contraseña incorrecta',
     'project.users.login.title': 'Iniciar sesión',
+    'project.users.login.confirmation': 'Sesión iniciada como',
     'project.users.logout.title': 'Cerrar sesión',
     'project.users.profile.title': 'Perfil',
     'project.users.profile.details': 'Detalles de la cuenta',
@@ -97,6 +98,9 @@ export default {
     'project.users.fields.imc': 'IMC',
     'project.users.userprofile.physicalData': 'Datos físicos',
     'project.users.fields.birth': 'Fecha de nacimiento',
+    'project.users.userMenu.accountManagement' : 'Gestión de cuenta',
+    'project.users.userMenu.trainingPlans' : 'Planificación',
+    'project.users.userMenu.coachManagement' : 'Supervisión',
 
     // === VALIDATORS (USERS) ===
     'project.validator.users.incorrectLogin': 'Usuario incorrecto',
@@ -119,6 +123,7 @@ export default {
     'project.plans.DailyPlan.rest': 'Descanso y recuperación',
     'project.plans.DailyPlan.sleepTarget': 'Objetivo de sueño',
     'project.plans.DailyPlan.noRestPlanned': 'No hay pautas de descanso para hoy',
+
     'project.plans.WeeklyPlan.title': 'Plan semanal',
     'project.plans.WeeklyPlan.previousWeek': 'Semana anterior',
     'project.plans.WeeklyPlan.nextWeek': 'Semana siguiente',
@@ -180,4 +185,10 @@ export default {
     'project.plans.CreateRestPlan.principalData': 'Descanso y recomendaciones',
     'project.plans.CreateRestPlan.restHours': 'Tiempo de descanso',
     'project.plans.CreateRestPlan.guidelines': 'Pautas adicionales',
+
+    'project.plans.CoachDashboard.title': 'Revisar planificación de atletas',
+    'project.plans.CoachDashboard.loading': 'Cargando atletas...',
+    'project.plans.CoachDashboard.noAthletes': 'Aún no tienes atletas asignados.',
+    'project.plans.CoachDashboard.selectAthlete': 'Selecciona un atleta',
+    'project.plans.CoachDashboard.chooseAthlete': 'Elige un atleta del panel lateral para ver y gestionar su planificación diaria.',
 }
