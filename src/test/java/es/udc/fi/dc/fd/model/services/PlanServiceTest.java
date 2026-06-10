@@ -252,7 +252,6 @@ public class PlanServiceTest {
         });
     }
 
-
     @Test
     public void testCreateNutritionPlan_WithIncorrectRole() throws InstanceNotFoundException, IncorrectRoleException {
         Users athlete = createUser("athlete", RoleType.USER);
@@ -778,6 +777,117 @@ public class PlanServiceTest {
 
         assertThrows(InstanceNotFoundException.class, () -> {
             planService.getAthleteWeeklyPlan(coach.getId(), -1L, startDate);
+        });
+    }
+
+    @Test
+    public void testGetNotifications_Ok() throws InstanceNotFoundException, PermissionException, IncorrectRoleException{
+        Users coach = createUser("coach", RoleType.COACH);
+        Users athlete = createUser("athlete", RoleType.USER);
+        
+        athlete.setCoachId(coach.getId());
+        userDao.save(athlete);
+
+        LocalDate testDate = LocalDate.of(2026, 3, 25);
+
+        TrainingBlock block = new TrainingBlock();
+        block.setBlockOrder(1);
+        block.setName("Calentamiento");
+        block.setSets(1);
+        block.setReps(1);
+        block.setDistanceOrDuration("600m");
+        block.setPace("0");
+        block.setRest("0");
+
+        List<TrainingBlock> blocks = List.of(block);
+
+        planService.createTrainingSession(athlete.getId(), coach.getId(), testDate, 
+                LocalTime.of(7, 0), TrainingSession.SportType.SWIM, "Aeróbico", "600m", blocks);
+
+
+        planService.updateTrainingBlockDone(athlete.getId(), block.getId(), 1.0);
+
+        List<Notification> notifications = planService.getNotifications(coach.getId());
+
+        assertEquals(1, notifications.size());
+        assertEquals(athlete.getId(), notifications.get(0).getAthlete().getId());
+        assertEquals(testDate, notifications.get(0).getPlanDate());
+    }
+
+    @Test
+    public void testmarksNotificationAsRead_Ok() throws InstanceNotFoundException, PermissionException, IncorrectRoleException {
+        Users coach = createUser("coach", RoleType.COACH);
+        Users athlete = createUser("athlete", RoleType.USER);
+        
+        athlete.setCoachId(coach.getId());
+        userDao.save(athlete);
+
+        LocalDate testDate = LocalDate.of(2026, 3, 25);
+
+        createAndSaveNutritionPlan(athlete, coach, testDate, 0);
+        createAndSaveRestPlan(athlete, coach, testDate, 0);
+        
+        planService.updateNutritionPlanDone(athlete.getId(), nutritionPlanDao.findByUserIdAndPlanDate(athlete.getId(), testDate).get().getId(), 1.0);
+        planService.updateRestPlanDone(athlete.getId(), restPlanDao.findByUserIdAndPlanDate(athlete.getId(), testDate).get().getId(), 1.0);
+
+        List<Notification> notifications = planService.getNotifications(coach.getId());
+
+        assertFalse(notifications.get(0).isRead());
+
+        planService.markNotificationAsRead(coach.getId(), notifications.get(0).getId());
+
+        notifications = planService.getNotifications(coach.getId());
+
+        assertTrue(notifications.get(0).isRead());
+    }
+
+    @Test
+    public void testmarksNotificationAsRead_NoPermission() throws InstanceNotFoundException, PermissionException {        
+        Users coach = createUser("coach", RoleType.COACH);
+        Users athlete = createUser("athlete", RoleType.USER);
+        
+        athlete.setCoachId(coach.getId());
+        userDao.save(athlete);
+
+        LocalDate testDate = LocalDate.of(2026, 3, 25);
+
+        createAndSaveNutritionPlan(athlete, coach, testDate, 0);
+        createAndSaveRestPlan(athlete, coach, testDate, 0);
+        
+        planService.updateNutritionPlanDone(athlete.getId(), nutritionPlanDao.findByUserIdAndPlanDate(athlete.getId(), testDate).get().getId(), 1.0);
+        planService.updateRestPlanDone(athlete.getId(), restPlanDao.findByUserIdAndPlanDate(athlete.getId(), testDate).get().getId(), 1.0);
+
+        List<Notification> notifications = planService.getNotifications(coach.getId());
+
+        assertFalse(notifications.get(0).isRead());
+
+        assertThrows(PermissionException.class, () -> {
+            planService.markNotificationAsRead(-1L, notifications.get(0).getId());
+        });
+    }
+
+    @Test
+    public void testmarksNotificationAsRead_InstanceNotFound() throws InstanceNotFoundException, PermissionException {        
+        Users coach = createUser("coach", RoleType.COACH);
+        Users athlete = createUser("athlete", RoleType.USER);
+        
+        athlete.setCoachId(coach.getId());
+        userDao.save(athlete);
+
+        LocalDate testDate = LocalDate.of(2026, 3, 25);
+
+        createAndSaveNutritionPlan(athlete, coach, testDate, 0);
+        createAndSaveRestPlan(athlete, coach, testDate, 0);
+        
+        planService.updateNutritionPlanDone(athlete.getId(), nutritionPlanDao.findByUserIdAndPlanDate(athlete.getId(), testDate).get().getId(), 1.0);
+        planService.updateRestPlanDone(athlete.getId(), restPlanDao.findByUserIdAndPlanDate(athlete.getId(), testDate).get().getId(), 1.0);
+
+        List<Notification> notifications = planService.getNotifications(coach.getId());
+
+        assertFalse(notifications.get(0).isRead());
+
+        assertThrows(InstanceNotFoundException.class, () -> {
+            planService.markNotificationAsRead(coach.getId(), -1L);
         });
     }
 }
