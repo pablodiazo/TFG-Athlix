@@ -43,3 +43,11 @@ export const getAthleteDailyPlan = (athleteId, date, onSuccess, onErrors) => {
 export const getAthleteWeeklyPlan = (athleteId, startDate, onSuccess, onErrors) => {
     appFetch(`/plans/athletes/${athleteId}/weekly?startDate=${startDate}`, fetchConfig('GET'), onSuccess, onErrors);
 };
+
+export const getNotifications = (onSuccess, onErrors) => {
+    appFetch(`/plans/notifications`, fetchConfig('GET'), onSuccess, onErrors);
+};
+
+export const markNotificationAsRead = (id, onSuccess, onErrors) => {
+    appFetch(`/plans/notifications/${id}/read`, fetchConfig('POST'), onSuccess, onErrors);
+};

@@ -194,4 +194,7 @@ export default {
     'project.plans.CoachDashboard.noAthletes': 'No athletes assigned yet.',
     'project.plans.CoachDashboard.selectAthlete': 'Select athlete',
     'project.plans.CoachDashboard.chooseAthlete': 'Select an athlete from the sidebar to view and manage your daily plan.',
+
+    'project.global.messages.notifications': 'Notifications',
+    'project.global.messages.noNotifications': 'No notifications',
 }

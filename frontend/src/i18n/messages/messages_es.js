@@ -194,4 +194,7 @@ export default {
     'project.plans.CoachDashboard.noAthletes': 'Aún no tienes atletas asignados.',
     'project.plans.CoachDashboard.selectAthlete': 'Selecciona un atleta',
     'project.plans.CoachDashboard.chooseAthlete': 'Elige un atleta del panel lateral para ver y gestionar su planificación diaria.',
+
+    'project.global.messages.notifications': 'Notificaciones',
+    'project.global.messages.noNotifications': 'No tienes notificaciones',
 }

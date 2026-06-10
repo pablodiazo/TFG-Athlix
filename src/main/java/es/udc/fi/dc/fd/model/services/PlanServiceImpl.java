@@ -34,6 +34,9 @@ public class PlanServiceImpl implements PlanService {
     @Autowired
     private RestPlanDao restPlanDao;
 
+    @Autowired
+    private NotificationDao notificationDao;
+
     @Override
     public DailyPlan getDailyPlan(Long userId, LocalDate date) throws InstanceNotFoundException {
         List<TrainingSession> sessions = trainingSessionDao.findByUserIdAndSessionDateOrderByStartTimeAsc(userId, date);
@@ -163,7 +166,11 @@ public class PlanServiceImpl implements PlanService {
         }
         
         block.setDone(done);
-        return trainingBlockDao.save(block);
+        TrainingBlock savedBlock = trainingBlockDao.save(block);
+        
+        checkAndNotifyDailyCompletion(userId, block.getTrainingSession().getSessionDate());
+
+        return savedBlock;
     }
 
     @Override
@@ -177,7 +184,11 @@ public class PlanServiceImpl implements PlanService {
         }
         
         nutritionPlan.setDone(done);
-        return nutritionPlanDao.save(nutritionPlan);
+        NutritionPlan savedPlan = nutritionPlanDao.save(nutritionPlan);
+
+        checkAndNotifyDailyCompletion(userId, savedPlan.getPlanDate());
+
+        return savedPlan;
     }
 
     @Override
@@ -191,7 +202,11 @@ public class PlanServiceImpl implements PlanService {
         }
         
         restPlan.setDone(done);
-        return restPlanDao.save(restPlan);
+        RestPlan savedPlan = restPlanDao.save(restPlan);
+
+        checkAndNotifyDailyCompletion(userId, savedPlan.getPlanDate());
+
+        return savedPlan;
     }
 
     @Override
@@ -256,7 +271,6 @@ public class PlanServiceImpl implements PlanService {
         return new DailyPlan(sessions, nutrition, rest);
     }
 
-
     @Override
     public List<DailyPlan> getAthleteWeeklyPlan(Long coachId, Long athleteId, LocalDate startDate) throws InstanceNotFoundException, PermissionException {
         
@@ -292,5 +306,67 @@ public class PlanServiceImpl implements PlanService {
         }
 
         return weeklyPlan;
+    }
+
+    private void checkAndNotifyDailyCompletion(Long athleteId, LocalDate date) {
+        Users athlete = userDao.findById(athleteId).orElse(null);
+        if (athlete == null || athlete.getCoachId() == null) {
+            return;
+        }
+
+        List<TrainingSession> sessions = trainingSessionDao.findByUserIdAndSessionDateOrderByStartTimeAsc(athleteId, date);
+        Optional<NutritionPlan> nutrition = nutritionPlanDao.findByUserIdAndPlanDate(athleteId, date);
+        Optional<RestPlan> rest = restPlanDao.findByUserIdAndPlanDate(athleteId, date);
+
+        int totalItems = 0;
+        double totalDone = 0.0;
+
+        for (TrainingSession session : sessions) {
+            for (TrainingBlock block : session.getBlocks()) {
+                totalItems++;
+                totalDone += (block.getDone() != null ? block.getDone() : 0.0);
+            }
+        }
+        
+        if (nutrition.isPresent()) {
+            totalItems++;
+            totalDone += (nutrition.get().getDone() != null ? nutrition.get().getDone() : 0.0);
+        }
+        if (rest.isPresent()) {
+            totalItems++;
+            totalDone += (rest.get().getDone() != null ? rest.get().getDone() : 0.0);
+        }
+
+        if (totalItems > 0 && (totalDone / totalItems) > 0.5) {
+            boolean alreadyNotified = notificationDao.existsByUserIdAndAthleteIdAndPlanDate(
+                athlete.getCoachId(), athleteId, date);
+                
+            if (!alreadyNotified) {
+                String msg = "¡Buenas noticias! Tu atleta " + athlete.getFirstName() + " " + athlete.getLastName() + 
+                             " ha completado más del 50% de su planificación.";
+                
+                Users coach = userDao.findById(athlete.getCoachId()).orElse(null);
+                Notification notification = new Notification(coach, athlete, msg, date);
+                notificationDao.save(notification);
+            }
+        }
+    }
+
+    @Override
+    public List<Notification> getNotifications(Long userId) {
+        return notificationDao.findByUserIdOrderByIdDesc(userId);
+    }
+
+    @Override
+    public void markNotificationAsRead(Long userId, Long notificationId) throws InstanceNotFoundException, PermissionException {
+        Notification notification = notificationDao.findById(notificationId)
+                .orElseThrow(() -> new InstanceNotFoundException("Notification", notificationId));
+        
+        if (!notification.getUser().getId().equals(userId)) {
+            throw new PermissionException();
+        }
+        
+        notification.setRead(true);
+        notificationDao.save(notification);
     }
 }

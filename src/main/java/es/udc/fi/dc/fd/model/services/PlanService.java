@@ -33,4 +33,7 @@ public interface PlanService {
 
     List<DailyPlan> getAthleteWeeklyPlan(Long coachId, Long athleteId, LocalDate startDate) throws InstanceNotFoundException, PermissionException;
 
+    List<Notification> getNotifications(Long coachId);
+    
+    void markNotificationAsRead(Long coachId, Long notificationId) throws InstanceNotFoundException, PermissionException;
 }

@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS TrainingBlock;
 DROP TABLE IF EXISTS TrainingSession;
 DROP TABLE IF EXISTS NutritionPlan;
 DROP TABLE IF EXISTS RestPlan;
+DROP TABLE IF EXISTS Notification;
 DROP TABLE IF EXISTS Users;
 
 CREATE TABLE Users (
@@ -14,6 +15,17 @@ CREATE TABLE Users (
     role VARCHAR(60) NOT NULL,
     coachId BIGINT,
     CONSTRAINT fk_user_coach FOREIGN KEY (coachId) REFERENCES Users(id)
+);
+
+CREATE TABLE Notification (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    userId BIGINT NOT NULL,
+    athleteId BIGINT NOT NULL,
+    message VARCHAR(500) NOT NULL,
+    planDate DATE NOT NULL,
+    isRead BOOLEAN DEFAULT FALSE,
+    CONSTRAINT fk_notification_user FOREIGN KEY (userId) REFERENCES Users(id),
+    CONSTRAINT fk_notification_athlete FOREIGN KEY (athleteId) REFERENCES Users(id)
 );
 
 CREATE TABLE TrainingSession (

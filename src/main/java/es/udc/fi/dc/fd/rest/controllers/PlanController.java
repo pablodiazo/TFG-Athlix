@@ -28,6 +28,7 @@ import es.udc.fi.dc.fd.rest.dtos.CreateSessionParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.CreateNutritionPlanParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.CreateRestPlanParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.DailyPlanDto;
+import es.udc.fi.dc.fd.rest.dtos.NotificationDto;
 import es.udc.fi.dc.fd.rest.dtos.NutritionPlanDto;
 import es.udc.fi.dc.fd.rest.dtos.RescheduleParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.RestPlanDto;
@@ -199,7 +200,6 @@ public class PlanController {
         return toRestPlanDto(restPlan);
     }
     
-
     @PostMapping("/reschedule-training-session")
     public TrainingSessionDto rescheduleTrainingSession(@RequestAttribute Long userId,
         @Validated @RequestBody RescheduleParamsDto params) throws InstanceNotFoundException, PermissionException{
@@ -280,5 +280,18 @@ public class PlanController {
         }
 
         return weeklyDtos;
+    }
+
+    @GetMapping("/notifications")
+    public List<NotificationDto> getNotifications(@RequestAttribute Long userId) {
+        return planService.getNotifications(userId).stream()
+            .map(n -> new NotificationDto(n.getId(), n.getAthlete().getId(), n.getMessage(), n.getPlanDate().toString(), n.isRead()))
+            .collect(Collectors.toList());
+    }
+
+    @PostMapping("/notifications/{id}/read")
+    public void markNotificationAsRead(@RequestAttribute Long userId, @PathVariable Long id) 
+            throws InstanceNotFoundException, PermissionException {
+        planService.markNotificationAsRead(userId, id);
     }
 }
