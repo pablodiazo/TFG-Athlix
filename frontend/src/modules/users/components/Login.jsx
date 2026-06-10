@@ -45,7 +45,7 @@ const Login = () => {
           dispatch(actions.loginCompleted(authenticatedUser));
           const userRole = authenticatedUser.user.role;
            if (userRole === "COACH") {
-            navigate("/users/profile");
+            navigate("/plans/athletes");
           } else if (userRole === "USER") {
             navigate("/plans/daily");
           } else {

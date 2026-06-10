@@ -19,6 +19,8 @@ const DailyPlan = ({ athleteId }) => {
   const [planData, setPlanData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const isReadOnly = !!athleteId;
+
   const [popoverState, setPopoverState] = useState({
     activeId: null,
     type: null,
@@ -304,10 +306,11 @@ const DailyPlan = ({ athleteId }) => {
                             <span className="session-time">{formatTime(session.startTime)}</span>
                             
                             <div className="badge-wrapper" style={{ marginLeft: "auto" }}>
-                              <button className="reschedule-icon-btn" onClick={(e) => openReschedulePopover(e, session.id, session.startTime)}title="Mover a otro día">
-                                <FaCalendarDay />
-                              </button>
-
+                              {!isReadOnly && (
+                                <button className="reschedule-icon-btn" onClick={(e) => openReschedulePopover(e, session.id, session.startTime)}title="Mover a otro día u hora">
+                                  <FaCalendarDay />
+                                </button>
+                              )}
                               {reschedulePopover.activeId === session.id && (
                                 <div className="slider-popover reschedule-popover" onClick={e => e.stopPropagation()}>
                                   
@@ -342,7 +345,7 @@ const DailyPlan = ({ athleteId }) => {
                             <div key={block.id} className="block-row">
                               <div className="block-left">
                                 <div className="badge-wrapper">
-                                  <span className="badge done clickable" style={getDynamicBadgeStyle(block.done)} onClick={(e) => openPopover(e, `BLOCK-${block.id}`, 'BLOCK', block.id, block.done)} title="Actualizar cumplimiento">
+                                  <span className={`badge done ${!isReadOnly ? "clickable" : ""}`} style={getDynamicBadgeStyle(block.done)} onClick={(e) => !isReadOnly && openPopover(e, `BLOCK-${block.id}`, 'BLOCK', block.id, block.done)} title={!isReadOnly ? "Actualizar cumplimiento" : "Cumplimiento del atleta"}>
                                     {Math.round((block.done || 0) * 100)}%
                                   </span>
                                   {renderPopover(`BLOCK-${block.id}`)}
@@ -378,7 +381,7 @@ const DailyPlan = ({ athleteId }) => {
                         <h3 className="card-title" style={{ margin: 0 }}><FormattedMessage id="project.plans.DailyPlan.nutrition" /></h3>
                         {planData.nutrition && (
                           <div className="badge-wrapper">
-                            <span className="badge done clickable" style={getDynamicBadgeStyle(planData.nutrition.done)} onClick={(e) => openPopover(e, `NUTRITION-${planData.nutrition.id}`, 'NUTRITION', planData.nutrition.id, planData.nutrition.done)}>
+                            <span className={`badge done ${!isReadOnly ? "clickable" : ""}`} style={getDynamicBadgeStyle(planData.nutrition.done)} onClick={(e) => !isReadOnly && openPopover(e, `NUTRITION-${planData.nutrition.id}`, 'NUTRITION', planData.nutrition.id, planData.nutrition.done)}>
                               {Math.round((planData.nutrition.done || 0) * 100)}%
                             </span>
                             {renderPopover(`NUTRITION-${planData.nutrition.id}`)}
@@ -425,7 +428,7 @@ const DailyPlan = ({ athleteId }) => {
                         <h3 className="card-title" style={{ margin: 0 }}><FormattedMessage id="project.plans.DailyPlan.rest" /></h3>
                         {planData.rest && (
                            <div className="badge-wrapper">
-                             <span className="badge done clickable" style={getDynamicBadgeStyle(planData.rest.done)} onClick={(e) => openPopover(e, `REST-${planData.rest.id}`, 'REST', planData.rest.id, planData.rest.done)}>
+                             <span className={`badge done ${!isReadOnly ? "clickable" : ""}`} style={getDynamicBadgeStyle(planData.rest.done)} onClick={(e) => !isReadOnly && openPopover(e, `REST-${planData.rest.id}`, 'REST', planData.rest.id, planData.rest.done)}>
                                {Math.round((planData.rest.done || 0) * 100)}%
                              </span>
                              {renderPopover(`REST-${planData.rest.id}`)}
