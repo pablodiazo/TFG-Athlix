@@ -24,8 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import es.udc.fi.dc.fd.model.entities.Notification;
 import es.udc.fi.dc.fd.model.entities.TrainingSession;
 import es.udc.fi.dc.fd.model.entities.UserDao;
+import es.udc.fi.dc.fd.model.entities.NotificationDao;
 import es.udc.fi.dc.fd.model.entities.Users;
 import es.udc.fi.dc.fd.model.entities.Users.RoleType;
 import es.udc.fi.dc.fd.model.services.PlanService;
@@ -56,9 +58,11 @@ public class PlanControllerTest {
     @Autowired
 	private UserDao userDao;
 
+    @Autowired
+	private NotificationDao notificationDao;
+
 	@Autowired
 	private UserController userController;
-
 
     @Autowired
     private PlanService planService;
@@ -512,5 +516,44 @@ public class PlanControllerTest {
                 .andExpect(jsonPath("$.length()", is(7)))
                 .andExpect(jsonPath("$[0].date", is(startDate.toString())))
                 .andExpect(jsonPath("$[0].sessions[0].objective", is("Ruta Controlada")));
+    }
+
+    @Test
+    public void testGetNotifications_Ok() throws Exception {
+        AuthenticatedUserDto coach = createAuthenticatedUser("coachNotifCtrl", RoleType.COACH);
+        AuthenticatedUserDto athlete = createAuthenticatedUser("athleteNotifCtrl", RoleType.USER);
+
+        Users coachEntity = userDao.findById(coach.getUserDto().getId()).get();
+        Users athleteEntity = userDao.findById(athlete.getUserDto().getId()).get();
+        athleteEntity.setCoachId(coachEntity.getId());
+        userDao.save(athleteEntity);
+
+        Notification notif = new Notification(coachEntity, athleteEntity, "¡Prueba de notificación!", "TYPE", LocalDate.now());
+        notificationDao.save(notif);
+
+        mockMvc.perform(get("/plans/notifications")
+                .header("Authorization", "Bearer " + coach.getServiceToken())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(1)))
+                .andExpect(jsonPath("$[0].message", is("¡Prueba de notificación!")))
+                .andExpect(jsonPath("$[0].isRead", is(false)));
+    }
+
+    @Test
+    public void testMarkNotificationAsRead_Ok() throws Exception {
+        AuthenticatedUserDto coach = createAuthenticatedUser("coachReadCtrl", RoleType.COACH);
+        AuthenticatedUserDto athlete = createAuthenticatedUser("athleteReadCtrl", RoleType.USER);
+
+        Users coachEntity = userDao.findById(coach.getUserDto().getId()).get();
+        Users athleteEntity = userDao.findById(athlete.getUserDto().getId()).get();
+        
+        Notification notif = new Notification(coachEntity, athleteEntity, "Para leer", "TYPE", LocalDate.now());
+        notificationDao.save(notif);
+
+        mockMvc.perform(post("/plans/notifications/" + notif.getId() + "/read")
+                .header("Authorization", "Bearer " + coach.getServiceToken())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 }

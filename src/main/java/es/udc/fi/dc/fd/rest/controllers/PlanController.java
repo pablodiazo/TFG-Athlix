@@ -285,7 +285,7 @@ public class PlanController {
     @GetMapping("/notifications")
     public List<NotificationDto> getNotifications(@RequestAttribute Long userId) {
         return planService.getNotifications(userId).stream()
-            .map(n -> new NotificationDto(n.getId(), n.getAthlete().getId(), n.getMessage(), n.getPlanDate().toString(), n.isRead()))
+            .map(n -> new NotificationDto(n.getId(), n.getAthlete().getId(), n.getMessage(), n.getType(), n.getPlanDate().toString(), n.isRead()))
             .collect(Collectors.toList());
     }
 

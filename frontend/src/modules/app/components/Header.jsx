@@ -41,6 +41,12 @@ const Header = () => {
       );
     }
     setShowNotifications(false);
+    navigate("/plans/athletes", { 
+      state: { 
+        athleteId: notification.athleteId, 
+        targetDate: notification.planDate
+      } 
+    });
   };
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
@@ -114,19 +120,31 @@ const Header = () => {
                     ) : (
                       <div className="notifications-list">
                         {notifications.map((notif) => (
-                          <div
-                            key={notif.id}
-                            className={`notification-item ${!notif.isRead ? "unread" : ""}`}
-                            onClick={() => {
-                              handleNotificationClick(notif);
-                              navigate("/plans/athletes");
-                            }}
-                          >
-                            <p>{notif.message}</p>
-                            <small style={{ textTransform: 'capitalize' }}>
-                                {formatNiceDate(notif.planDate)}
+                          notif.type === "RESCHEDULE" ? (
+                            <div
+                              key={notif.id}
+                              className={`notification-item ${!notif.isRead ? "unread" : ""}`}
+                              onClick={() => {
+                                handleNotificationClick(notif);
+                              }}
+                            >
+                              <p>{notif.message}</p>
+                            </div>
+                          ) : (
+                            <div
+                              key={notif.id}
+                              className={`notification-item ${!notif.isRead ? "unread" : ""}`}
+                              onClick={() => {
+                                handleNotificationClick(notif);
+                              }}
+                            >
+                              <p>{notif.message}</p>
+                              <small style={{ textTransform: 'capitalize' }}>
+                                  {formatNiceDate(notif.planDate)}
                               </small>
-                          </div>
+                            </div>
+                          )
+                          
                         ))}
                       </div>
                     )}

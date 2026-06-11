@@ -14,12 +14,18 @@ const SPORT_INFO = {
   OTHER: { name: "Otro", color: "#9ca3af", icon: FaClock }
 };
 
-const DailyPlan = ({ athleteId }) => {
-  const [currentDate, setCurrentDate] = useState(new Date());
+const DailyPlan = ({ athleteId, forcedDate }) => {
+  const [currentDate, setCurrentDate] = useState(forcedDate || new Date());
   const [planData, setPlanData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const isReadOnly = !!athleteId;
+
+  useEffect(() => {
+    if (forcedDate) {
+      setCurrentDate(forcedDate);
+    }
+  }, [forcedDate]);
 
   const [popoverState, setPopoverState] = useState({
     activeId: null,

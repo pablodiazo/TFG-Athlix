@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { FaUserCircle, FaCalendarDay, FaCalendarWeek } from "react-icons/fa";
 import DailyPlan from "./DailyPlan";
 import WeeklyPlan from "./WeeklyPlan";
@@ -7,6 +8,9 @@ import "../css/CoachDashboard.css";
 import { FormattedMessage } from "react-intl";
 
 const CoachDashboard = () => {
+  const location = useLocation();
+  const [dashboardDate, setDashboardDate] = useState(null);
+
   const [selectedAthleteId, setSelectedAthleteId] = useState(null);
   const [athletes, setAthletes] = useState([]);
   const [isLoadingAthletes, setIsLoadingAthletes] = useState(true);
@@ -27,6 +31,21 @@ const CoachDashboard = () => {
       }
     );
   }, []);
+
+  useEffect(() => {
+    if (location.state && location.state.athleteId) {
+      setSelectedAthleteId(location.state.athleteId);
+      
+      setViewMode('daily');
+
+      if (location.state.targetDate) {
+        const [year, month, day] = location.state.targetDate.split('-');
+        setDashboardDate(new Date(year, month - 1, day));
+      }
+
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   return (
     <div className="coach-dashboard-wrapper">
@@ -79,7 +98,7 @@ const CoachDashboard = () => {
             </div>
 
             {viewMode === 'daily' ? (
-              <DailyPlan athleteId={selectedAthleteId} />
+              <DailyPlan athleteId={selectedAthleteId} forcedDate={dashboardDate}/>
             ) : (
               <WeeklyPlan athleteId={selectedAthleteId} />
             )}
