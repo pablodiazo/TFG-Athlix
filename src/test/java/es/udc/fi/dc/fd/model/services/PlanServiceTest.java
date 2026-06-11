@@ -48,6 +48,9 @@ public class PlanServiceTest {
     @Autowired
     private RestPlanDao restPlanDao;
 
+    @Autowired
+    private NotificationDao notificationDao;
+
     private Users createUser(String userName, RoleType role) {
         Users user = new Users(userName, "password", "firstName", "lastName", 
                 userName + "@" + userName + ".com", role, null);
@@ -889,5 +892,38 @@ public class PlanServiceTest {
         assertThrows(InstanceNotFoundException.class, () -> {
             planService.markNotificationAsRead(coach.getId(), -1L);
         });
+    }
+
+    @Test
+    public void testCheckAndNotifyReadjustment_ThresholdMet() throws InstanceNotFoundException, PermissionException {
+        Users coach = createUser("coachNotifyReadjustment", RoleType.COACH);
+        
+        Users athlete = new Users("athleteNotifyReadjustment", "password", "firstName", "lastName", 
+                "athReadjustment@test.com", RoleType.USER, coach.getId());
+        userDao.save(athlete);
+
+        LocalDate testDate = LocalDate.of(2026, 8, 15);
+        
+        TrainingSession session = createAndSaveTrainingSession(athlete, coach, testDate, "Test session");
+        TrainingBlock block = new TrainingBlock();
+        block.setBlockOrder(1);
+        block.setName("Bloque Único");
+        block.setSets(1);
+        block.setReps(1);
+        block.setDistanceOrDuration("1km");
+        block.setPace("Z1");
+        block.setRest("0");
+        block.setTrainingSession(session);
+        trainingBlockDao.save(block);
+
+        LocalDate newDate = LocalDate.of(2026, 8, 16);
+        LocalTime newStartTime = LocalTime.of(8, 0);
+        planService.rescheduleTrainingSession(athlete.getId(), session.getId(), newDate, newStartTime);
+
+        List<Notification> notifications = planService.getNotifications(coach.getId());
+        
+        assertEquals(1, notifications.size());
+        assertEquals(athlete.getId(), notifications.get(0).getAthlete().getId());
+        assertFalse(notifications.get(0).isRead());
     }
 }
