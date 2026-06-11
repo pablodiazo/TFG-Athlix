@@ -22,6 +22,7 @@ CREATE TABLE Notification (
     userId BIGINT NOT NULL,
     athleteId BIGINT NOT NULL,
     message VARCHAR(500) NOT NULL,
+    type VARCHAR(50) NOT NULL,
     planDate DATE NOT NULL,
     isRead BOOLEAN DEFAULT FALSE,
     CONSTRAINT fk_notification_user FOREIGN KEY (userId) REFERENCES Users(id),

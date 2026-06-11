@@ -2,8 +2,10 @@ package es.udc.fi.dc.fd.model.services;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -248,9 +250,12 @@ public class PlanServiceImpl implements PlanService {
         if (!session.getUser().getId().equals(userId)) {
             throw new PermissionException();
         }
+
+        checkAndNotifyReadjustment(userId, session.getSessionDate(), session.getStartTime(), newDate, newStartTime);
         
         session.setSessionDate(newDate);
         session.setStartTime(newStartTime);
+        
         return trainingSessionDao.save(session);
     }
 
@@ -308,6 +313,35 @@ public class PlanServiceImpl implements PlanService {
         return weeklyPlan;
     }
 
+    private void checkAndNotifyReadjustment(Long athleteId, LocalDate date, LocalTime startTime, LocalDate newDate, LocalTime newStartTime) {
+        Users athlete = userDao.findById(athleteId).orElse(null);
+        if (athlete == null || athlete.getCoachId() == null) {
+            return;
+        }
+
+        boolean alreadyNotified = notificationDao.existsByUserIdAndAthleteIdAndPlanDateAndType(
+                athlete.getCoachId(), athleteId, date, "RESCHEDULE");
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE d 'de' MMMM", new Locale("es", "ES"));
+
+        String formattedDate = date.format(formatter);
+        String formattedNewDate = newDate.format(formatter);
+
+        String beforeDate = formattedDate.substring(0, 1).toUpperCase() + formattedDate.substring(1);
+        String afterDate = formattedNewDate.substring(0, 1).toUpperCase() + formattedNewDate.substring(1);
+
+                
+        if (!alreadyNotified) {
+            String msg = "Tu atleta " + athlete.getFirstName() + " " + athlete.getLastName() + 
+                 " quiere cambiar su entrenamiento del día " + beforeDate + " a las " + startTime.toString() + " al día " + afterDate + " a las " + newStartTime.toString() + ".";
+                
+            Users coach = userDao.findById(athlete.getCoachId()).orElse(null);
+            Notification notification = new Notification(coach, athlete, msg, "RESCHEDULE", date);
+            notificationDao.save(notification);
+        }
+        
+    }
+
     private void checkAndNotifyDailyCompletion(Long athleteId, LocalDate date) {
         Users athlete = userDao.findById(athleteId).orElse(null);
         if (athlete == null || athlete.getCoachId() == null) {
@@ -338,15 +372,15 @@ public class PlanServiceImpl implements PlanService {
         }
 
         if (totalItems > 0 && (totalDone / totalItems) > 0.5) {
-            boolean alreadyNotified = notificationDao.existsByUserIdAndAthleteIdAndPlanDate(
-                athlete.getCoachId(), athleteId, date);
+            boolean alreadyNotified = notificationDao.existsByUserIdAndAthleteIdAndPlanDateAndType(
+                athlete.getCoachId(), athleteId, date, "COMPLETION");
                 
             if (!alreadyNotified) {
                 String msg = "¡Buenas noticias! Tu atleta " + athlete.getFirstName() + " " + athlete.getLastName() + 
                              " ha completado más del 50% de su planificación.";
                 
                 Users coach = userDao.findById(athlete.getCoachId()).orElse(null);
-                Notification notification = new Notification(coach, athlete, msg, date);
+                Notification notification = new Notification(coach, athlete, msg, "COMPLETION", date);
                 notificationDao.save(notification);
             }
         }

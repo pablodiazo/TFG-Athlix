@@ -6,7 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface NotificationDao extends CrudRepository<Notification, Long> {
     
-    boolean existsByUserIdAndAthleteIdAndPlanDate(Long userId, Long athleteId, LocalDate planDate);
+    boolean existsByUserIdAndAthleteIdAndPlanDateAndType(Long userId, Long athleteId, LocalDate planDate, String type);
 
     List<Notification> findByUserIdOrderByIdDesc(Long userId);
 }
