@@ -11,6 +11,7 @@ import java.util.List;
 
 import jakarta.transaction.Transactional;
 
+import org.aspectj.weaver.ast.Not;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,10 +47,10 @@ public class PlanServiceTest {
     private NutritionPlanDao nutritionPlanDao;
 
     @Autowired
-    private RestPlanDao restPlanDao;
+    private NotificationDao notificationDao;
 
     @Autowired
-    private NotificationDao notificationDao;
+    private RestPlanDao restPlanDao;
 
     private Users createUser(String userName, RoleType role) {
         Users user = new Users(userName, "password", "firstName", "lastName", 
@@ -643,14 +644,20 @@ public class PlanServiceTest {
     public void testRescheduleTrainingSession() throws InstanceNotFoundException, PermissionException {
         Users athlete = createUser("athleteReschedule", RoleType.USER);
         Users coach = createUser("coachReschedule", RoleType.COACH);
+        athlete.setCoachId(coach.getId());
+        userDao.save(athlete);
+        
         LocalDate originalDate = LocalDate.of(2026, 4, 10);
         LocalDate newDate = LocalDate.of(2026, 4, 12);
         LocalTime newStartTime = LocalTime.of(8, 0);
 
         TrainingSession session = createAndSaveTrainingSession(athlete, coach, originalDate, "Original Obj");
 
-        TrainingSession rescheduledSession = planService.rescheduleTrainingSession(athlete.getId(), session.getId(), newDate, newStartTime);
+        planService.rescheduleTrainingSession(athlete.getId(), session.getId(), newDate, newStartTime);
+        List<Notification> notifications = notificationDao.findByUserIdOrderByIdDesc(coach.getId());
+        assertEquals(1, notifications.size());
 
+        TrainingSession rescheduledSession = planService.acceptReadjustment(coach.getId(), athlete.getId(), notifications.get(0).getId(), session.getId(), newDate, newStartTime, true);
         assertEquals(newDate, rescheduledSession.getSessionDate());
         assertEquals(newStartTime, rescheduledSession.getStartTime());
     }

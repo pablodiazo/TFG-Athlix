@@ -41,12 +41,21 @@ const Header = () => {
       );
     }
     setShowNotifications(false);
-    navigate("/plans/athletes", { 
+    if(notification.type === "RESCHEDULE") {
+      
+      navigate("/plans/reschedule-requests");
+    }
+    else if (notification.type === "ACCEPTED_READJUSTMENT"){
+      navigate("/plans/daily");
+      /*
+      navigate("/plans/daily", { 
       state: { 
         athleteId: notification.athleteId, 
         targetDate: notification.planDate
       } 
     });
+      */
+    }
   };
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
@@ -94,7 +103,7 @@ const Header = () => {
           )}
           </div>
           
-          {isLoggedIn && userRole === "COACH" && (
+          {isLoggedIn && (
             <div className="athlix-header-notifications">
               <div
                 className="notifications-wrapper"

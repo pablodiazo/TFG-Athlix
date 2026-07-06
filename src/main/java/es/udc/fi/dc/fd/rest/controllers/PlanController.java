@@ -35,6 +35,7 @@ import es.udc.fi.dc.fd.rest.dtos.RestPlanDto;
 import es.udc.fi.dc.fd.rest.dtos.TrainingSessionDto;
 import es.udc.fi.dc.fd.rest.dtos.TrainingBlockDto;
 import es.udc.fi.dc.fd.rest.dtos.UpdatePlanDoneParamsDto;
+import es.udc.fi.dc.fd.rest.dtos.AcceptReadjustmentParamsDto;
 import static es.udc.fi.dc.fd.rest.dtos.TrainingSessionConversor.toTrainingSessionDto;
 import static es.udc.fi.dc.fd.rest.dtos.TrainingBlockConversor.toTrainingBlockDto;
 import static es.udc.fi.dc.fd.rest.dtos.PlanConversor.toNutritionPlanDto;
@@ -201,12 +202,10 @@ public class PlanController {
     }
     
     @PostMapping("/reschedule-training-session")
-    public TrainingSessionDto rescheduleTrainingSession(@RequestAttribute Long userId,
+    public void rescheduleTrainingSession(@RequestAttribute Long userId,
         @Validated @RequestBody RescheduleParamsDto params) throws InstanceNotFoundException, PermissionException{
 
-        TrainingSession trainingSession = planService.rescheduleTrainingSession(userId, params.getSessionId(), params.getNewDate(), params.getNewStartTime());
-
-        return toTrainingSessionDto(trainingSession);
+        planService.rescheduleTrainingSession(userId, params.getSessionId(), params.getNewDate(), params.getNewStartTime());
     }
 
     // GET /plans/athletes/{athleteId}/daily?date=2026-03-17
@@ -285,7 +284,18 @@ public class PlanController {
     @GetMapping("/notifications")
     public List<NotificationDto> getNotifications(@RequestAttribute Long userId) {
         return planService.getNotifications(userId).stream()
-            .map(n -> new NotificationDto(n.getId(), n.getAthlete().getId(), n.getMessage(), n.getType(), n.getPlanDate().toString(), n.isRead()))
+            .map(n -> new NotificationDto(
+                n.getId(), 
+                n.getAthlete().getId(), 
+                n.getSessionId(),
+                n.getMessage(), 
+                n.getType(), 
+                n.getPlanDate().toString(), 
+                n.isRead(), 
+                n.isReviewed(),
+                n.getNewDate() != null ? n.getNewDate().toString() : null, 
+                n.getNewStartTime() != null ? n.getNewStartTime().toString() : null
+            ))    
             .collect(Collectors.toList());
     }
 
@@ -294,4 +304,21 @@ public class PlanController {
             throws InstanceNotFoundException, PermissionException {
         planService.markNotificationAsRead(userId, id);
     }
+
+    @PostMapping("/notifications/{id}/accept")
+    public TrainingSessionDto acceptReadjustment(@RequestAttribute Long userId, @PathVariable Long id,
+        @Validated @RequestBody AcceptReadjustmentParamsDto params)
+            throws InstanceNotFoundException, PermissionException {
+        TrainingSession trainingSession = planService.acceptReadjustment(userId, params.getAthleteId(), id, params.getSessionId(), params.getNewDate(), params.getNewStartTime(), params.getReschedule());
+    
+        return toTrainingSessionDto(trainingSession);
+    }
+
+    @PostMapping("/notifications/{id}/deny")
+    public void denyReadjustment(@RequestAttribute Long userId, @PathVariable Long id,
+        @Validated @RequestBody AcceptReadjustmentParamsDto params)
+            throws InstanceNotFoundException, PermissionException {
+        planService.denyReadjustment(userId, params.getAthleteId(), id, params.getSessionId(), params.getNewDate(), params.getNewStartTime());
+    }
+    
 }

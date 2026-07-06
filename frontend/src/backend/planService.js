@@ -51,3 +51,11 @@ export const getNotifications = (onSuccess, onErrors) => {
 export const markNotificationAsRead = (id, onSuccess, onErrors) => {
     appFetch(`/plans/notifications/${id}/read`, fetchConfig('POST'), onSuccess, onErrors);
 };
+
+export const acceptReadjustment = (notificationId, params, onSuccess, onErrors) => {
+    appFetch(`/plans/notifications/${notificationId}/accept`, fetchConfig('POST', params), onSuccess, onErrors);
+};
+
+export const denyReadjustment = (notificationId, params, onSuccess, onErrors) => {
+    appFetch(`/plans/notifications/${notificationId}/deny`, fetchConfig('POST', params), onSuccess, onErrors);
+};

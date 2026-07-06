@@ -195,6 +195,18 @@ export default {
     'project.plans.CoachDashboard.selectAthlete': 'Selecciona un atleta',
     'project.plans.CoachDashboard.chooseAthlete': 'Elige un atleta del panel lateral para ver y gestionar su planificación diaria.',
 
+    'project.plans.RescheduleRequests.title': 'Solicitudes de cambio en la planificación',
+    'project.plans.RescheduleRequests.description': 'Revisa y aprueba los cambios propuestos por tus atletas.',
+    'project.plans.RescheduleRequests.loading': 'Cargando solicitudes...',
+    'project.plans.RescheduleRequests.noRequests': 'Estás al día',
+    'project.plans.RescheduleRequests.noRequestsDescription': 'No tienes solicitudes de cambio en la planificación pendientes.',
+    'project.plans.RescheduleRequests.requests': 'Solicitudes de cambio en la planificación',
+    'project.plans.RescheduleRequests.accept': 'Aprobar',
+    'project.plans.RescheduleRequests.deny': 'Rechazar',
+    'project.plans.RescheduleRequests.athleteId': 'Atleta: ',
+    'project.plans.RescheduleRequests.original': 'Original',
+    'project.plans.RescheduleRequests.proposed': 'Propuesto',
+
     'project.global.messages.notifications': 'Notificaciones',
     'project.global.messages.noNotifications': 'No tienes notificaciones',
 }

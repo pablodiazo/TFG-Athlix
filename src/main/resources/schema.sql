@@ -1,8 +1,8 @@
+DROP TABLE IF EXISTS Notification;
 DROP TABLE IF EXISTS TrainingBlock;
 DROP TABLE IF EXISTS TrainingSession;
 DROP TABLE IF EXISTS NutritionPlan;
 DROP TABLE IF EXISTS RestPlan;
-DROP TABLE IF EXISTS Notification;
 DROP TABLE IF EXISTS Users;
 
 CREATE TABLE Users (
@@ -17,17 +17,6 @@ CREATE TABLE Users (
     CONSTRAINT fk_user_coach FOREIGN KEY (coachId) REFERENCES Users(id)
 );
 
-CREATE TABLE Notification (
-    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    userId BIGINT NOT NULL,
-    athleteId BIGINT NOT NULL,
-    message VARCHAR(500) NOT NULL,
-    type VARCHAR(50) NOT NULL,
-    planDate DATE NOT NULL,
-    isRead BOOLEAN DEFAULT FALSE,
-    CONSTRAINT fk_notification_user FOREIGN KEY (userId) REFERENCES Users(id),
-    CONSTRAINT fk_notification_athlete FOREIGN KEY (athleteId) REFERENCES Users(id)
-);
 
 CREATE TABLE TrainingSession (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -84,4 +73,21 @@ CREATE TABLE RestPlan (
     CONSTRAINT fk_rest_user FOREIGN KEY (userId) REFERENCES Users(id),
     CONSTRAINT fk_rest_coach FOREIGN KEY (coachId) REFERENCES Users(id),
     CONSTRAINT uq_rest_user_date UNIQUE (userId, planDate)
+);
+
+CREATE TABLE Notification (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    userId BIGINT NOT NULL,
+    athleteId BIGINT NOT NULL,
+    sessionId BIGINT,
+    message VARCHAR(500) NOT NULL,
+    type VARCHAR(50) NOT NULL,
+    planDate DATE NOT NULL,
+    isRead BOOLEAN DEFAULT FALSE,
+    isReviewed BOOLEAN DEFAULT FALSE,
+    newDate DATE,
+    newStartTime TIME,
+    CONSTRAINT fk_notification_user FOREIGN KEY (userId) REFERENCES Users(id),
+    CONSTRAINT fk_notification_athlete FOREIGN KEY (athleteId) REFERENCES Users(id),
+    CONSTRAINT fk_notification_session FOREIGN KEY (sessionId) REFERENCES TrainingSession(id) ON DELETE CASCADE
 );
