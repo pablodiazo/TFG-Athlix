@@ -195,6 +195,18 @@ export default {
     'project.plans.CoachDashboard.selectAthlete': 'Select athlete',
     'project.plans.CoachDashboard.chooseAthlete': 'Select an athlete from the sidebar to view and manage your daily plan.',
 
+    'project.plans.RescheduleRequests.title': 'Reschedule requests',
+    'project.plans.RescheduleRequests.description': 'Review and approve the proposed changes by your athletes.',
+    'project.plans.RescheduleRequests.loading': 'Loading requests...',
+    'project.plans.RescheduleRequests.noRequests': 'You are on time',
+    'project.plans.RescheduleRequests.noRequestsDescription': 'No reschedule requests pending.',
+    'project.plans.RescheduleRequests.requests': 'Reschedule requests',
+    'project.plans.RescheduleRequests.accept': 'Approve',
+    'project.plans.RescheduleRequests.deny': 'Deny',
+    'project.plans.RescheduleRequests.athleteId': 'Athlete: ',
+    'project.plans.RescheduleRequests.original': 'Original',
+    'project.plans.RescheduleRequests.proposed': 'Proposed',
+
     'project.global.messages.notifications': 'Notifications',
     'project.global.messages.noNotifications': 'No notifications',
 }
