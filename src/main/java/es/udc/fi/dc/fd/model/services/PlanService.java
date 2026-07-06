@@ -27,7 +27,7 @@ public interface PlanService {
 
     List<DailyPlan> getWeeklyPlan(Long userId, LocalDate startDate) throws InstanceNotFoundException;
 
-    TrainingSession rescheduleTrainingSession(Long userId, Long sessionId, LocalDate newDate, LocalTime newStartTime) throws InstanceNotFoundException, PermissionException;
+    void rescheduleTrainingSession(Long userId, Long sessionId, LocalDate newDate, LocalTime newStartTime) throws InstanceNotFoundException, PermissionException;
 
     DailyPlan getAthleteDailyPlan(Long coachId, Long athleteId, LocalDate date) throws InstanceNotFoundException, PermissionException;
 
@@ -36,4 +36,8 @@ public interface PlanService {
     List<Notification> getNotifications(Long coachId);
     
     void markNotificationAsRead(Long coachId, Long notificationId) throws InstanceNotFoundException, PermissionException;
+
+    TrainingSession acceptReadjustment(Long coachId, Long userId, Long notificationId, Long sessionId, LocalDate newDate, LocalTime newStartTime, Boolean reschedule) throws InstanceNotFoundException, PermissionException;
+
+    void denyReadjustment(Long coachId, Long userId, Long notificationId, Long sessionId, LocalDate newDate, LocalTime newStartTime) throws InstanceNotFoundException, PermissionException;
 }

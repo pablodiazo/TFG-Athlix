@@ -242,7 +242,7 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public TrainingSession rescheduleTrainingSession(Long userId, Long sessionId, LocalDate newDate, LocalTime newStartTime) throws InstanceNotFoundException, PermissionException {
+    public void rescheduleTrainingSession(Long userId, Long sessionId, LocalDate newDate, LocalTime newStartTime) throws InstanceNotFoundException, PermissionException {
         
         TrainingSession session = trainingSessionDao.findById(sessionId)
                 .orElseThrow(() -> new InstanceNotFoundException("TrainingSession", sessionId));
@@ -251,12 +251,8 @@ public class PlanServiceImpl implements PlanService {
             throw new PermissionException();
         }
 
-        checkAndNotifyReadjustment(userId, session.getSessionDate(), session.getStartTime(), newDate, newStartTime);
-        
-        session.setSessionDate(newDate);
-        session.setStartTime(newStartTime);
-        
-        return trainingSessionDao.save(session);
+        checkAndNotifyReadjustment(userId, sessionId, session.getSessionDate(), session.getStartTime(), newDate, newStartTime);
+
     }
 
     @Override
@@ -313,7 +309,7 @@ public class PlanServiceImpl implements PlanService {
         return weeklyPlan;
     }
 
-    private void checkAndNotifyReadjustment(Long athleteId, LocalDate date, LocalTime startTime, LocalDate newDate, LocalTime newStartTime) {
+    private void checkAndNotifyReadjustment(Long athleteId, Long sessionId, LocalDate date, LocalTime startTime, LocalDate newDate, LocalTime newStartTime) {
         Users athlete = userDao.findById(athleteId).orElse(null);
         if (athlete == null || athlete.getCoachId() == null) {
             return;
@@ -337,6 +333,9 @@ public class PlanServiceImpl implements PlanService {
                 
             Users coach = userDao.findById(athlete.getCoachId()).orElse(null);
             Notification notification = new Notification(coach, athlete, msg, "RESCHEDULE", date);
+            notification.setSessionId(sessionId);
+            notification.setNewDate(newDate);
+            notification.setNewStartTime(newStartTime);
             notificationDao.save(notification);
         }
         
@@ -386,6 +385,36 @@ public class PlanServiceImpl implements PlanService {
         }
     }
 
+    private void notifyAcceptedReadjustment(Long coachId, Long userId, Long sessionId, LocalDate newDate, LocalTime newStartTime) {
+        Users coach = userDao.findById(coachId).orElse(null);
+        Users user = userDao.findById(userId).orElse(null);
+        
+        if (coach == null || user == null) {
+            return;
+        }
+
+        String msg = "Tu entrendador " + coach.getFirstName() + " " + coach.getLastName() + 
+                     " ha aceptado la modificación del entrenamiento del día " + newDate.getDayOfMonth() + " a las " + newStartTime.toString() + ".";
+        
+        Notification notification = new Notification(user, coach, msg, "ACCEPTED_READJUSTMENT", newDate);
+        notificationDao.save(notification);
+    }
+
+    private void notifyDeniedReadjustment(Long coachId, Long userId, Long sessionId, LocalDate newDate, LocalTime newStartTime) throws InstanceNotFoundException, PermissionException {
+        Users coach = userDao.findById(coachId).orElse(null);
+        Users user = userDao.findById(userId).orElse(null);
+        
+        if (coach == null || user == null) {
+            return;
+        }
+
+        String msg = "Tu entrendador " + coach.getFirstName() + " " + coach.getLastName() + 
+                     " ha denegado la modificación del entrenamiento del día " + newDate.getDayOfMonth() + " a las " + newStartTime.toString() + ".";
+        
+        Notification notification = new Notification(user, coach, msg, "DENIED_READJUSTMENT", newDate);
+        notificationDao.save(notification);
+    }
+
     @Override
     public List<Notification> getNotifications(Long userId) {
         return notificationDao.findByUserIdOrderByIdDesc(userId);
@@ -402,5 +431,72 @@ public class PlanServiceImpl implements PlanService {
         
         notification.setRead(true);
         notificationDao.save(notification);
+    }
+
+    @Override
+    public TrainingSession acceptReadjustment(Long coachId, Long userId, Long notificationId, Long sessionId, LocalDate newDate, LocalTime newStartTime, Boolean reschedule) throws InstanceNotFoundException, PermissionException {
+        
+        if(reschedule) {
+            Users coach = userDao.findById(coachId)
+                .orElseThrow(() -> new InstanceNotFoundException("user", coachId));
+        
+            if (coach.getRole() != Users.RoleType.COACH) {
+                throw new PermissionException();
+            }
+            
+            Users user = userDao.findById(userId)
+                    .orElseThrow(() -> new InstanceNotFoundException("user", userId));
+            
+            if (!user.getRole().equals(Users.RoleType.USER)) {
+                throw new PermissionException();
+            }
+
+            Notification notification = notificationDao.findById(notificationId)
+                .orElseThrow(() -> new InstanceNotFoundException("Notification", notificationId));
+            
+            notification.setReviewed(true);
+            notificationDao.save(notification);
+
+            TrainingSession session = trainingSessionDao.findById(sessionId)
+                    .orElseThrow(() -> new InstanceNotFoundException("TrainingSession", sessionId));
+            
+            if (!session.getUser().getId().equals(userId)) {
+                throw new PermissionException();
+            }
+
+            if (session.getCoach().getId() != coachId) {
+                throw new PermissionException();
+            }
+            session.setSessionDate(newDate);
+            session.setStartTime(newStartTime);
+
+            notifyAcceptedReadjustment(coachId, userId, sessionId, newDate, newStartTime);
+
+            return trainingSessionDao.save(session);
+
+        } else {
+
+            TrainingSession session = trainingSessionDao.findById(sessionId)
+                    .orElseThrow(() -> new InstanceNotFoundException("TrainingSession", sessionId));
+            return session;
+
+        }
+        
+    }
+
+    @Override
+    public void denyReadjustment(Long coachId, Long userId, Long notificationId, Long sessionId, LocalDate newDate, LocalTime newStartTime) throws InstanceNotFoundException, PermissionException {
+        Notification notification = notificationDao.findById(notificationId)
+                .orElseThrow(() -> new InstanceNotFoundException("Notification", notificationId));
+        
+        if (!notification.getAthlete().getId().equals(userId)) {
+            throw new PermissionException();
+        }
+        
+        notification.setReviewed(true);
+        notificationDao.save(notification);
+
+        notifyDeniedReadjustment(coachId, userId, sessionId, newDate, newStartTime);
+
     }
 }
