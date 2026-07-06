@@ -1,0 +1,174 @@
+.requests-wrapper {
+  padding: 4rem;
+  background-color: #0f1115;
+  color: white;
+  min-height: calc(100vh - 70px);
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.requests-header {
+  margin-bottom: 2rem;
+}
+
+.requests-header h2 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.8rem;
+}
+
+.requests-header p {
+  margin: 0;
+  color: #9ca3af;
+}
+
+.empty-requests {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  background-color: #1e2128;
+  border-radius: 12px;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+.empty-requests h3 {
+  margin: 0 0 0.5rem 0;
+}
+
+.empty-requests p {
+  margin: 0;
+  color: #9ca3af;
+}
+
+.requests-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.request-card {
+  background-color: #1e2128;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.request-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.request-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.request-icon {
+  color: #f59e0b;
+  font-size: 1.2rem;
+}
+
+.request-athlete-id {
+  font-weight: 600;
+  color: #d1d5db;
+}
+
+.request-card-body {
+  flex-grow: 1;
+}
+
+.request-message {
+  color: #e5e7eb;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+.time-change-visual {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #0f1115;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.time-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.time-box small {
+  color: #9ca3af;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.time-box strong {
+  font-size: 0.95rem;
+  color: #ffffff;
+  text-transform: capitalize;
+}
+
+.time-box span {
+  color: #3b82f6;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.arrow-icon {
+  color: #6b7280;
+  font-size: 1.2rem;
+}
+
+.request-card-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.req-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.req-btn.accept {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.req-btn.accept:hover {
+  background-color: #10b981;
+  color: white;
+}
+
+.req-btn.reject {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.req-btn.reject:hover {
+  background-color: #ef4444;
+  color: white;
+}

@@ -128,6 +128,11 @@ const UserMenu = () => {
                     <FormattedMessage id="project.plans.CoachDashboard.title" defaultMessage="Revisar planificación atletas" />
                   </button>
                 </li>
+                <li>
+                  <button onClick={() => navAndClose("/plans/reschedule-requests")}>
+                    <FormattedMessage id="project.plans.RescheduleRequests.title" defaultMessage="Revisar peticiones de cambio" />
+                  </button>
+                </li>
               </>
             )}
 
