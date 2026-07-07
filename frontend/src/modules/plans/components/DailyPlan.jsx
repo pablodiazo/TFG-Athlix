@@ -309,6 +309,9 @@ const DailyPlan = ({ athleteId, forcedDate }) => {
                         <div className="session-title" style={{ color: sportInfo.color, display: "flex", alignItems: "center", gap: "0.5rem" }}>
                             <SportIcon style={{ fontSize: "1.4rem" }} />
                             <h4>{sportInfo.name}</h4>
+                            <span className="tss-badge" style={{ backgroundColor: `${sportInfo.color}15`, color: sportInfo.color }} title="Training Stress Score">
+                              TSS {Math.round(session.tss)}
+                            </span>
                             <span className="session-time">{formatTime(session.startTime)}</span>
                             
                             <div className="badge-wrapper" style={{ marginLeft: "auto" }}>
