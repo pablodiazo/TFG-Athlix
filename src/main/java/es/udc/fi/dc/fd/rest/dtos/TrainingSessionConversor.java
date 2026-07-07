@@ -17,7 +17,7 @@ public class TrainingSessionConversor {
 
         return new TrainingSessionDto(trainingSession.getId(), trainingSession.getSessionDate(), 
                                       trainingSession.getStartTime(), trainingSession.getSport(), 
-                                      trainingSession.getObjective(), trainingSession.getTotalDistanceOrDuration(), blocks);
+                                      trainingSession.getObjective(), trainingSession.getTotalDistanceOrDuration(), trainingSession.getTss(), blocks);
     }
     
 }

@@ -27,6 +27,7 @@ CREATE TABLE TrainingSession (
     sport VARCHAR(20) NOT NULL,
     objective VARCHAR(100),
     totalDistanceOrDuration VARCHAR(50),
+    tss DECIMAL(5,1),
     CONSTRAINT fk_session_user FOREIGN KEY (userId) REFERENCES Users(id),
     CONSTRAINT fk_session_coach FOREIGN KEY (coachId) REFERENCES Users(id)
 );

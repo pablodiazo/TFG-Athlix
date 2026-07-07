@@ -40,4 +40,6 @@ public interface PlanService {
     TrainingSession acceptReadjustment(Long coachId, Long userId, Long notificationId, Long sessionId, LocalDate newDate, LocalTime newStartTime, Boolean reschedule) throws InstanceNotFoundException, PermissionException;
 
     void denyReadjustment(Long coachId, Long userId, Long notificationId, Long sessionId, LocalDate newDate, LocalTime newStartTime) throws InstanceNotFoundException, PermissionException;
+
+    Double calculateTSS(Long sessionId) throws InstanceNotFoundException, PermissionException;
 }
