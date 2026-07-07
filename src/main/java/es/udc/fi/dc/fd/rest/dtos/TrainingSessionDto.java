@@ -14,18 +14,20 @@ public class TrainingSessionDto {
     private TrainingSession.SportType sport;
     private String objective;
     private String totalDistanceOrDuration;
+    private Double tss;
     private List<TrainingBlockDto> blocks;
 
     public TrainingSessionDto() {}
 
     public TrainingSessionDto(Long id, LocalDate sessionDate, LocalTime startTime, TrainingSession.SportType sport, 
-                              String objective, String totalDistanceOrDuration, List<TrainingBlockDto> blocks) {
+                              String objective, String totalDistanceOrDuration, Double tss, List<TrainingBlockDto> blocks) {
         this.id = id;
         this.sessionDate = sessionDate;
         this.startTime = startTime;
         this.sport = sport;
-        this.objective = objective;
+        this.objective = objective;        
         this.totalDistanceOrDuration = totalDistanceOrDuration;
+        this.tss = tss;
         this.blocks = blocks;
     }
 
@@ -46,6 +48,9 @@ public class TrainingSessionDto {
 
     public String getTotalDistanceOrDuration() { return totalDistanceOrDuration; }
     public void setTotalDistanceOrDuration(String totalDistanceOrDuration) { this.totalDistanceOrDuration = totalDistanceOrDuration; }
+
+    public Double getTss() { return tss; }
+    public void setTss(Double tss) { this.tss = tss; }
 
     public List<TrainingBlockDto> getBlocks() { return blocks; }
     public void setBlocks(List<TrainingBlockDto> blocks) { this.blocks = blocks; }

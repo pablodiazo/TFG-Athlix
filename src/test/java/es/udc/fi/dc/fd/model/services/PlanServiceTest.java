@@ -11,7 +11,6 @@ import java.util.List;
 
 import jakarta.transaction.Transactional;
 
-import org.aspectj.weaver.ast.Not;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

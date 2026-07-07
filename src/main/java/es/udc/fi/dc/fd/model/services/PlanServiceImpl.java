@@ -47,7 +47,6 @@ public class PlanServiceImpl implements PlanService {
 
         return new DailyPlan(sessions, nutrition, rest);
     }
-    
 
     @Override
     public TrainingSession createTrainingSession(Long athleteId, Long coachId, LocalDate date, LocalTime startTime,
@@ -498,5 +497,107 @@ public class PlanServiceImpl implements PlanService {
 
         notifyDeniedReadjustment(coachId, userId, sessionId, newDate, newStartTime);
 
+    }
+
+    private double parseDurationToMinutes(String input, TrainingSession.SportType sport) {
+        if (input == null || input.equals("-") || input.trim().isEmpty()) {
+            return 0.0;
+        }
+
+        String lowerInput = input.toLowerCase();
+        double minutes = 0.0;
+
+        if (lowerInput.contains("h") || lowerInput.contains("min")) {
+            java.util.regex.Matcher hMatcher = java.util.regex.Pattern.compile("(\\d+)\\s*h").matcher(lowerInput);
+            if (hMatcher.find()) {
+                minutes += Double.parseDouble(hMatcher.group(1)) * 60;
+            }
+            java.util.regex.Matcher mMatcher = java.util.regex.Pattern.compile("(\\d+)\\s*min").matcher(lowerInput);
+            if (mMatcher.find()) {
+                minutes += Double.parseDouble(mMatcher.group(1));
+            }
+            return minutes;
+        }
+
+        double distanceKm = 0.0;
+        if (lowerInput.contains("km")) {
+            java.util.regex.Matcher kmMatcher = java.util.regex.Pattern.compile("([\\d.]+)\\s*km").matcher(lowerInput);
+            if (kmMatcher.find()) {
+                distanceKm = Double.parseDouble(kmMatcher.group(1));
+            }
+        } else if (lowerInput.contains("m")) {
+            java.util.regex.Matcher mMatcher = java.util.regex.Pattern.compile("([\\d.]+)\\s*m").matcher(lowerInput);
+            if (mMatcher.find()) {
+                distanceKm = Double.parseDouble(mMatcher.group(1)) / 1000.0;
+            }
+        }
+
+        if (distanceKm > 0) {
+            if (sport == TrainingSession.SportType.RUN)return distanceKm * 5.0;
+            if (sport == TrainingSession.SportType.BIKE)return distanceKm * 2.0;
+            if (sport == TrainingSession.SportType.SWIM)return distanceKm * 17.5;
+        }
+
+        try {
+            return Double.parseDouble(input);
+        } catch (NumberFormatException e) {
+            return 0.0;
+        }
+    }
+
+    @Override
+    public Double calculateTSS(Long sessionId) throws InstanceNotFoundException, PermissionException {
+        TrainingSession session = trainingSessionDao.findById(sessionId)
+                .orElseThrow(() -> new InstanceNotFoundException("TrainingSession", sessionId));
+
+        double tss = 0.0;
+
+        for (TrainingBlock block : session.getBlocks()) {
+            double intensity = 0.0;
+            String pace = block.getPace() != null ? block.getPace() : "-";
+
+            if (session.getSport() == TrainingSession.SportType.SWIM) {
+                switch (pace) {
+                    case "Suave": intensity = 0.60; break;
+                    case "AER1":  intensity = 0.75; break;
+                    case "AER2":  intensity = 0.85; break;
+                    case "AER3":  intensity = 1.00; break;
+                    case "Fuerte":intensity = 1.15; break;
+                }
+            } else if (session.getSport() == TrainingSession.SportType.BIKE) {
+                switch (pace) {
+                    case "Z1": intensity = 0.50; break;
+                    case "Z2": intensity = 0.65; break;
+                    case "Z3": intensity = 0.83; break;
+                    case "Z4": intensity = 1.00; break;
+                    case "Z5": intensity = 1.13; break;
+                    case "Z6": intensity = 1.35; break;
+                    case "Z7": intensity = 1.50; break;
+                }
+            } else if (session.getSport() == TrainingSession.SportType.RUN) {
+                switch (pace) {
+                    case "R0":  intensity = 0.55; break;
+                    case "R1":  intensity = 0.65; break;
+                    case "R1+": intensity = 0.70; break;
+                    case "R2":  intensity = 0.75; break;
+                    case "R3":  intensity = 0.85; break;
+                    case "R3+": intensity = 0.92; break;
+                    case "R4":  intensity = 1.00; break;
+                    case "R5":  intensity = 1.10; break;
+                    case "R6":  intensity = 1.25; break;
+                }
+            }
+
+            double baseMinutes = parseDurationToMinutes(block.getDistanceOrDuration(), session.getSport());
+            
+            int sets = block.getSets() != null && block.getSets() > 0 ? block.getSets() : 1;
+            int reps = block.getReps() != null && block.getReps() > 0 ? block.getReps() : 1;
+            double totalBlockMinutes = baseMinutes * sets * reps;
+            if (intensity > 0 && totalBlockMinutes > 0) {
+                tss += (totalBlockMinutes / 60.0) * (intensity * intensity) * 100.0;
+            }
+        }
+
+        return tss;
     }
 }

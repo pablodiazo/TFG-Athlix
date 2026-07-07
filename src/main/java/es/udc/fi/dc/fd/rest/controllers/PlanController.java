@@ -56,7 +56,7 @@ public class PlanController {
     public DailyPlanDto getDailyPlan(
             @RequestAttribute Long userId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) 
-            throws InstanceNotFoundException {
+            throws InstanceNotFoundException, PermissionException {
         
         DailyPlan info = planService.getDailyPlan(userId, date);
 
@@ -66,8 +66,17 @@ public class PlanController {
                                      b.getReps(), b.getDistanceOrDuration(), b.getPace(), b.getRest(), b.getDone())
             ).collect(Collectors.toList());
 
+            Double tss=0.0;
+                try {
+                    tss = planService.calculateTSS(s.getId());
+                } catch (InstanceNotFoundException e) {
+                    e.printStackTrace();
+                } catch (PermissionException e) {
+                    e.printStackTrace();
+                }
+
             return new TrainingSessionDto(s.getId(), s.getSessionDate(), s.getStartTime(), s.getSport(), 
-                                          s.getObjective(), s.getTotalDistanceOrDuration(), blockDtos);
+                                          s.getObjective(), s.getTotalDistanceOrDuration(), tss, blockDtos);
         }).collect(Collectors.toList());
 
         NutritionPlanDto nutritionDto = info.getNutrition().map(n -> 
@@ -87,12 +96,11 @@ public class PlanController {
     public List<DailyPlanDto> getWeeklyPlan(
             @RequestAttribute Long userId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate)
-            throws InstanceNotFoundException {
+            throws InstanceNotFoundException, PermissionException {
         
         List<DailyPlan> weeklyInfo = planService.getWeeklyPlan(userId, startDate);
         List<DailyPlanDto> weeklyDtos = new ArrayList<>();
 
-        // Usamos startDate para ir sabiendo qué fecha corresponde a cada DailyPlan de la lista
         LocalDate currentDate = startDate;
 
         for (DailyPlan info : weeklyInfo) {
@@ -103,8 +111,17 @@ public class PlanController {
                                          b.getReps(), b.getDistanceOrDuration(), b.getPace(), b.getRest(), b.getDone())
                 ).collect(Collectors.toList());
 
+                Double tss=0.0;
+                try {
+                    tss = planService.calculateTSS(s.getId());
+                } catch (InstanceNotFoundException e) {
+                    e.printStackTrace();
+                } catch (PermissionException e) {
+                    e.printStackTrace();
+                }
+
                 return new TrainingSessionDto(s.getId(), s.getSessionDate(), s.getStartTime(), s.getSport(), 
-                                              s.getObjective(), s.getTotalDistanceOrDuration(), blockDtos);
+                                              s.getObjective(), s.getTotalDistanceOrDuration(), tss, blockDtos);
             }).collect(Collectors.toList());
 
             NutritionPlanDto nutritionDto = info.getNutrition().map(n -> 
@@ -118,7 +135,7 @@ public class PlanController {
 
             weeklyDtos.add(new DailyPlanDto(currentDate.toString(), sessionDtos, nutritionDto, restDto));
             
-            currentDate = currentDate.plusDays(1); // Avanzamos al siguiente día
+            currentDate = currentDate.plusDays(1);
         }
 
         return weeklyDtos;
@@ -224,8 +241,17 @@ public class PlanController {
                                      b.getReps(), b.getDistanceOrDuration(), b.getPace(), b.getRest(), b.getDone())
             ).collect(Collectors.toList());
 
+            Double tss=0.0;
+                try {
+                    tss = planService.calculateTSS(s.getId());
+                } catch (InstanceNotFoundException e) {
+                    e.printStackTrace();
+                } catch (PermissionException e) {
+                    e.printStackTrace();
+                }
+
             return new TrainingSessionDto(s.getId(), s.getSessionDate(), s.getStartTime(), s.getSport(), 
-                                          s.getObjective(), s.getTotalDistanceOrDuration(), blockDtos);
+                                          s.getObjective(), s.getTotalDistanceOrDuration(), tss, blockDtos);
         }).collect(Collectors.toList());
 
         NutritionPlanDto nutritionDto = info.getNutrition().map(n -> 
@@ -260,8 +286,17 @@ public class PlanController {
                                          b.getReps(), b.getDistanceOrDuration(), b.getPace(), b.getRest(), b.getDone())
                 ).collect(Collectors.toList());
 
+                Double tss=0.0;
+                try {
+                    tss = planService.calculateTSS(s.getId());
+                } catch (InstanceNotFoundException e) {
+                    e.printStackTrace();
+                } catch (PermissionException e) {
+                    e.printStackTrace();
+                }
+
                 return new TrainingSessionDto(s.getId(), s.getSessionDate(), s.getStartTime(), s.getSport(), 
-                                              s.getObjective(), s.getTotalDistanceOrDuration(), blockDtos);
+                                              s.getObjective(), s.getTotalDistanceOrDuration(), tss, blockDtos);
             }).collect(Collectors.toList());
 
             NutritionPlanDto nutritionDto = info.getNutrition().map(n -> 
