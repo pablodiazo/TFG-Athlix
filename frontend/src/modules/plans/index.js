@@ -6,3 +6,4 @@ export { default as CreateNutritionPlan } from './components/CreateNutritionPlan
 export { default as CreateRestPlan } from './components/CreateRestPlan';
 export { default as CoachDashboard } from './components/CoachDashboard';
 export {default as RescheduleRequests} from './components/RescheduleRequests';
+export {default as EditTrainingSession} from './components/EditTrainingSession';
