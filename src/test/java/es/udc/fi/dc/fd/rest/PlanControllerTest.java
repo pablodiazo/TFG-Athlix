@@ -2,6 +2,8 @@ package es.udc.fi.dc.fd.rest;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -559,6 +561,61 @@ public class PlanControllerTest {
         mockMvc.perform(post("/plans/notifications/" + notif.getId() + "/read")
                 .header("Authorization", "Bearer " + coach.getServiceToken())
                 .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testUpdateTrainingSession_Ok() throws Exception {
+        AuthenticatedUserDto coach = createAuthenticatedUser("coachCtrlUpd", RoleType.COACH);
+        AuthenticatedUserDto athlete = createAuthenticatedUser("athCtrlUpd", RoleType.USER);
+
+        Users coachEntity = userDao.findById(coach.getUserDto().getId()).get();
+        Users athleteEntity = userDao.findById(athlete.getUserDto().getId()).get();
+        athleteEntity.setCoachId(coachEntity.getId());
+        userDao.save(athleteEntity);
+
+        TrainingSession session = planService.createTrainingSession(
+            athleteEntity.getId(), coachEntity.getId(),
+            LocalDate.now(), LocalTime.of(10, 0), TrainingSession.SportType.RUN,
+            "Viejo Objetivo", "1h", Arrays.asList()
+        );
+
+        CreateSessionParamsDto updateParams = new CreateSessionParamsDto();
+        updateParams.setAthleteId(athleteEntity.getId());
+        updateParams.setSessionDate(LocalDate.now().plusDays(2));
+        updateParams.setStartTime(LocalTime.of(8, 0));
+        updateParams.setSport(TrainingSession.SportType.BIKE);
+        updateParams.setObjective("Nuevo Objetivo desde REST");
+        updateParams.setTotalDistanceOrDuration("2h");
+        updateParams.setBlocks(new ArrayList<>());
+
+        mockMvc.perform(put("/plans/training-sessions/" + session.getId())
+                .header("Authorization", "Bearer " + coach.getServiceToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(updateParams)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.objective", is("Nuevo Objetivo desde REST")))
+                .andExpect(jsonPath("$.sport", is("BIKE")));
+    }
+
+    @Test
+    public void testDeleteTrainingSession_Ok() throws Exception {
+        AuthenticatedUserDto coach = createAuthenticatedUser("coachCtrlDel", RoleType.COACH);
+        AuthenticatedUserDto athlete = createAuthenticatedUser("athCtrlDel", RoleType.USER);
+
+        Users coachEntity = userDao.findById(coach.getUserDto().getId()).get();
+        Users athleteEntity = userDao.findById(athlete.getUserDto().getId()).get();
+        athleteEntity.setCoachId(coachEntity.getId());
+        userDao.save(athleteEntity);
+
+        TrainingSession session = planService.createTrainingSession(
+            athleteEntity.getId(), coachEntity.getId(),
+            LocalDate.now(), LocalTime.of(10, 0), TrainingSession.SportType.RUN,
+            "A borrar por REST", "1h", Arrays.asList()
+        );
+
+        mockMvc.perform(delete("/plans/training-sessions/" + session.getId())
+                .header("Authorization", "Bearer " + coach.getServiceToken()))
                 .andExpect(status().isOk());
     }
 }

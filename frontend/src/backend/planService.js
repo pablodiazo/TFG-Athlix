@@ -59,3 +59,11 @@ export const acceptReadjustment = (notificationId, params, onSuccess, onErrors) 
 export const denyReadjustment = (notificationId, params, onSuccess, onErrors) => {
     appFetch(`/plans/notifications/${notificationId}/deny`, fetchConfig('POST', params), onSuccess, onErrors);
 };
+
+export const deleteTrainingSession = (sessionId, onSuccess, onErrors) => {
+    appFetch(`/plans/training-sessions/${sessionId}`, fetchConfig('DELETE'), onSuccess, onErrors);
+};
+
+export const updateTrainingSession = (sessionId, params, onSuccess, onErrors) => {
+    appFetch(`/plans/training-sessions/${sessionId}`, fetchConfig('PUT', params), onSuccess, onErrors);
+};

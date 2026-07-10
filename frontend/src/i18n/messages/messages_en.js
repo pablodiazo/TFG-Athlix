@@ -209,4 +209,27 @@ export default {
 
     'project.global.messages.notifications': 'Notifications',
     'project.global.messages.noNotifications': 'No notifications',
+
+    'project.plans.DeleteSession.delete': 'Delete session',
+    'project.plans.DeleteSession.description': 'Are you sure you want to delete this session? All data will be lost.',
+    'project.plans.DeleteSession.confirm': 'Yes, delete',
+
+    'project.plans.EditSession.title': 'Edit Training Session',
+    'project.plans.EditSession.disclaimer': 'Adjust the session and add the workout blocks for your athlete.',
+    'project.plans.EditSession.principalData': 'Principal data',
+    'project.plans.EditSession.sessionDate': 'Session date',
+    'project.plans.EditSession.startTime': 'Start time',
+    'project.plans.EditSession.sport': 'Sport',
+    'project.plans.EditSession.objective': 'Session aim',
+    'project.plans.EditSession.objectiveDescription': 'Objective of the session',
+    'project.plans.EditSession.totalDistanceOrDuration': 'Total volume (distance or duration)',
+    'project.plans.EditSession.blocks': 'Workout structure',
+    'project.plans.EditSession.addBlock': 'Add block',
+    'project.plans.EditSession.block': 'Block',
+    'project.plans.EditSession.name': 'Block name',
+    'project.plans.EditSession.sets': 'Sets',
+    'project.plans.EditSession.repetitions': 'Repetitions',
+    'project.plans.EditSession.distanceOrDuration': 'Distance/Time',
+    'project.plans.EditSession.pace': 'Pace/Zone',
+    'project.plans.EditSession.rest': 'Rest',
 }

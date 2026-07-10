@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestAttribute;
@@ -35,12 +36,14 @@ import es.udc.fi.dc.fd.rest.dtos.RestPlanDto;
 import es.udc.fi.dc.fd.rest.dtos.TrainingSessionDto;
 import es.udc.fi.dc.fd.rest.dtos.TrainingBlockDto;
 import es.udc.fi.dc.fd.rest.dtos.UpdatePlanDoneParamsDto;
+import es.udc.fi.dc.fd.rest.dtos.UpdateSessionParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.AcceptReadjustmentParamsDto;
 import static es.udc.fi.dc.fd.rest.dtos.TrainingSessionConversor.toTrainingSessionDto;
 import static es.udc.fi.dc.fd.rest.dtos.TrainingBlockConversor.toTrainingBlockDto;
 import static es.udc.fi.dc.fd.rest.dtos.PlanConversor.toNutritionPlanDto;
 import static es.udc.fi.dc.fd.rest.dtos.PlanConversor.toRestPlanDto;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 
@@ -356,4 +359,47 @@ public class PlanController {
         planService.denyReadjustment(userId, params.getAthleteId(), id, params.getSessionId(), params.getNewDate(), params.getNewStartTime());
     }
     
+    @DeleteMapping("/training-sessions/{id}")
+    public void deleteTrainingSession(@RequestAttribute Long userId, @PathVariable Long id) 
+            throws InstanceNotFoundException, PermissionException {
+        planService.deleteTrainingSession(userId, id);
+    }
+
+    @PutMapping("/training-sessions/{id}")
+    public TrainingSessionDto updateTrainingSession(@RequestAttribute Long userId, @PathVariable Long id,
+        @Validated @RequestBody UpdateSessionParamsDto params) throws InstanceNotFoundException, PermissionException {
+        
+        List<TrainingBlock> blocks = new ArrayList<>();
+
+        if(params.getBlocks() != null && !params.getBlocks().isEmpty()) {
+            for (TrainingBlockDto block : params.getBlocks()) {
+                TrainingBlock trainingBlock = new TrainingBlock();
+                trainingBlock.setBlockOrder(block.getBlockOrder());
+                trainingBlock.setName(block.getName());
+                trainingBlock.setSets(block.getSets());
+                trainingBlock.setReps(block.getReps());
+                trainingBlock.setDistanceOrDuration(block.getDistanceOrDuration());
+                trainingBlock.setPace(block.getPace());
+                trainingBlock.setRest(block.getRest());
+                blocks.add(trainingBlock);
+            }
+        }
+        
+        TrainingSession updatedSession = planService.updateTrainingSession(userId, id, params.getSessionDate(), 
+                                                 params.getStartTime(), params.getSport(), params.getObjective(), 
+                                                 params.getTotalDistanceOrDuration(), blocks);
+
+        Double tss = 0.0;
+        try {
+            tss = planService.calculateTSS(updatedSession.getId());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        TrainingSessionDto responseDto = toTrainingSessionDto(updatedSession);
+        responseDto.setTss(tss); 
+        
+        return responseDto;
+    }
+
 }

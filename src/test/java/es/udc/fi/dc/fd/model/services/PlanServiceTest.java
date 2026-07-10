@@ -7,6 +7,7 @@ import static org.junit.Assert.assertThrows;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.transaction.Transactional;
@@ -931,5 +932,88 @@ public class PlanServiceTest {
         assertEquals(1, notifications.size());
         assertEquals(athlete.getId(), notifications.get(0).getAthlete().getId());
         assertFalse(notifications.get(0).isRead());
+    }
+
+    @Test
+    public void testUpdateTrainingSession_Ok() throws InstanceNotFoundException, PermissionException, IncorrectRoleException {
+        Users coach = createUser("coachUpdate", RoleType.COACH);
+        Users athlete = createUser("athleteUpdate", RoleType.USER);
+        athlete.setCoachId(coach.getId());
+        userDao.save(athlete);
+
+        TrainingSession session = createAndSaveTrainingSession(athlete, coach, LocalDate.now(), "Objetivo Antiguo");
+
+        List<TrainingBlock> newBlocks = new ArrayList<>();
+        TrainingBlock block1 = new TrainingBlock();
+        block1.setBlockOrder(1);
+        block1.setName("Bloque Modificado");
+        block1.setSets(2);
+        block1.setReps(1);
+        block1.setDistanceOrDuration("10 km");
+        block1.setPace("Z2");
+        newBlocks.add(block1);
+
+        TrainingSession updatedSession = planService.updateTrainingSession(
+            coach.getId(), 
+            session.getId(), 
+            LocalDate.now().plusDays(1), 
+            LocalTime.of(10, 0), 
+            TrainingSession.SportType.RUN, 
+            "Objetivo Nuevo", 
+            "10 km", 
+            newBlocks
+        );
+
+        assertEquals("Objetivo Nuevo", updatedSession.getObjective());
+        assertEquals(1, updatedSession.getBlocks().size());
+        assertEquals("Bloque Modificado", updatedSession.getBlocks().get(0).getName());
+        assertEquals(LocalDate.now().plusDays(1), updatedSession.getSessionDate());
+    }
+
+    @Test
+    public void testUpdateTrainingSession_NoPermission() {
+        Users coachOwner = createUser("coachOwnUpd", RoleType.COACH);
+        Users coachHacker = createUser("coachHackerUpd", RoleType.COACH);
+        Users athlete = createUser("athPermUpd", RoleType.USER);
+        athlete.setCoachId(coachOwner.getId());
+        userDao.save(athlete);
+
+        TrainingSession session = createAndSaveTrainingSession(athlete, coachOwner, LocalDate.now(), "Privado");
+
+        assertThrows(PermissionException.class, () -> {
+            planService.updateTrainingSession(coachHacker.getId(), session.getId(), LocalDate.now(), LocalTime.now(), 
+                TrainingSession.SportType.RUN, "Hack", "1km", new ArrayList<>());
+        });
+    }
+
+    @Test
+    public void testDeleteTrainingSession_Ok() throws InstanceNotFoundException, PermissionException {
+        Users coach = createUser("coachDelete", RoleType.COACH);
+        Users athlete = createUser("athleteDelete", RoleType.USER);
+        athlete.setCoachId(coach.getId());
+        userDao.save(athlete);
+
+        TrainingSession session = createAndSaveTrainingSession(athlete, coach, LocalDate.now(), "Para borrar");
+
+        planService.deleteTrainingSession(coach.getId(), session.getId());
+
+        assertThrows(InstanceNotFoundException.class, () -> {
+            planService.calculateTSS(session.getId()); 
+        });
+    }
+
+    @Test
+    public void testDeleteTrainingSession_NoPermission() {
+        Users coachOwner = createUser("coachOwnDel", RoleType.COACH);
+        Users coachHacker = createUser("coachHackerDel", RoleType.COACH);
+        Users athlete = createUser("athPermDel", RoleType.USER);
+        athlete.setCoachId(coachOwner.getId());
+        userDao.save(athlete);
+
+        TrainingSession session = createAndSaveTrainingSession(athlete, coachOwner, LocalDate.now(), "No borrar");
+
+        assertThrows(PermissionException.class, () -> {
+            planService.deleteTrainingSession(coachHacker.getId(), session.getId());
+        });
     }
 }

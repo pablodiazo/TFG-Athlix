@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
-import backend from "../../../backend"; 
+import backend from "../../../backend";
+import { useNavigate } from "react-router-dom";
 
-import { FaSwimmer, FaBicycle, FaRunning, FaDumbbell, FaClock, FaSync, FaCheck, FaTimes, FaCalendarDay } from "react-icons/fa";
+import { FaSwimmer, FaBicycle, FaRunning, FaDumbbell, FaClock, FaSync, FaCheck, FaTimes, FaCalendarDay, FaEdit, FaTrash } from "react-icons/fa";
 import "../css/DailyPlan.css";
 
 const SPORT_INFO = {
@@ -18,8 +19,9 @@ const DailyPlan = ({ athleteId, forcedDate }) => {
   const [currentDate, setCurrentDate] = useState(forcedDate || new Date());
   const [planData, setPlanData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
-  const isReadOnly = !!athleteId;
+  const isCoach = !!athleteId;
 
   useEffect(() => {
     if (forcedDate) {
@@ -256,6 +258,42 @@ const DailyPlan = ({ athleteId, forcedDate }) => {
     );
   };
 
+  const [deleteModal, setDeleteModal] = useState({
+    isOpen: false,
+    sessionId: null
+  });
+
+  const openDeleteModal = (sessionId) => {
+    setDeleteModal({ isOpen: true, sessionId: sessionId });
+  };
+
+  const closeDeleteModal = () => {
+    setDeleteModal({ isOpen: false, sessionId: null });
+  };
+
+  const confirmDeleteSession = () => {
+    const idToDelete = deleteModal.sessionId;
+    
+    backend.planService.deleteTrainingSession(
+      idToDelete,
+      () => {
+        setPlanData((prevData) => ({
+          ...prevData,
+          sessions: prevData.sessions.filter((session) => session.id !== idToDelete)
+        }));
+        closeDeleteModal();
+      },
+      (error) => {
+        console.error("Error al eliminar", error);
+        closeDeleteModal();
+      }
+    );
+  };
+
+const handleEditSession = (session) => {
+  navigate(`/plans/edit-session/${session.id}`, { state: { sessionData: session } });
+};
+
   if (isLoading) {
     return (
       <div className="daily-wrapper loading">
@@ -306,55 +344,55 @@ const DailyPlan = ({ athleteId, forcedDate }) => {
                     return (
                     <div key={session.id} className="session-card">
                         <div className="session-header">
-                        <div className="session-title" style={{ color: sportInfo.color, display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                            <SportIcon style={{ fontSize: "1.4rem" }} />
-                            <h4>{sportInfo.name}</h4>
-                            <span className="tss-badge" style={{ backgroundColor: `${sportInfo.color}15`, color: sportInfo.color }} title="Training Stress Score">
-                              TSS {Math.round(session.tss)}
-                            </span>
-                            <span className="session-time">{formatTime(session.startTime)}</span>
-                            
-                            <div className="badge-wrapper" style={{ marginLeft: "auto" }}>
-                              {!isReadOnly && (
-                                <button className="reschedule-icon-btn" onClick={(e) => openReschedulePopover(e, session.id, session.startTime)}title="Mover a otro día u hora">
-                                  <FaCalendarDay />
-                                </button>
-                              )}
-                              {reschedulePopover.activeId === session.id && (
-                                <div className="slider-popover reschedule-popover" onClick={e => e.stopPropagation()}>
-                                  
-                                  <div className="reschedule-inputs-column">
-                                    <input type="date" value={reschedulePopover.newDate} 
-                                      onChange={(e) => setReschedulePopover({...reschedulePopover, newDate: e.target.value})}
-                                      className="reschedule-input"
-                                    />
-                                    <input type="time" value={reschedulePopover.newStartTime} 
-                                      onChange={(e) => setReschedulePopover({...reschedulePopover, newStartTime: e.target.value})}
-                                      className="reschedule-input"
-                                    />
-                                  </div>
+                          <div className="session-title" style={{ color: sportInfo.color, display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                              <SportIcon style={{ fontSize: "1.4rem" }} />
+                              <h4>{sportInfo.name}</h4>
+                              <span className="tss-badge" style={{ backgroundColor: `${sportInfo.color}15`, color: sportInfo.color }} title="Training Stress Score">
+                                TSS {Math.round(session.tss)}
+                              </span>
+                              <span className="session-time">{formatTime(session.startTime)}</span>
+                              
+                              <div className="badge-wrapper" style={{ marginLeft: "auto" }}>
+                                {!isCoach && (
+                                  <button className="reschedule-icon-btn" onClick={(e) => openReschedulePopover(e, session.id, session.startTime)}title="Mover a otro día u hora">
+                                    <FaCalendarDay />
+                                  </button>
+                                )}
+                                {reschedulePopover.activeId === session.id && (
+                                  <div className="slider-popover reschedule-popover" onClick={e => e.stopPropagation()}>
+                                    
+                                    <div className="reschedule-inputs-column">
+                                      <input type="date" value={reschedulePopover.newDate} 
+                                        onChange={(e) => setReschedulePopover({...reschedulePopover, newDate: e.target.value})}
+                                        className="reschedule-input"
+                                      />
+                                      <input type="time" value={reschedulePopover.newStartTime} 
+                                        onChange={(e) => setReschedulePopover({...reschedulePopover, newStartTime: e.target.value})}
+                                        className="reschedule-input"
+                                      />
+                                    </div>
 
-                                  <div className="slider-actions">
-                                    <button className="slider-btn save" onClick={handleSaveReschedule} disabled={reschedulePopover.isSaving}>
-                                      <FaCheck />
-                                    </button>
-                                    <button className="slider-btn cancel" onClick={closeReschedulePopover} disabled={reschedulePopover.isSaving}>
-                                      <FaTimes />
-                                    </button>
+                                    <div className="slider-actions">
+                                      <button className="slider-btn save" onClick={handleSaveReschedule} disabled={reschedulePopover.isSaving}>
+                                        <FaCheck />
+                                      </button>
+                                      <button className="slider-btn cancel" onClick={closeReschedulePopover} disabled={reschedulePopover.isSaving}>
+                                        <FaTimes />
+                                      </button>
+                                    </div>
                                   </div>
-                                </div>
-                              )}
-                            </div>
+                                )}
+                              </div>
+                          </div>
+                          <p className="session-objective">{session.totalDistanceOrDuration} - {session.objective}</p>
                         </div>
-                        <p className="session-objective">{session.totalDistanceOrDuration} - {session.objective}</p>
-                      </div>
 
                         <div className="blocks-container">
                         {session.blocks && session.blocks.map((block) => (
                             <div key={block.id} className="block-row">
                               <div className="block-left">
                                 <div className="badge-wrapper">
-                                  <span className={`badge done ${!isReadOnly ? "clickable" : ""}`} style={getDynamicBadgeStyle(block.done)} onClick={(e) => !isReadOnly && openPopover(e, `BLOCK-${block.id}`, 'BLOCK', block.id, block.done)} title={!isReadOnly ? "Actualizar cumplimiento" : "Cumplimiento del atleta"}>
+                                  <span className={`badge done ${!isCoach ? "clickable" : ""}`} style={getDynamicBadgeStyle(block.done)} onClick={(e) => !isCoach && openPopover(e, `BLOCK-${block.id}`, 'BLOCK', block.id, block.done)} title={!isCoach ? "Actualizar cumplimiento" : "Cumplimiento del atleta"}>
                                     {Math.round((block.done || 0) * 100)}%
                                   </span>
                                   {renderPopover(`BLOCK-${block.id}`)}
@@ -373,6 +411,24 @@ const DailyPlan = ({ athleteId, forcedDate }) => {
                             </div>
                         ))}
                         </div>
+                        {isCoach && 
+                        <div className="session-card-actions">
+                          <button 
+                            className="athlix-btn-icon-edit" 
+                            onClick={() => handleEditSession(session)}
+                            title="Editar sesión"
+                          >
+                            <FaEdit />
+                          </button>
+                          <button 
+                            className="athlix-btn-icon-danger" 
+                            onClick={() => openDeleteModal(session.id)}
+                            title="Eliminar sesión"
+                          >
+                            <FaTrash />
+                          </button>
+                        </div>
+                        }
                     </div>
                     );
                 })
@@ -390,7 +446,7 @@ const DailyPlan = ({ athleteId, forcedDate }) => {
                         <h3 className="card-title" style={{ margin: 0 }}><FormattedMessage id="project.plans.DailyPlan.nutrition" /></h3>
                         {planData.nutrition && (
                           <div className="badge-wrapper">
-                            <span className={`badge done ${!isReadOnly ? "clickable" : ""}`} style={getDynamicBadgeStyle(planData.nutrition.done)} onClick={(e) => !isReadOnly && openPopover(e, `NUTRITION-${planData.nutrition.id}`, 'NUTRITION', planData.nutrition.id, planData.nutrition.done)}>
+                            <span className={`badge done ${!isCoach ? "clickable" : ""}`} style={getDynamicBadgeStyle(planData.nutrition.done)} onClick={(e) => !isCoach && openPopover(e, `NUTRITION-${planData.nutrition.id}`, 'NUTRITION', planData.nutrition.id, planData.nutrition.done)}>
                               {Math.round((planData.nutrition.done || 0) * 100)}%
                             </span>
                             {renderPopover(`NUTRITION-${planData.nutrition.id}`)}
@@ -437,7 +493,7 @@ const DailyPlan = ({ athleteId, forcedDate }) => {
                         <h3 className="card-title" style={{ margin: 0 }}><FormattedMessage id="project.plans.DailyPlan.rest" /></h3>
                         {planData.rest && (
                            <div className="badge-wrapper">
-                             <span className={`badge done ${!isReadOnly ? "clickable" : ""}`} style={getDynamicBadgeStyle(planData.rest.done)} onClick={(e) => !isReadOnly && openPopover(e, `REST-${planData.rest.id}`, 'REST', planData.rest.id, planData.rest.done)}>
+                             <span className={`badge done ${!isCoach ? "clickable" : ""}`} style={getDynamicBadgeStyle(planData.rest.done)} onClick={(e) => !isCoach && openPopover(e, `REST-${planData.rest.id}`, 'REST', planData.rest.id, planData.rest.done)}>
                                {Math.round((planData.rest.done || 0) * 100)}%
                              </span>
                              {renderPopover(`REST-${planData.rest.id}`)}
@@ -461,6 +517,26 @@ const DailyPlan = ({ athleteId, forcedDate }) => {
                         <p className="not-planned"><FormattedMessage id="project.plans.DailyPlan.noRestPlanned" /></p>
                     )}
                 </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {deleteModal.isOpen && (
+        <div className="athlix-modal-overlay" onClick={closeDeleteModal}>
+          <div className="athlix-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="athlix-modal-header">
+              <h3><FormattedMessage id="project.plans.DeleteSession.delete" /></h3>
+            </div>
+            <div className="athlix-modal-body">
+              <p><FormattedMessage id="project.plans.DeleteSession.description" /></p>
+            </div>
+            <div className="athlix-modal-footer">
+              <button className="athlix-btn-cancel" onClick={closeDeleteModal}>
+                <FormattedMessage id="project.global.buttons.cancel" />
+              </button>
+              <button className="athlix-btn-confirm-danger" onClick={confirmDeleteSession}>
+                <FormattedMessage id="project.plans.DeleteSession.confirm" />
+              </button>
             </div>
           </div>
         </div>

@@ -600,4 +600,47 @@ public class PlanServiceImpl implements PlanService {
 
         return tss;
     }
+
+    @Override
+    public void deleteTrainingSession(Long coachId, Long sessionId) throws InstanceNotFoundException, PermissionException {
+        TrainingSession session = trainingSessionDao.findById(sessionId)
+                .orElseThrow(() -> new InstanceNotFoundException("TrainingSession", sessionId));
+
+        if (!session.getCoach().getId().equals(coachId)) {
+            throw new PermissionException();
+        }
+
+        trainingSessionDao.delete(session);
+    }
+
+    @Override
+    public TrainingSession updateTrainingSession(Long coachId, Long sessionId, LocalDate date, LocalTime startTime,
+        TrainingSession.SportType sportType, String objective, String totalDistanceOrDuration, List<TrainingBlock> blocks) 
+        throws InstanceNotFoundException, PermissionException {
+        
+        TrainingSession session = trainingSessionDao.findById(sessionId)
+                .orElseThrow(() -> new InstanceNotFoundException("TrainingSession", sessionId));
+
+        if (!session.getCoach().getId().equals(coachId)) {
+            throw new PermissionException();
+        }
+
+        session.setSessionDate(date);
+        session.setStartTime(startTime);
+        session.setSport(sportType);
+        session.setObjective(objective);
+        session.setTotalDistanceOrDuration(totalDistanceOrDuration);
+
+        if (session.getBlocks() != null && !session.getBlocks().isEmpty()) {
+            trainingBlockDao.deleteAll(session.getBlocks());
+            session.getBlocks().clear();
+        }
+
+        for (TrainingBlock block : blocks) {
+            block.setTrainingSession(session);
+            session.addBlock(block);
+        }
+        
+        return trainingSessionDao.save(session);
+    }
 }

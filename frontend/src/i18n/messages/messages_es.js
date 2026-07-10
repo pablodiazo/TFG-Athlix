@@ -209,4 +209,27 @@ export default {
 
     'project.global.messages.notifications': 'Notificaciones',
     'project.global.messages.noNotifications': 'No tienes notificaciones',
+
+    'project.plans.DeleteSession.delete': 'Eliminar sesión',
+    'project.plans.DeleteSession.description': '¿Estás seguro de que deseas eliminar esta sesión? Los datos se perderán.',
+    'project.plans.DeleteSession.confirm': 'Sí, eliminar',
+
+    'project.plans.EditSession.title': 'Modifcar Sesión de Entrenamiento',
+    'project.plans.EditSession.disclaimer': 'Ajusta los parámetros y bloques de la sesión actual.',
+    'project.plans.EditSession.principalData': 'Datos Principales',
+    'project.plans.EditSession.sessionDate': 'Fecha de la Sesión',
+    'project.plans.EditSession.startTime': 'Hora de Inicio',
+    'project.plans.EditSession.sport': 'Deporte',
+    'project.plans.EditSession.objective': 'Objetivo y Volumen Total',
+    'project.plans.EditSession.objectiveDescription': 'Objetivo de la sesión',
+    'project.plans.EditSession.totalDistanceOrDuration': 'Distancia o duración total',
+    'project.plans.EditSession.blocks': 'Bloques de Entrenamiento',
+    'project.plans.EditSession.addBlock': 'Añadir Bloque',
+    'project.plans.EditSession.block': 'Bloque',
+    'project.plans.EditSession.name': 'Nombre del bloque',
+    'project.plans.EditSession.sets': 'Series',
+    'project.plans.EditSession.repetitions': 'Repeticiones',
+    'project.plans.EditSession.distanceOrDuration': 'Distancia/Duración',
+    'project.plans.EditSession.pace': 'Ritmo/Intensidad',
+    'project.plans.EditSession.rest': 'Descanso',
 }
