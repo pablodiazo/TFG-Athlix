@@ -42,4 +42,10 @@ public interface PlanService {
     void denyReadjustment(Long coachId, Long userId, Long notificationId, Long sessionId, LocalDate newDate, LocalTime newStartTime) throws InstanceNotFoundException, PermissionException;
 
     Double calculateTSS(Long sessionId) throws InstanceNotFoundException, PermissionException;
+
+    void deleteTrainingSession(Long coachId, Long sessionId) throws InstanceNotFoundException, PermissionException;
+
+    TrainingSession updateTrainingSession(Long coachId, Long sessionId, LocalDate date, LocalTime startTime,
+        TrainingSession.SportType sportType, String objective, String totalDistanceOrDuration, List<TrainingBlock> blocks) 
+        throws InstanceNotFoundException, PermissionException;
 }
