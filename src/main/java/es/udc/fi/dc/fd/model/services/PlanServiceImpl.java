@@ -677,4 +677,33 @@ public class PlanServiceImpl implements PlanService {
         
         return nutritionPlanDao.save(plan);
     }
+
+    @Override
+    public void deleteRestPlan(Long coachId, Long planId) throws InstanceNotFoundException, PermissionException {
+        RestPlan plan = restPlanDao.findById(planId)
+                .orElseThrow(() -> new InstanceNotFoundException("RestPlan", planId));
+        
+        if (!plan.getCoach().getId().equals(coachId)) {
+            throw new PermissionException();
+        }
+
+        restPlanDao.delete(plan);
+    }
+
+    @Override
+    public RestPlan updateRestPlan(Long coachId, Long planId, LocalDate planDate, Double targetSleepHours, String guidelines) throws InstanceNotFoundException, PermissionException {
+        
+        RestPlan plan = restPlanDao.findById(planId)
+                .orElseThrow(() -> new InstanceNotFoundException("RestPlan", planId));
+        
+        if (!plan.getCoach().getId().equals(coachId)) {
+            throw new PermissionException();
+        }
+
+        plan.setPlanDate(planDate);;
+        plan.setTargetSleepHours(targetSleepHours);
+        plan.setGuidelines(guidelines);
+        
+        return restPlanDao.save(plan);
+    }
 }

@@ -75,3 +75,11 @@ export const deleteNutritionPlan = (planId, onSuccess, onErrors) => {
 export const updateNutritionPlan = (planId, params, onSuccess, onErrors) => {
     appFetch(`/plans/nutrition-plans/${planId}`, fetchConfig('PUT', params), onSuccess, onErrors);
 };
+
+export const deleteRestPlan = (planId, onSuccess, onErrors) => {
+    appFetch(`/plans/rest-plans/${planId}`, fetchConfig('DELETE'), onSuccess, onErrors);
+};
+
+export const updateRestPlan = (planId, params, onSuccess, onErrors) => {
+    appFetch(`/plans/rest-plans/${planId}`, fetchConfig('PUT', params), onSuccess, onErrors);
+};
