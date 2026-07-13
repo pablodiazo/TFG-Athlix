@@ -83,8 +83,8 @@ const EditNutritionPlan = () => {
   return (
     <div className="athlix-create-wrapper">
       <div className="athlix-create-header">
-        <h2>Modificar Plan de Nutrición</h2>
-        <p>Ajusta los macros y directrices del plan nutricional existente.</p>
+        <h2><FormattedMessage id="project.plans.EditNutritionPlan.title" /></h2>
+        <p><FormattedMessage id="project.plans.EditNutritionPlan.disclaimer" /></p>
       </div>
 
       {successMessage && <div className="athlix-alert success" style={{ padding: '1rem', borderRadius: '8px', marginBottom: '2rem', backgroundColor: 'rgba(34, 197, 94, 0.2)', color: '#4ade80', border: '1px solid #22c55e' }}>{successMessage}</div>}
@@ -146,7 +146,7 @@ const EditNutritionPlan = () => {
 
         <div className="athlix-form-actions">
           <button type="submit" className="athlix-btn-primary" disabled={isSubmitting}>
-            {isSubmitting ? "Guardando cambios..." : "Guardar Modificaciones"}
+            {isSubmitting ? <FormattedMessage id="project.global.buttons.savingChanges" /> : <FormattedMessage id="project.global.buttons.saveChanges" />}
           </button>
         </div>
 

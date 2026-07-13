@@ -228,7 +228,7 @@ const EditTrainingSession = () => {
 
         <div className="athlix-form-actions">
           <button type="submit" className="athlix-btn-primary" disabled={isSubmitting}>
-            {isSubmitting ? "Guardando cambios..." : "Guardar Modificaciones"}
+            {isSubmitting ? <FormattedMessage id="project.global.buttons.savingChanges" /> : <FormattedMessage id="project.global.buttons.saveChanges" />}
           </button>
         </div>
 

@@ -301,15 +301,32 @@ const DailyPlan = ({ athleteId, forcedDate }) => {
         (error) => { console.error("Error al eliminar nutrición", error); closeDeleteModal(); }
       );
     }
+    else if (entityType === 'REST') {
+      backend.planService.deleteRestPlan(
+        entityId,
+        () => {
+          setPlanData((prevData) => ({
+            ...prevData,
+            rest: null
+          }));
+          closeDeleteModal();
+        },
+        (error) => { console.error("Error al eliminar descanso", error); closeDeleteModal(); }
+      );
+    }
   };
 
-const handleEditSession = (session) => {
-  navigate(`/plans/edit-session/${session.id}`, { state: { sessionData: session } });
-};
+  const handleEditSession = (session) => {
+    navigate(`/plans/edit-session/${session.id}`, { state: { sessionData: session } });
+  };
 
-const handleEditNutritionPlan = (plan) => {
-  navigate(`/plans/edit-nutrition-plan/${plan.id}`, { state: { planData: plan } });
-};
+  const handleEditNutritionPlan = (plan) => {
+    navigate(`/plans/edit-nutrition-plan/${plan.id}`, { state: { planData: plan } });
+  };
+
+  const handleEditRestPlan = (plan) => {
+    navigate(`/plans/edit-rest-plan/${plan.id}`, { state: { planData: plan } });
+  };
 
   if (isLoading) {
     return (
@@ -547,6 +564,24 @@ const handleEditNutritionPlan = (plan) => {
                             <p>{planData.rest.guidelines}</p>
                             </div>
                         )}
+                        {isCoach && 
+                        <div className="session-card-actions">
+                          <button 
+                            className="btn-icon-edit" 
+                            onClick={() => handleEditRestPlan(planData.rest)}
+                            title="Editar plan de descanso"
+                          >
+                            <FaEdit />
+                          </button>
+                          <button 
+                            className="btn-icon-danger" 
+                            onClick={() => openDeleteModal(planData.rest.id, 'REST')}
+                            title="Eliminar plan de descanso"
+                          >
+                            <FaTrash />
+                          </button>
+                        </div>
+                        }
                         </div>
                     ) : (
                         <p className="not-planned"><FormattedMessage id="project.plans.DailyPlan.noRestPlanned" /></p>
@@ -561,20 +596,28 @@ const handleEditNutritionPlan = (plan) => {
           <div className="athlix-modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="athlix-modal-header">
               <h3>
-                {deleteModal.entityType === 'SESSION' ? (
+                {deleteModal.entityType === 'SESSION' && (
                   <FormattedMessage id="project.plans.DeleteSession.delete" />
-                ) : (
+                )}
+                {deleteModal.entityType === 'NUTRITION' && (
                   <FormattedMessage id="project.plans.DeleteNutritionPlan.delete" />
+                )}
+                {deleteModal.entityType === 'REST' && (
+                  <FormattedMessage id="project.plans.DeleteRestPlan.delete" />
                 )}
               </h3>
             </div>
             <div className="athlix-modal-body">
               <p>
                 <FormattedMessage id="project.plans.DeleteSession.description" />
-                {deleteModal.entityType === 'SESSION' ? (
+                {deleteModal.entityType === 'SESSION' && (
                   <FormattedMessage id="project.plans.DeleteSession.descriptionSession" />
-                ) : (
+                )}
+                {deleteModal.entityType === 'NUTRITION' && (
                   <FormattedMessage id="project.plans.DeleteSession.descriptionPlan" />
+                )}
+                {deleteModal.entityType === 'REST' && (
+                  <FormattedMessage id="project.plans.DeleteSession.descriptionRestPlan" />
                 )}
                 <FormattedMessage id="project.plans.DeleteSession.descriptionContinued" />
               </p>
