@@ -20,6 +20,8 @@ export default {
     'project.global.buttons.submit': 'Submit',
     'project.global.buttons.update': 'Update',
     'project.global.buttons.resetFilter': 'Show all',
+    'project.global.buttons.savingChanges': 'Saving changes...',
+    'project.global.buttons.saveChanges': 'Save Changes',
 
     // === GLOBAL ERRORS & EXCEPTIONS ===
     'project.global.errors.formNotFull': 'Uncompleted form',
@@ -214,9 +216,11 @@ export default {
     'project.plans.DeleteSession.description': 'Are you sure you want to delete',
     'project.plans.DeleteSession.descriptionSession': ' this session?',
     'project.plans.DeleteSession.descriptionPlan': ' this nutrition plan?',
+    'project.plans.DeleteSession.descriptionRestPlan': ' this rest plan?',
     'project.plans.DeleteSession.descriptionContinued': ' This action cannot be undone and all data will be lost.',
     'project.plans.DeleteSession.confirm': 'Yes, delete',
     'project.plans.DeleteNutritionPlan.delete': 'Delete nutrition plan',
+    'project.plans.DeleteRestPlan.delete': 'Delete rest plan',
 
     'project.plans.EditSession.title': 'Edit Training Session',
     'project.plans.EditSession.disclaimer': 'Adjust the session and add the workout blocks for your athlete.',
@@ -236,4 +240,10 @@ export default {
     'project.plans.EditSession.distanceOrDuration': 'Distance/Time',
     'project.plans.EditSession.pace': 'Pace/Zone',
     'project.plans.EditSession.rest': 'Rest',
+
+    'project.plans.EditNutritionPlan.title': 'Edit Nutrition Plan',
+    'project.plans.EditNutritionPlan.disclaimer': 'Adjust the nutrition plan and additional information.',
+
+    'project.plans.EditRestPlan.title': 'Edit Rest Plan',
+    'project.plans.EditRestPlan.disclaimer': 'Adjust the rest plan and additional information.',
 }

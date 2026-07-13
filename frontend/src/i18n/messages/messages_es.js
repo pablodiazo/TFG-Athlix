@@ -20,6 +20,8 @@ export default {
     'project.global.buttons.submit': 'Enviar',
     'project.global.buttons.update': 'Actualizar',
     'project.global.buttons.resetFilter': 'Mostrar todos',
+    'project.global.buttons.savingChanges': 'Guardando cambios...',
+    'project.global.buttons.saveChanges': 'Guardar Modificaciones',
 
     // === GLOBAL ERRORS & EXCEPTIONS ===
     'project.global.errors.formNotFull': 'Formulario incompleto',
@@ -214,9 +216,11 @@ export default {
     'project.plans.DeleteSession.description': '¿Estás seguro de que deseas eliminar',
     'project.plans.DeleteSession.descriptionSession': ' esta sesión?',
     'project.plans.DeleteSession.descriptionPlan': ' este plan de nutrición?',
+    'project.plans.DeleteSession.descriptionRestPlan': ' este plan de descanso?',
     'project.plans.DeleteSession.descriptionContinued': ' Esta acción no se puede deshacer y los datos se perderán.',
     'project.plans.DeleteSession.confirm': 'Sí, eliminar',
     'project.plans.DeleteNutritionPlan.delete': 'Eliminar plan de nutrición',
+    'project.plans.DeleteRestPlan.delete': 'Eliminar plan de descanso',
 
     'project.plans.EditSession.title': 'Modifcar Sesión de Entrenamiento',
     'project.plans.EditSession.disclaimer': 'Ajusta los parámetros y bloques de la sesión actual.',
@@ -236,4 +240,10 @@ export default {
     'project.plans.EditSession.distanceOrDuration': 'Distancia/Duración',
     'project.plans.EditSession.pace': 'Ritmo/Intensidad',
     'project.plans.EditSession.rest': 'Descanso',
+
+    'project.plans.EditNutritionPlan.title': 'Modificar Plan de Nutrición',
+    'project.plans.EditNutritionPlan.disclaimer': 'Ajusta los macros y directrices del plan nutricional existente.',
+
+    'project.plans.EditRestPlan.title': 'Modificar Plan de Descanso',
+    'project.plans.EditRestPlan.disclaimer': 'Ajusta las horas objetivo y directrices del plan de recuperación existente.',
 }
