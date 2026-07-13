@@ -551,8 +551,8 @@
   border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.athlix-btn-icon-edit,
-.athlix-btn-icon-danger {
+.btn-icon-edit,
+.btn-icon-danger {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -566,28 +566,28 @@
   transition: all 0.2s ease;
 }
 
-.athlix-btn-icon-edit {
+.btn-icon-edit {
   color: #d1d5db;
 }
 
-.athlix-btn-icon-edit:hover {
+.btn-icon-edit:hover {
   background-color: rgba(59, 130, 246, 0.1);
   color: #3b82f6; /* Azul ATHLIX */
   border-color: rgba(59, 130, 246, 0.3);
 }
 
-.athlix-btn-icon-danger {
+.btn-icon-danger {
   color: #9ca3af;
 }
 
-.athlix-btn-icon-danger:hover {
+.btn-icon-danger:hover {
   background-color: rgba(239, 68, 68, 0.1);
   color: #ef4444;
   border-color: rgba(239, 68, 68, 0.3);
 }
 
-.athlix-btn-icon-edit:active,
-.athlix-btn-icon-danger:active {
+.btn-icon-edit:active,
+.btn-icon-danger:active {
   transform: scale(0.95);
 }
 

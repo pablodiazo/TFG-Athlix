@@ -2,15 +2,31 @@ package es.udc.fi.dc.fd.rest.dtos;
 
 import java.time.LocalDate;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Min;
+
 public class CreateNutritionPlanParamsDto {
     
     private Long athleteId;
+
+    @NotNull
     private LocalDate planDate;
+
+    @NotNull @Min(0)
     private Integer targetCalories;
+
+    @NotNull @Min(0)
     private Integer proteinGrams;
+
+    @NotNull @Min(0)
     private Integer carbsGrams;
+
+    @NotNull @Min(0)
     private Integer fatGrams;
+
+    @NotNull @Min(0)
     private Double hydrationLiters;
+
     private String guidelines;
 
     public CreateNutritionPlanParamsDto() {}

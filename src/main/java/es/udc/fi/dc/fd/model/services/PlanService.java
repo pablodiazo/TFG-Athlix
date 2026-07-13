@@ -48,4 +48,9 @@ public interface PlanService {
     TrainingSession updateTrainingSession(Long coachId, Long sessionId, LocalDate date, LocalTime startTime,
         TrainingSession.SportType sportType, String objective, String totalDistanceOrDuration, List<TrainingBlock> blocks) 
         throws InstanceNotFoundException, PermissionException;
+    
+    void deleteNutritionPlan(Long coachId, Long planId) throws InstanceNotFoundException, PermissionException;
+
+    NutritionPlan updateNutritionPlan(Long coachId, Long planId, LocalDate planDate, Integer targetCalories, Integer proteinGrams, Integer carbsGrams,
+        Integer fatGrams, Double hydrationLiters, String guidelines) throws InstanceNotFoundException, PermissionException;
 }
