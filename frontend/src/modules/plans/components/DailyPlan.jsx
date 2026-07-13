@@ -260,38 +260,55 @@ const DailyPlan = ({ athleteId, forcedDate }) => {
 
   const [deleteModal, setDeleteModal] = useState({
     isOpen: false,
-    sessionId: null
+    entityId: null,
+    entityType: null
   });
 
-  const openDeleteModal = (sessionId) => {
-    setDeleteModal({ isOpen: true, sessionId: sessionId });
+  const openDeleteModal = (id, type) => {
+    setDeleteModal({ isOpen: true, entityId: id, entityType: type });
   };
 
   const closeDeleteModal = () => {
-    setDeleteModal({ isOpen: false, sessionId: null });
+    setDeleteModal({ isOpen: false, entityId: null, entityType: null });
   };
 
-  const confirmDeleteSession = () => {
-    const idToDelete = deleteModal.sessionId;
+  const confirmDelete = () => {
+    const { entityId, entityType } = deleteModal;
     
-    backend.planService.deleteTrainingSession(
-      idToDelete,
-      () => {
-        setPlanData((prevData) => ({
-          ...prevData,
-          sessions: prevData.sessions.filter((session) => session.id !== idToDelete)
-        }));
-        closeDeleteModal();
-      },
-      (error) => {
-        console.error("Error al eliminar", error);
-        closeDeleteModal();
-      }
-    );
+    if (entityType === 'SESSION') {
+      backend.planService.deleteTrainingSession(
+        entityId,
+        () => {
+          setPlanData((prevData) => ({
+            ...prevData,
+            sessions: prevData.sessions.filter((session) => session.id !== entityId)
+          }));
+          closeDeleteModal();
+        },
+        (error) => { console.error("Error al eliminar sesión", error); closeDeleteModal(); }
+      );
+    } 
+    else if (entityType === 'NUTRITION') {
+      backend.planService.deleteNutritionPlan(
+        entityId,
+        () => {
+          setPlanData((prevData) => ({
+            ...prevData,
+            nutrition: null
+          }));
+          closeDeleteModal();
+        },
+        (error) => { console.error("Error al eliminar nutrición", error); closeDeleteModal(); }
+      );
+    }
   };
 
 const handleEditSession = (session) => {
   navigate(`/plans/edit-session/${session.id}`, { state: { sessionData: session } });
+};
+
+const handleEditNutritionPlan = (plan) => {
+  navigate(`/plans/edit-nutrition-plan/${plan.id}`, { state: { planData: plan } });
 };
 
   if (isLoading) {
@@ -414,15 +431,15 @@ const handleEditSession = (session) => {
                         {isCoach && 
                         <div className="session-card-actions">
                           <button 
-                            className="athlix-btn-icon-edit" 
+                            className="btn-icon-edit" 
                             onClick={() => handleEditSession(session)}
                             title="Editar sesión"
                           >
                             <FaEdit />
                           </button>
                           <button 
-                            className="athlix-btn-icon-danger" 
-                            onClick={() => openDeleteModal(session.id)}
+                            className="btn-icon-danger" 
+                            onClick={() => openDeleteModal(session.id, 'SESSION')}
                             title="Eliminar sesión"
                           >
                             <FaTrash />
@@ -481,6 +498,24 @@ const handleEditSession = (session) => {
                             <p>{planData.nutrition.guidelines}</p>
                             </div>
                         )}
+                        {isCoach && 
+                        <div className="session-card-actions">
+                          <button 
+                            className="btn-icon-edit" 
+                            onClick={() => handleEditNutritionPlan(planData.nutrition)}
+                            title="Editar plan nutricional"
+                          >
+                            <FaEdit />
+                          </button>
+                          <button 
+                            className="btn-icon-danger" 
+                            onClick={() => openDeleteModal(planData.nutrition.id, 'NUTRITION')}
+                            title="Eliminar plan nutricional"
+                          >
+                            <FaTrash />
+                          </button>
+                        </div>
+                        }
                         </div>
                     ) : (
                         <p className="not-planned"><FormattedMessage id="project.plans.DailyPlan.noNutritionPlanned" /></p>
@@ -525,16 +560,30 @@ const handleEditSession = (session) => {
         <div className="athlix-modal-overlay" onClick={closeDeleteModal}>
           <div className="athlix-modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="athlix-modal-header">
-              <h3><FormattedMessage id="project.plans.DeleteSession.delete" /></h3>
+              <h3>
+                {deleteModal.entityType === 'SESSION' ? (
+                  <FormattedMessage id="project.plans.DeleteSession.delete" />
+                ) : (
+                  <FormattedMessage id="project.plans.DeleteNutritionPlan.delete" />
+                )}
+              </h3>
             </div>
             <div className="athlix-modal-body">
-              <p><FormattedMessage id="project.plans.DeleteSession.description" /></p>
+              <p>
+                <FormattedMessage id="project.plans.DeleteSession.description" />
+                {deleteModal.entityType === 'SESSION' ? (
+                  <FormattedMessage id="project.plans.DeleteSession.descriptionSession" />
+                ) : (
+                  <FormattedMessage id="project.plans.DeleteSession.descriptionPlan" />
+                )}
+                <FormattedMessage id="project.plans.DeleteSession.descriptionContinued" />
+              </p>
             </div>
             <div className="athlix-modal-footer">
               <button className="athlix-btn-cancel" onClick={closeDeleteModal}>
                 <FormattedMessage id="project.global.buttons.cancel" />
               </button>
-              <button className="athlix-btn-confirm-danger" onClick={confirmDeleteSession}>
+              <button className="athlix-btn-confirm-danger" onClick={confirmDelete}>
                 <FormattedMessage id="project.plans.DeleteSession.confirm" />
               </button>
             </div>

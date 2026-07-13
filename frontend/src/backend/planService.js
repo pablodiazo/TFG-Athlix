@@ -67,3 +67,11 @@ export const deleteTrainingSession = (sessionId, onSuccess, onErrors) => {
 export const updateTrainingSession = (sessionId, params, onSuccess, onErrors) => {
     appFetch(`/plans/training-sessions/${sessionId}`, fetchConfig('PUT', params), onSuccess, onErrors);
 };
+
+export const deleteNutritionPlan = (planId, onSuccess, onErrors) => {
+    appFetch(`/plans/nutrition-plans/${planId}`, fetchConfig('DELETE'), onSuccess, onErrors);
+};
+
+export const updateNutritionPlan = (planId, params, onSuccess, onErrors) => {
+    appFetch(`/plans/nutrition-plans/${planId}`, fetchConfig('PUT', params), onSuccess, onErrors);
+};
