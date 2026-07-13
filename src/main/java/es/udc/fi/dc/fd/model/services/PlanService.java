@@ -53,4 +53,8 @@ public interface PlanService {
 
     NutritionPlan updateNutritionPlan(Long coachId, Long planId, LocalDate planDate, Integer targetCalories, Integer proteinGrams, Integer carbsGrams,
         Integer fatGrams, Double hydrationLiters, String guidelines) throws InstanceNotFoundException, PermissionException;
+
+    void deleteRestPlan(Long coachId, Long planId) throws InstanceNotFoundException, PermissionException;
+
+    RestPlan updateRestPlan(Long coachId, Long planId, LocalDate planDate, Double targetSleepHours, String guidelines) throws InstanceNotFoundException, PermissionException;
 }

@@ -1,12 +1,19 @@
 package es.udc.fi.dc.fd.rest.dtos;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public class CreateRestPlanParamsDto {
 
     private Long athleteId;
+
+    @NotNull
     private LocalDate planDate;
+
+    @NotNull @Min(0)
     private Double targetSleepHours;
+
     private String guidelines;
     
 

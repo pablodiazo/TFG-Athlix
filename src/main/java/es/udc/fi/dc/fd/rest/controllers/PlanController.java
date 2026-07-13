@@ -39,6 +39,7 @@ import es.udc.fi.dc.fd.rest.dtos.UpdatePlanDoneParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.UpdateSessionParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.AcceptReadjustmentParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.UpdateNutritionPlanParamsDto;
+import es.udc.fi.dc.fd.rest.dtos.UpdateRestPlanParamsDto;
 import static es.udc.fi.dc.fd.rest.dtos.TrainingSessionConversor.toTrainingSessionDto;
 import static es.udc.fi.dc.fd.rest.dtos.TrainingBlockConversor.toTrainingBlockDto;
 import static es.udc.fi.dc.fd.rest.dtos.PlanConversor.toNutritionPlanDto;
@@ -418,5 +419,19 @@ public class PlanController {
                                                  params.getFatGrams(), params.getHydrationLiters(), params.getGuidelines());
 
         return toNutritionPlanDto(nutritionPlan);
+    }
+
+    @DeleteMapping("/rest-plans/{id}")
+    public void deleteRestPlan(@RequestAttribute Long userId, @PathVariable Long id) throws InstanceNotFoundException, PermissionException {
+        planService.deleteRestPlan(userId, id);
+    }
+
+    @PutMapping("/rest-plans/{id}")
+    public RestPlanDto updateRestPlan(@RequestAttribute Long userId, @PathVariable Long id,
+        @Validated @RequestBody UpdateRestPlanParamsDto params) throws InstanceNotFoundException, PermissionException {
+        
+        RestPlan restPlan = planService.updateRestPlan(userId, id, params.getPlanDate(), params.getTargetSleepHours(), params.getGuidelines());
+
+        return toRestPlanDto(restPlan);
     }
 }

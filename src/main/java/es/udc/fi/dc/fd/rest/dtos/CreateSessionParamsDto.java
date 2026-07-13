@@ -5,15 +5,27 @@ import java.time.LocalTime;
 import java.util.List;
 
 import es.udc.fi.dc.fd.model.entities.TrainingSession;
+import jakarta.validation.constraints.NotNull;
 
 public class CreateSessionParamsDto {
     
     private Long athleteId;
+
+    @NotNull
     private LocalDate sessionDate;
+
+    @NotNull
     private LocalTime startTime;
+
+    @NotNull
     private TrainingSession.SportType sport;
+
+    @NotNull
     private String objective;
+
+    @NotNull
     private String totalDistanceOrDuration;
+    
     private List<TrainingBlockDto> blocks;
 
     public CreateSessionParamsDto() {}
