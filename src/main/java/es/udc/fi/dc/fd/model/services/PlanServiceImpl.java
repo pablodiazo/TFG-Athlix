@@ -643,4 +643,38 @@ public class PlanServiceImpl implements PlanService {
         
         return trainingSessionDao.save(session);
     }
+
+    @Override
+    public void deleteNutritionPlan(Long coachId, Long planId) throws InstanceNotFoundException, PermissionException {
+        NutritionPlan plan = nutritionPlanDao.findById(planId)
+                .orElseThrow(() -> new InstanceNotFoundException("NutritionPlan", planId));
+        
+        if (!plan.getCoach().getId().equals(coachId)) {
+            throw new PermissionException();
+        }
+
+        nutritionPlanDao.delete(plan);
+    }
+
+    @Override
+    public NutritionPlan updateNutritionPlan(Long coachId, Long planId, LocalDate planDate, Integer targetCalories, Integer proteinGrams, Integer carbsGrams,
+        Integer fatGrams, Double hydrationLiters, String guidelines) throws InstanceNotFoundException, PermissionException {
+        
+        NutritionPlan plan = nutritionPlanDao.findById(planId)
+                .orElseThrow(() -> new InstanceNotFoundException("NutritionPlan", planId));
+        
+        if (!plan.getCoach().getId().equals(coachId)) {
+            throw new PermissionException();
+        }
+
+        plan.setPlanDate(planDate);;
+        plan.setTargetCalories(targetCalories);
+        plan.setProteinGrams(proteinGrams);
+        plan.setCarbsGrams(carbsGrams);
+        plan.setFatGrams(fatGrams);
+        plan.setHydrationLiters(hydrationLiters);
+        plan.setGuidelines(guidelines);
+        
+        return nutritionPlanDao.save(plan);
+    }
 }

@@ -38,6 +38,7 @@ import es.udc.fi.dc.fd.rest.dtos.TrainingBlockDto;
 import es.udc.fi.dc.fd.rest.dtos.UpdatePlanDoneParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.UpdateSessionParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.AcceptReadjustmentParamsDto;
+import es.udc.fi.dc.fd.rest.dtos.UpdateNutritionPlanParamsDto;
 import static es.udc.fi.dc.fd.rest.dtos.TrainingSessionConversor.toTrainingSessionDto;
 import static es.udc.fi.dc.fd.rest.dtos.TrainingBlockConversor.toTrainingBlockDto;
 import static es.udc.fi.dc.fd.rest.dtos.PlanConversor.toNutritionPlanDto;
@@ -402,4 +403,20 @@ public class PlanController {
         return responseDto;
     }
 
+
+    @DeleteMapping("/nutrition-plans/{id}")
+    public void deleteNutritionPlan(@RequestAttribute Long userId, @PathVariable Long id) 
+            throws InstanceNotFoundException, PermissionException {
+        planService.deleteNutritionPlan(userId, id);
+    }
+
+    @PutMapping("/nutrition-plans/{id}")
+    public NutritionPlanDto updateNutritionPlan(@RequestAttribute Long userId, @PathVariable Long id,
+        @Validated @RequestBody UpdateNutritionPlanParamsDto params) throws InstanceNotFoundException, PermissionException {
+        
+        NutritionPlan nutritionPlan = planService.updateNutritionPlan(userId, id, params.getPlanDate(), params.getTargetCalories(), params.getProteinGrams(), params.getCarbsGrams(), 
+                                                 params.getFatGrams(), params.getHydrationLiters(), params.getGuidelines());
+
+        return toNutritionPlanDto(nutritionPlan);
+    }
 }
