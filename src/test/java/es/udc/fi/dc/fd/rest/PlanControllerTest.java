@@ -32,6 +32,7 @@ import es.udc.fi.dc.fd.model.entities.UserDao;
 import es.udc.fi.dc.fd.model.entities.NotificationDao;
 import es.udc.fi.dc.fd.model.entities.Users;
 import es.udc.fi.dc.fd.model.entities.Users.RoleType;
+import es.udc.fi.dc.fd.model.entities.IntensityZone;
 import es.udc.fi.dc.fd.model.services.PlanService;
 import es.udc.fi.dc.fd.model.services.exceptions.IncorrectLoginException;
 import es.udc.fi.dc.fd.rest.controllers.UserController;
@@ -138,7 +139,7 @@ public class PlanControllerTest {
         LocalDate testDate = LocalDate.of(2026, 6, 1);
         LocalTime testTime = LocalTime.of(18, 30);
 
-        TrainingBlockDto blockDto = new TrainingBlockDto(null, 1, "Series Pista", 8, 1, "400m", "Z4", "1 min", 0.0);
+        TrainingBlockDto blockDto = new TrainingBlockDto(null, 1, "Series Pista", 8, 1, "400m", IntensityZone.Z4, "0", 0.0);
         
         CreateSessionParamsDto params = new CreateSessionParamsDto(
                 athlete.getUserDto().getId(),
@@ -194,7 +195,7 @@ public class PlanControllerTest {
         AuthenticatedUserDto fakeCoach = createAuthenticatedUser("fakeCoach", RoleType.USER);
         AuthenticatedUserDto athlete = createAuthenticatedUser("athleteTarget", RoleType.USER);
 
-        TrainingBlockDto blockDto = new TrainingBlockDto(null, 1, "Series Pista", 8, 1, "400m", "Z4", "1 min", 0.0);
+        TrainingBlockDto blockDto = new TrainingBlockDto(null, 1, "Series Pista", 8, 1, "400m", IntensityZone.Z4, "1 min", 0.0);
 
 
         CreateSessionParamsDto params = new CreateSessionParamsDto(
@@ -351,7 +352,7 @@ public class PlanControllerTest {
         block.setName("Bloque de Prueba");
         block.setSets(1);
         block.setDistanceOrDuration("1km");
-        block.setPace("Z1");
+        block.setPace(IntensityZone.Z1);
         block.setRest("0");
 
         TrainingSession session = planService.createTrainingSession(

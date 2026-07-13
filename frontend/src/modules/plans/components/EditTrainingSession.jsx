@@ -15,6 +15,12 @@ const SPORT_OPTIONS = [
   { id: "OTHER", name: "Otro", icon: FaClock, color: "#9ca3af" }
 ];
 
+const PACE_OPTIONS = {
+  SWIM: ["Suave", "AER1", "AER2", "AER3", "Fuerte"],
+  RUN: ["R0", "R1", "R1+", "R2", "R3", "R3+", "R4", "R5", "R6"],
+  BIKE: ["Z1", "Z2", "Z3", "Z4", "Z5", "Z6", "Z7"]
+};
+
 const EditTrainingSession = () => {
   const { id } = useParams();
   const location = useLocation();
@@ -62,6 +68,12 @@ const EditTrainingSession = () => {
 
   const handleSportSelect = (sportId) => {
     setSessionData({ ...sessionData, sport: sportId });
+
+    const resetBlocks = blocks.map(block => ({ 
+      ...block, 
+      pace: PACE_OPTIONS[sportId] ? "" : "-" 
+    }));
+    setBlocks(resetBlocks);
   };
 
   const addBlock = () => {
@@ -189,7 +201,7 @@ const EditTrainingSession = () => {
             {blocks.map((block, index) => (
               <div key={index} className="athlix-block-card">
                 <div className="athlix-block-card-header">
-                  <h4>Bloque {index + 1}</h4>
+                  <h4><FormattedMessage id="project.plans.CreateTrainingSession.block" /> {index + 1}</h4>
                   <button type="button" className="athlix-btn-icon-danger" onClick={() => removeBlock(index)}>
                     <FaTrash />
                   </button>
@@ -213,9 +225,21 @@ const EditTrainingSession = () => {
                     <input type="text" name="distanceOrDuration" value={block.distanceOrDuration} onChange={(e) => handleBlockChange(index, e)} required />
                   </div>
                   <div className="athlix-input-group">
-                    <label><FormattedMessage id="project.plans.EditSession.pace" /></label>
-                    <input type="text" name="pace" value={block.pace || ""} onChange={(e) => handleBlockChange(index, e)} />
-                  </div>
+                    <label><FormattedMessage id="project.plans.CreateTrainingSession.pace" /></label>
+                      {PACE_OPTIONS[sessionData.sport] ? (
+                        <select 
+                          name="pace" 
+                          value={block.pace || ""} 
+                          onChange={(e) => handleBlockChange(index, e)}
+                          required
+                        >
+                          <option value=""><FormattedMessage id="project.plans.CreateTrainingSession.selectZone" /></option>
+                          {PACE_OPTIONS[sessionData.sport].map(zone => (<option key={zone} value={zone}>{zone}</option>))}
+                        </select>
+                      ) : (
+                        <input type="text" name="pace" value="-" disabled title="No se aplican zonas de intensidad a este deporte" style={{ opacity: 0.5, cursor: "not-allowed" }}/>
+                      )}                                        
+                  </div>                                      
                   <div className="athlix-input-group">
                     <label><FormattedMessage id="project.plans.EditSession.rest" /></label>
                     <input type="text" name="rest" value={block.rest || ""} onChange={(e) => handleBlockChange(index, e)} />

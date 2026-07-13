@@ -15,6 +15,12 @@ const SPORT_OPTIONS = [
   { id: "OTHER", name: "Otro", icon: FaClock, color: "#9ca3af" }
 ];
 
+const PACE_OPTIONS = {
+  SWIM: ["Suave", "AER1", "AER2", "AER3", "Fuerte"],
+  RUN: ["R0", "R1", "R1+", "R2", "R3", "R3+", "R4", "R5", "R6"],
+  BIKE: ["Z1", "Z2", "Z3", "Z4", "Z5", "Z6", "Z7"]
+};
+
 const CreateTrainingSession = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -53,6 +59,12 @@ const CreateTrainingSession = () => {
 
   const handleSportSelect = (sportId) => {
     setSessionData({ ...sessionData, sport: sportId });
+
+    const resetBlocks = blocks.map(block => ({ 
+      ...block, 
+      pace: PACE_OPTIONS[sportId] ? "" : "-" 
+    }));
+    setBlocks(resetBlocks);
   };
 
   const addBlock = () => {
@@ -214,7 +226,29 @@ const CreateTrainingSession = () => {
                   </div>
                   <div className="athlix-input-group">
                     <label><FormattedMessage id="project.plans.CreateTrainingSession.pace" /></label>
-                    <input type="text" name="pace" value={block.pace} onChange={(e) => handleBlockChange(index, e)} placeholder="Ej: Z4 o 4:30 min/km" />
+                    
+                    {PACE_OPTIONS[sessionData.sport] ? (
+                      <select 
+                        name="pace" 
+                        value={block.pace || ""} 
+                        onChange={(e) => handleBlockChange(index, e)}
+                        required
+                      >
+                        <option value=""><FormattedMessage id="project.plans.CreateTrainingSession.selectZone" /></option>
+                        {PACE_OPTIONS[sessionData.sport].map(zone => (
+                          <option key={zone} value={zone}>{zone}</option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input 
+                        type="text" 
+                        name="pace" 
+                        value="-" 
+                        disabled 
+                        title="No se aplican zonas de intensidad a este deporte"
+                        style={{ opacity: 0.5, cursor: "not-allowed" }}
+                      />
+                    )}
                   </div>
                   <div className="athlix-input-group">
                     <label><FormattedMessage id="project.plans.CreateTrainingSession.rest" /></label>

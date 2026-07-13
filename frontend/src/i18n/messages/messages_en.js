@@ -157,6 +157,7 @@ export default {
     'project.plans.CreateTrainingSession.distanceOrDuration': 'Distance / Time',
     'project.plans.CreateTrainingSession.pace': 'Pace / Zone',
     'project.plans.CreateTrainingSession.rest': 'Rest',
+    'project.plans.CreateTrainingSession.selectZone': 'Select a zone',
 
     'project.plans.CreateSessionSuccess.title': 'Planification created successfully!',
     'project.plans.CreateSessionSuccess.text': 'The planification has been saved and assigned correctly to your athlete.',

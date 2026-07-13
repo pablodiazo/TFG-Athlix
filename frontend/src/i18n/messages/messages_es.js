@@ -157,6 +157,7 @@ export default {
     'project.plans.CreateTrainingSession.distanceOrDuration': 'Distancia / Tiempo',
     'project.plans.CreateTrainingSession.pace': 'Ritmo / Zona',
     'project.plans.CreateTrainingSession.rest': 'Recuperación',
+    'project.plans.CreateTrainingSession.selectZone': 'Seleccionar zona',
 
     'project.plans.CreateSessionSuccess.title': 'Planificación creada con éxito!',
     'project.plans.CreateSessionSuccess.text': 'La planificación se ha guardado y asignado correctamente al calendario de tu atleta.',
