@@ -1,5 +1,7 @@
 package es.udc.fi.dc.fd.rest.dtos;
 
+import es.udc.fi.dc.fd.model.entities.IntensityZone;
+
 public class TrainingBlockDto {
     
     private Long id;
@@ -8,14 +10,14 @@ public class TrainingBlockDto {
     private Integer sets;
     private Integer reps;
     private String distanceOrDuration;
-    private String pace;
+    private IntensityZone pace;
     private String rest;
     private Double done;
 
     public TrainingBlockDto() {}
 
     public TrainingBlockDto(Long id, Integer blockOrder, String name, Integer sets, Integer reps, 
-                            String distanceOrDuration, String pace, String rest, Double done) {
+                            String distanceOrDuration, IntensityZone pace, String rest, Double done) {
         this.id = id;
         this.blockOrder = blockOrder;
         this.name = name;
@@ -45,8 +47,8 @@ public class TrainingBlockDto {
     public String getDistanceOrDuration() { return distanceOrDuration; }
     public void setDistanceOrDuration(String distanceOrDuration) { this.distanceOrDuration = distanceOrDuration; }
 
-    public String getPace() { return pace; }
-    public void setPace(String pace) { this.pace = pace; }
+    public IntensityZone getPace() { return pace; }
+    public void setPace(IntensityZone pace) { this.pace = pace; }
 
     public String getRest() { return rest; }                                 
     public void setRest(String rest) { this.rest = rest; }

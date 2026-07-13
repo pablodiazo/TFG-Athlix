@@ -554,37 +554,40 @@ public class PlanServiceImpl implements PlanService {
 
         for (TrainingBlock block : session.getBlocks()) {
             double intensity = 0.0;
-            String pace = block.getPace() != null ? block.getPace() : "-";
+            IntensityZone pace = block.getPace() != null ? block.getPace() : IntensityZone.NONE;
 
             if (session.getSport() == TrainingSession.SportType.SWIM) {
                 switch (pace) {
-                    case "Suave": intensity = 0.60; break;
-                    case "AER1":  intensity = 0.75; break;
-                    case "AER2":  intensity = 0.85; break;
-                    case "AER3":  intensity = 1.00; break;
-                    case "Fuerte":intensity = 1.15; break;
+                    case SUAVE: intensity = 0.60; break;
+                    case AER1:  intensity = 0.75; break;
+                    case AER2:  intensity = 0.85; break;
+                    case AER3:  intensity = 1.00; break;
+                    case FUERTE: intensity = 1.15; break;
+                    default: intensity = 0.0; break;
                 }
             } else if (session.getSport() == TrainingSession.SportType.BIKE) {
                 switch (pace) {
-                    case "Z1": intensity = 0.50; break;
-                    case "Z2": intensity = 0.65; break;
-                    case "Z3": intensity = 0.83; break;
-                    case "Z4": intensity = 1.00; break;
-                    case "Z5": intensity = 1.13; break;
-                    case "Z6": intensity = 1.35; break;
-                    case "Z7": intensity = 1.50; break;
+                    case Z1: intensity = 0.50; break;
+                    case Z2: intensity = 0.65; break;
+                    case Z3: intensity = 0.83; break;
+                    case Z4: intensity = 1.00; break;
+                    case Z5: intensity = 1.13; break;
+                    case Z6: intensity = 1.35; break;
+                    case Z7: intensity = 1.50; break;
+                    default: intensity = 0.0; break;
                 }
             } else if (session.getSport() == TrainingSession.SportType.RUN) {
                 switch (pace) {
-                    case "R0":  intensity = 0.55; break;
-                    case "R1":  intensity = 0.65; break;
-                    case "R1+": intensity = 0.70; break;
-                    case "R2":  intensity = 0.75; break;
-                    case "R3":  intensity = 0.85; break;
-                    case "R3+": intensity = 0.92; break;
-                    case "R4":  intensity = 1.00; break;
-                    case "R5":  intensity = 1.10; break;
-                    case "R6":  intensity = 1.25; break;
+                    case R0:       intensity = 0.55; break;
+                    case R1:       intensity = 0.65; break;
+                    case R1_PLUS:  intensity = 0.70; break;
+                    case R2:       intensity = 0.75; break;
+                    case R3:       intensity = 0.85; break;
+                    case R3_PLUS:  intensity = 0.92; break;
+                    case R4:       intensity = 1.00; break;
+                    case R5:       intensity = 1.10; break;
+                    case R6:       intensity = 1.25; break;
+                    default:       intensity = 0.0;  break;
                 }
             }
 

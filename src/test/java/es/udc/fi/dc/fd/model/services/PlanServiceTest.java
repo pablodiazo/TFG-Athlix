@@ -148,7 +148,7 @@ public class PlanServiceTest {
         block.setSets(1);
         block.setReps(1);
         block.setDistanceOrDuration("600m");
-        block.setPace("0");
+        block.setPace(IntensityZone.NONE);
         block.setRest("0");
 
         List<TrainingBlock> blocks = List.of(block);
@@ -162,7 +162,7 @@ public class PlanServiceTest {
         assertEquals(Integer.valueOf(1), savedSession.getBlocks().get(0).getSets());
         assertEquals(Integer.valueOf(1), savedSession.getBlocks().get(0).getReps());
         assertEquals("600m", savedSession.getBlocks().get(0).getDistanceOrDuration());
-        assertEquals("0", savedSession.getBlocks().get(0).getPace());
+        assertEquals(IntensityZone.NONE, savedSession.getBlocks().get(0).getPace());
         assertEquals("0", savedSession.getBlocks().get(0).getRest());
     }
 
@@ -178,7 +178,7 @@ public class PlanServiceTest {
         block.setSets(1);
         block.setReps(1);
         block.setDistanceOrDuration("600m");
-        block.setPace("0");
+        block.setPace(IntensityZone.NONE);
         block.setRest("0");
 
         List<TrainingBlock> blocks = List.of(block);
@@ -200,7 +200,7 @@ public class PlanServiceTest {
         block.setSets(1);
         block.setReps(1);
         block.setDistanceOrDuration("600m");
-        block.setPace("0");
+        block.setPace(IntensityZone.NONE);
         block.setRest("0");
 
         List<TrainingBlock> blocks = List.of(block);
@@ -222,7 +222,7 @@ public class PlanServiceTest {
         block.setSets(1);
         block.setReps(1);
         block.setDistanceOrDuration("600m");
-        block.setPace("0");
+        block.setPace(IntensityZone.NONE);
         block.setRest("0");
 
         List<TrainingBlock> blocks = List.of(block);
@@ -245,7 +245,7 @@ public class PlanServiceTest {
         block.setSets(1);
         block.setReps(1);
         block.setDistanceOrDuration("600m");
-        block.setPace("0");
+        block.setPace(IntensityZone.NONE);
         block.setRest("0");
 
         List<TrainingBlock> blocks = List.of(block);
@@ -420,7 +420,7 @@ public class PlanServiceTest {
         block.setSets(1);
         block.setReps(1);
         block.setDistanceOrDuration("600m");
-        block.setPace("0");
+        block.setPace(IntensityZone.NONE);
         block.setRest("0");
         block.setTrainingSession(session);
         trainingBlockDao.save(block);
@@ -444,7 +444,7 @@ public class PlanServiceTest {
         block.setSets(1);
         block.setReps(1);
         block.setDistanceOrDuration("600m");
-        block.setPace("0");
+        block.setPace(IntensityZone.NONE);
         block.setRest("0");
         block.setTrainingSession(session);
         trainingBlockDao.save(block);
@@ -468,7 +468,7 @@ public class PlanServiceTest {
         block.setSets(1);
         block.setReps(1);
         block.setDistanceOrDuration("600m");
-        block.setPace("0");
+        block.setPace(IntensityZone.NONE);
         block.setRest("0");
         block.setTrainingSession(session);
         trainingBlockDao.save(block);
@@ -806,7 +806,7 @@ public class PlanServiceTest {
         block.setSets(1);
         block.setReps(1);
         block.setDistanceOrDuration("600m");
-        block.setPace("0");
+        block.setPace(IntensityZone.NONE);
         block.setRest("0");
 
         List<TrainingBlock> blocks = List.of(block);
@@ -918,7 +918,7 @@ public class PlanServiceTest {
         block.setSets(1);
         block.setReps(1);
         block.setDistanceOrDuration("1km");
-        block.setPace("Z1");
+        block.setPace(IntensityZone.Z1);
         block.setRest("0");
         block.setTrainingSession(session);
         trainingBlockDao.save(block);
@@ -950,7 +950,7 @@ public class PlanServiceTest {
         block1.setSets(2);
         block1.setReps(1);
         block1.setDistanceOrDuration("10 km");
-        block1.setPace("Z2");
+        block1.setPace(IntensityZone.Z2);
         newBlocks.add(block1);
 
         TrainingSession updatedSession = planService.updateTrainingSession(

@@ -90,7 +90,7 @@ INSERT INTO TrainingSession (userId, coachId, sessionDate, startTime, sport, obj
 VALUES (2, 1, DATEADD('DAY', -5, CURRENT_DATE), '19:00:00', 'STRENGTH', 'Fuerza máxima', '45 min');
 
 INSERT INTO TrainingBlock (trainingSessionId, blockOrder, name, sets, reps, distanceOrDuration, pace, rest, done)
-VALUES (4, 1, 'Sentadilla pesada', 4, 5, '-', '85% RM', '2 min', 1.0);
+VALUES (4, 1, 'Sentadilla pesada', 4, 5, '-', '-', '2 min', 1.0);
 
 -- Nutrición y Descanso
 INSERT INTO NutritionPlan (userId, coachId, planDate, targetCalories, proteinGrams, carbsGrams, fatGrams, hydrationLiters, guidelines, done)
@@ -175,20 +175,20 @@ INSERT INTO TrainingSession (userId, coachId, sessionDate, startTime, sport, obj
 VALUES (2, 1, DATEADD('DAY', -1, CURRENT_DATE), '12:00:00', 'BRICK', 'Simulación de carrera', '1 h');
 
 INSERT INTO TrainingBlock (trainingSessionId, blockOrder, name, sets, reps, distanceOrDuration, pace, rest, done)
-VALUES (9, 1, 'Primera transición', 1, 1, '5 min', 'Ritmo de prueba', '0', 1.0);
+VALUES (9, 1, 'Primera transición', 1, 1, '5 min', '-', '0', 1.0);
 INSERT INTO TrainingBlock (trainingSessionId, blockOrder, name, sets, reps, distanceOrDuration, pace, rest, done)
-VALUES (9, 2, 'Bici con 5 minutos fuertes al principio y al final', 1, 1, '40min', 'Ritmo medio', '0', 1.0);
+VALUES (9, 2, 'Bici con 5 minutos fuertes al principio y al final', 1, 1, '40min', '-', '0', 1.0);
 INSERT INTO TrainingBlock (trainingSessionId, blockOrder, name, sets, reps, distanceOrDuration, pace, rest, done)
-VALUES (9, 3, 'Transición a correr', 1, 1, '5 min', 'Ritmo de prueba', '0', 1.0);
+VALUES (9, 3, 'Transición a correr', 1, 1, '5 min', '-', '0', 1.0);
 
 -- Sesión 10: Fuerza
 INSERT INTO TrainingSession (userId, coachId, sessionDate, startTime, sport, objective, totalDistanceOrDuration)
 VALUES (2, 1, DATEADD('DAY', -1, CURRENT_DATE), '20:00:00', 'STRENGTH', 'Ejercicios de prevención', '30 min');
 
 INSERT INTO TrainingBlock (trainingSessionId, blockOrder, name, sets, reps, distanceOrDuration, pace, rest, done)
-VALUES (10, 1, 'Movilidad de cadera', 1, 1, '10 min', '0', '0', 1.0);
+VALUES (10, 1, 'Movilidad de cadera', 1, 1, '10 min', '-', '0', 1.0);
 INSERT INTO TrainingBlock (trainingSessionId, blockOrder, name, sets, reps, distanceOrDuration, pace, rest, done)
-VALUES (10, 2, 'Rutina de propiocepción', 8, 1, '10 min', '0', '0', 1.0);
+VALUES (10, 2, 'Rutina de propiocepción', 8, 1, '10 min', '-', '0', 1.0);
 
 -- Nutrición y Descanso 
 INSERT INTO NutritionPlan (userId, coachId, planDate, targetCalories, proteinGrams, carbsGrams, fatGrams, hydrationLiters, guidelines, done)
@@ -209,7 +209,7 @@ VALUES ( 2, 1, CURRENT_DATE, '07:00:00', 'SWIM', 'Aeróbico ligero y técnica', 
 INSERT INTO TrainingBlock (trainingSessionId, blockOrder, name, sets, reps, distanceOrDuration, pace, rest, done)
 VALUES (11, 1, 'Calentamiento', 1, 1, '600 m', 'AER1', '0', 1.0);
 INSERT INTO TrainingBlock (trainingSessionId, blockOrder, name, sets, reps, distanceOrDuration, pace, rest, done)
-VALUES (11, 2, 'Técnica crol', 12, 1, '50 m', 'Suave', '15"', 0.5);
+VALUES (11, 2, 'Técnica crol', 12, 1, '50 m', 'SUAVE', '15"', 0.5);
 INSERT INTO TrainingBlock (trainingSessionId, blockOrder, name, sets, reps, distanceOrDuration, pace, rest, done)
 VALUES (11, 3, 'Nado largo', 4, 1, '400 m', 'AER2', '1min', 0.0);
 
@@ -229,7 +229,7 @@ VALUES (2, 1, CURRENT_DATE, '18:30:00', 'RUN', 'Series VO2Max', '10 km');
 INSERT INTO TrainingBlock (trainingSessionId, blockOrder, name, sets, reps, distanceOrDuration, pace, rest, done)
 VALUES (13, 1, 'Calentar', 1, 1, '20 min', 'R1', '0', 0.0);
 INSERT INTO TrainingBlock (trainingSessionId, blockOrder, name, sets, reps, distanceOrDuration, pace, rest, done)
-VALUES (13, 2, 'Series 400m', 8, 1, '400 m', 'R3+', '1 min', 0.0);
+VALUES (13, 2, 'Series 400m', 8, 1, '400 m', 'R3_PLUS', '1 min', 0.0);
 
 -- Nutrición y Descanso 
 INSERT INTO NutritionPlan (userId, coachId, planDate, targetCalories, proteinGrams, carbsGrams, fatGrams, hydrationLiters, guidelines, done)
@@ -262,14 +262,14 @@ VALUES (2, 1, DATEADD('DAY', 2, CURRENT_DATE), '07:30:00', 'SWIM', 'Series corta
 INSERT INTO TrainingBlock (trainingSessionId, blockOrder, name, sets, reps, distanceOrDuration, pace, rest, done)
 VALUES (14, 1, 'Calentamiento', 1, 1, '800 m', 'AER1', '0', 0.0);
 INSERT INTO TrainingBlock (trainingSessionId, blockOrder, name, sets, reps, distanceOrDuration, pace, rest, done)
-VALUES (14, 2, 'Sprints 50m', 10, 1, '50m', 'Fuerte', '30"', 0.0);
+VALUES (14, 2, 'Sprints 50m', 10, 1, '50m', 'FUERTE', '30"', 0.0);
 
 -- Sesión 15: Fuerza
 INSERT INTO TrainingSession (userId, coachId, sessionDate, startTime, sport, objective, totalDistanceOrDuration) 
 VALUES (2, 1, DATEADD('DAY', 2, CURRENT_DATE), '18:00:00', 'STRENGTH', 'Fuerza resistencia tren inferior', '1 h');
 
 INSERT INTO TrainingBlock (trainingSessionId, blockOrder, name, sets, reps, distanceOrDuration, pace, rest, done)
-VALUES (15, 1, 'Prensa y extensiones', 4, 15, '-', '60% RM', '1 min', 0.0);
+VALUES (15, 1, 'Prensa y extensiones', 4, 15, '-', '-', '1 min', 0.0);
 
 INSERT INTO NutritionPlan (userId, coachId, planDate, targetCalories, proteinGrams, carbsGrams, fatGrams, hydrationLiters, guidelines, done)
 VALUES (2, 1, DATEADD('DAY', 2, CURRENT_DATE), 3400, 170, 450, 85, 3.5, '-', 0.0);

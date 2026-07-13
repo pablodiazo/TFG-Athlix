@@ -11,7 +11,7 @@ public class TrainingBlock {
     private Integer sets;
     private Integer reps;
     private String distanceOrDuration;
-    private String pace;
+    private IntensityZone pace;
     private String rest;
     private Double done;
 
@@ -40,8 +40,10 @@ public class TrainingBlock {
     public String getDistanceOrDuration() { return distanceOrDuration; }
     public void setDistanceOrDuration(String distanceOrDuration) { this.distanceOrDuration = distanceOrDuration; }
 
-    public String getPace() { return pace; }
-    public void setPace(String pace) { this.pace = pace; }
+    @Enumerated(EnumType.STRING)
+    @Column(name = "pace")
+    public IntensityZone getPace() { return pace; }
+    public void setPace(IntensityZone pace) { this.pace = pace; }
 
     public String getRest() { return rest; }
     public void setRest(String rest) { this.rest = rest; }
