@@ -211,8 +211,12 @@ export default {
     'project.global.messages.noNotifications': 'No notifications',
 
     'project.plans.DeleteSession.delete': 'Delete session',
-    'project.plans.DeleteSession.description': 'Are you sure you want to delete this session? All data will be lost.',
+    'project.plans.DeleteSession.description': 'Are you sure you want to delete',
+    'project.plans.DeleteSession.descriptionSession': ' this session?',
+    'project.plans.DeleteSession.descriptionPlan': ' this nutrition plan?',
+    'project.plans.DeleteSession.descriptionContinued': ' This action cannot be undone and all data will be lost.',
     'project.plans.DeleteSession.confirm': 'Yes, delete',
+    'project.plans.DeleteNutritionPlan.delete': 'Delete nutrition plan',
 
     'project.plans.EditSession.title': 'Edit Training Session',
     'project.plans.EditSession.disclaimer': 'Adjust the session and add the workout blocks for your athlete.',

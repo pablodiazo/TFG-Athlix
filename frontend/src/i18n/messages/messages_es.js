@@ -211,8 +211,12 @@ export default {
     'project.global.messages.noNotifications': 'No tienes notificaciones',
 
     'project.plans.DeleteSession.delete': 'Eliminar sesión',
-    'project.plans.DeleteSession.description': '¿Estás seguro de que deseas eliminar esta sesión? Los datos se perderán.',
+    'project.plans.DeleteSession.description': '¿Estás seguro de que deseas eliminar',
+    'project.plans.DeleteSession.descriptionSession': ' esta sesión?',
+    'project.plans.DeleteSession.descriptionPlan': ' este plan de nutrición?',
+    'project.plans.DeleteSession.descriptionContinued': ' Esta acción no se puede deshacer y los datos se perderán.',
     'project.plans.DeleteSession.confirm': 'Sí, eliminar',
+    'project.plans.DeleteNutritionPlan.delete': 'Eliminar plan de nutrición',
 
     'project.plans.EditSession.title': 'Modifcar Sesión de Entrenamiento',
     'project.plans.EditSession.disclaimer': 'Ajusta los parámetros y bloques de la sesión actual.',
