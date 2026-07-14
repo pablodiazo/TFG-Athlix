@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { FaUserCircle, FaCalendarDay, FaCalendarWeek } from "react-icons/fa";
+import { FaUserCircle, FaCalendarDay, FaCalendarWeek , FaCalendarAlt } from "react-icons/fa";
 import DailyPlan from "./DailyPlan";
 import WeeklyPlan from "./WeeklyPlan";
+import MonthlyPlan from "./MonthlyPlan";
 import backend from "../../../backend";
 import "../css/CoachDashboard.css"; 
 import { FormattedMessage } from "react-intl";
@@ -94,13 +95,21 @@ const CoachDashboard = () => {
                 >
                   <FaCalendarWeek /> <FormattedMessage id="project.global.fields.week" />
                 </button>
+                <button 
+                  className={`view-toggle-btn ${viewMode === 'monthly' ? 'active' : ''}`}
+                  onClick={() => setViewMode('monthly')}
+                >
+                  <FaCalendarAlt /> Mes 
+                </button>
               </div>
             </div>
 
             {viewMode === 'daily' ? (
               <DailyPlan athleteId={selectedAthleteId} forcedDate={dashboardDate}/>
-            ) : (
+            ) : viewMode === 'weekly' ? (
               <WeeklyPlan athleteId={selectedAthleteId} />
+            ) : (
+              <MonthlyPlan athleteId={selectedAthleteId} />
             )}
           </>
         ) : (
