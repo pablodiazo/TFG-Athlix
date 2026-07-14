@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import backend from "../../../backend";
 
-import { FaSwimmer, FaBicycle, FaRunning, FaDumbbell, FaClock, FaSync, FaChevronLeft, FaChevronRight, FaCalendarWeek } from "react-icons/fa";
+import { FaSwimmer, FaBicycle, FaRunning, FaDumbbell, FaClock, FaSync, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import "../css/WeeklyPlan.css";
 
 const SPORT_INFO = {
@@ -208,7 +208,7 @@ const WeeklyPlan = ({athleteId}) => {
     return (
       <div className="athlix-weekly-wrapper loading">
         <div className="spinner"></div>
-        <p>Cargando planificación semanal...</p>
+        <p><FormattedMessage id="project.plans.WeeklyPlan.loading" /></p>
       </div>
     );
   }
@@ -217,7 +217,7 @@ const WeeklyPlan = ({athleteId}) => {
       return (
          <div className="athlix-weekly-wrapper">
              <div className="empty-day">
-                <p>No se pudo cargar la información de la semana.</p>
+                <p><FormattedMessage id="project.plans.WeeklyPlan.noData" /></p>
              </div>
          </div>
       );
@@ -234,7 +234,7 @@ const WeeklyPlan = ({athleteId}) => {
         <div className="weekly-current-display">
           <h2 className="weekly-range-text">{getWeekRangeDisplay()}</h2>
           <button className="weekly-today-btn" onClick={handleCurrentWeek}>
-            <FaCalendarWeek /> <FormattedMessage id="project.plans.WeeklyPlan.returnToCurrentWeek" defaultMessage="Volver a esta semana" />
+            <FormattedMessage id="project.plans.WeeklyPlan.returnToCurrentWeek" defaultMessage="Volver a esta semana" />
           </button>
         </div>
         <button className="weekly-nav-btn" onClick={handleNextWeek}>

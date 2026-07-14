@@ -709,4 +709,75 @@ public class PlanServiceImpl implements PlanService {
         
         return restPlanDao.save(plan);
     }
+
+    @Override
+    public List<DailyPlan> getAthleteMonthlyPlan(Long coachId, Long athleteId, LocalDate startDate, LocalDate endDate) throws InstanceNotFoundException, PermissionException {
+        
+        Users athlete = userDao.findById(athleteId)
+                .orElseThrow(() -> new InstanceNotFoundException("user", athleteId));
+        
+        if (athlete.getCoachId() == null || !athlete.getCoachId().equals(coachId)) {
+            throw new PermissionException();
+        }
+
+        List<TrainingSession> allSessions = trainingSessionDao.findByUserIdAndSessionDateBetweenOrderByStartTimeAsc(athleteId, startDate, endDate);
+        List<NutritionPlan> allNutrition = nutritionPlanDao.findByUserIdAndPlanDateBetween(athleteId, startDate, endDate);
+        List<RestPlan> allRest = restPlanDao.findByUserIdAndPlanDateBetween(athleteId, startDate, endDate);
+
+        List<DailyPlan> monthlyPlan = new ArrayList<>();
+
+        for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
+            final LocalDate currentDate = date;
+            
+            List<TrainingSession> dailySessions = allSessions.stream()
+                .filter(s -> s.getSessionDate().equals(currentDate))
+                .collect(Collectors.toList());
+                
+            Optional<NutritionPlan> dailyNutrition = allNutrition.stream()
+                .filter(n -> n.getPlanDate().equals(currentDate))
+                .findFirst();
+                
+            Optional<RestPlan> dailyRest = allRest.stream()
+                .filter(r -> r.getPlanDate().equals(currentDate))
+                .findFirst();
+
+            monthlyPlan.add(new DailyPlan(dailySessions, dailyNutrition, dailyRest));
+        }
+
+        return monthlyPlan;
+    }
+
+    @Override
+    public List<DailyPlan> getMonthlyPlan(Long userId, LocalDate startDate, LocalDate endDate) throws InstanceNotFoundException {
+        
+        if (!userDao.existsById(userId)) {
+            throw new InstanceNotFoundException("user", userId);
+        }
+
+        List<TrainingSession> allSessions = trainingSessionDao.findByUserIdAndSessionDateBetweenOrderByStartTimeAsc(userId, startDate, endDate);
+        List<NutritionPlan> allNutrition = nutritionPlanDao.findByUserIdAndPlanDateBetween(userId, startDate, endDate);
+        List<RestPlan> allRest = restPlanDao.findByUserIdAndPlanDateBetween(userId, startDate, endDate);
+
+        List<DailyPlan> monthlyPlan = new ArrayList<>();
+
+        for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
+            final LocalDate currentDate = date;
+            
+            List<TrainingSession> dailySessions = allSessions.stream()
+                .filter(s -> s.getSessionDate().equals(currentDate))
+                .collect(Collectors.toList());
+                
+            Optional<NutritionPlan> dailyNutrition = allNutrition.stream()
+                .filter(n -> n.getPlanDate().equals(currentDate))
+                .findFirst();
+                
+            Optional<RestPlan> dailyRest = allRest.stream()
+                .filter(r -> r.getPlanDate().equals(currentDate))
+                .findFirst();
+
+            monthlyPlan.add(new DailyPlan(dailySessions, dailyNutrition, dailyRest));
+        }
+
+        return monthlyPlan;
+    }
 }

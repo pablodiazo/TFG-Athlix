@@ -97,6 +97,11 @@ const UserMenu = () => {
                     <FormattedMessage id="project.plans.WeeklyPlan.title" defaultMessage="Plan semanal" />
                   </button>
                 </li>
+                <li>
+                  <button onClick={() => navAndClose("/plans/monthly")}>
+                    <FormattedMessage id="project.plans.MonthlyPlan.title" defaultMessage="Plan mensual" />
+                  </button>
+                </li>
               </>
             )}
 

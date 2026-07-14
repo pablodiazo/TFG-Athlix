@@ -83,3 +83,11 @@ export const deleteRestPlan = (planId, onSuccess, onErrors) => {
 export const updateRestPlan = (planId, params, onSuccess, onErrors) => {
     appFetch(`/plans/rest-plans/${planId}`, fetchConfig('PUT', params), onSuccess, onErrors);
 };
+
+export const getAthleteMonthlyPlan = (athleteId, startDate, endDate, onSuccess, onErrors) => {
+    appFetch(`/plans/athletes/${athleteId}/monthly?startDate=${startDate}&endDate=${endDate}`, fetchConfig('GET'), onSuccess, onErrors);
+};
+
+export const getMonthlyPlan = (startDate, endDate, onSuccess, onErrors) => {
+    appFetch(`/plans/monthly?startDate=${startDate}&endDate=${endDate}`, fetchConfig('GET'), onSuccess, onErrors);
+};
