@@ -434,4 +434,101 @@ public class PlanController {
 
         return toRestPlanDto(restPlan);
     }
+
+    // GET /plans/athletes/{athleteId}/monthly?startDate=2026-03-01&endDate=2026-03-31
+    @GetMapping("/athletes/{athleteId}/monthly")
+    public List<DailyPlanDto> getAthleteMonthlyPlan(
+            @RequestAttribute Long userId,
+            @PathVariable Long athleteId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate)
+            throws InstanceNotFoundException, PermissionException {
+        
+        List<DailyPlan> monthlyInfo = planService.getAthleteMonthlyPlan(userId, athleteId, startDate, endDate);
+        List<DailyPlanDto> monthlyDtos = new ArrayList<>();
+
+        LocalDate currentDate = startDate;
+
+        for (DailyPlan info : monthlyInfo) {
+            
+            List<TrainingSessionDto> sessionDtos = info.getSessions().stream().map(s -> {
+                List<TrainingBlockDto> blockDtos = s.getBlocks().stream().map(b -> 
+                    new TrainingBlockDto(b.getId(), b.getBlockOrder(), b.getName(), b.getSets(), 
+                                         b.getReps(), b.getDistanceOrDuration(), b.getPace(), b.getRest(), b.getDone())
+                ).collect(Collectors.toList());
+
+                Double tss=0.0;
+                try {
+                    tss = planService.calculateTSS(s.getId());
+                } catch (InstanceNotFoundException | PermissionException e) {
+                    e.printStackTrace();
+                }
+
+                return new TrainingSessionDto(s.getId(), s.getSessionDate(), s.getStartTime(), s.getSport(), 
+                                              s.getObjective(), s.getTotalDistanceOrDuration(), tss, blockDtos);
+            }).collect(Collectors.toList());
+
+            NutritionPlanDto nutritionDto = info.getNutrition().map(n -> 
+                new NutritionPlanDto(n.getId(), n.getPlanDate(), n.getTargetCalories(), n.getProteinGrams(), 
+                                     n.getCarbsGrams(), n.getFatGrams(), n.getHydrationLiters(), n.getGuidelines(), n.getDone())
+            ).orElse(null);
+
+            RestPlanDto restDto = info.getRest().map(r -> 
+                new RestPlanDto(r.getId(), r.getPlanDate(), r.getTargetSleepHours(), r.getGuidelines(), r.getDone())
+            ).orElse(null);
+
+            monthlyDtos.add(new DailyPlanDto(currentDate.toString(), sessionDtos, nutritionDto, restDto));
+            
+            currentDate = currentDate.plusDays(1);
+        }
+
+        return monthlyDtos;
+    }
+
+    // GET /plans/monthly?startDate=...&endDate=...
+    @GetMapping("/monthly")
+    public List<DailyPlanDto> getMonthlyPlan(
+            @RequestAttribute Long userId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate)
+            throws InstanceNotFoundException {
+        
+        List<DailyPlan> monthlyInfo = planService.getMonthlyPlan(userId, startDate, endDate);
+        List<DailyPlanDto> monthlyDtos = new ArrayList<>();
+
+        LocalDate currentDate = startDate;
+
+        for (DailyPlan info : monthlyInfo) {
+            List<TrainingSessionDto> sessionDtos = info.getSessions().stream().map(s -> {
+                List<TrainingBlockDto> blockDtos = s.getBlocks().stream().map(b -> 
+                    new TrainingBlockDto(b.getId(), b.getBlockOrder(), b.getName(), b.getSets(), 
+                                         b.getReps(), b.getDistanceOrDuration(), b.getPace(), b.getRest(), b.getDone())
+                ).collect(Collectors.toList());
+
+                Double tss = 0.0;
+                try {
+                    tss = planService.calculateTSS(s.getId());
+                } catch (Exception e) {
+                }
+
+                return new TrainingSessionDto(s.getId(), s.getSessionDate(), s.getStartTime(), s.getSport(), 
+                                              s.getObjective(), s.getTotalDistanceOrDuration(), tss, blockDtos);
+            }).collect(Collectors.toList());
+
+            NutritionPlanDto nutritionDto = info.getNutrition().map(n -> 
+                new NutritionPlanDto(n.getId(), n.getPlanDate(), n.getTargetCalories(), n.getProteinGrams(), 
+                                     n.getCarbsGrams(), n.getFatGrams(), n.getHydrationLiters(), n.getGuidelines(), n.getDone())
+            ).orElse(null);
+
+            RestPlanDto restDto = info.getRest().map(r -> 
+                new RestPlanDto(r.getId(), r.getPlanDate(), r.getTargetSleepHours(), r.getGuidelines(), r.getDone())
+            ).orElse(null);
+
+            monthlyDtos.add(new DailyPlanDto(currentDate.toString(), sessionDtos, nutritionDto, restDto));
+            
+            currentDate = currentDate.plusDays(1);
+        }
+
+        return monthlyDtos;
+    }
 }

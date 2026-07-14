@@ -57,4 +57,9 @@ public interface PlanService {
     void deleteRestPlan(Long coachId, Long planId) throws InstanceNotFoundException, PermissionException;
 
     RestPlan updateRestPlan(Long coachId, Long planId, LocalDate planDate, Double targetSleepHours, String guidelines) throws InstanceNotFoundException, PermissionException;
+
+    List<DailyPlan> getAthleteMonthlyPlan(Long coachId, Long athleteId, LocalDate startDate, LocalDate endDate) 
+        throws InstanceNotFoundException, PermissionException;
+
+    List<DailyPlan> getMonthlyPlan(Long userId, LocalDate startDate, LocalDate endDate) throws InstanceNotFoundException;
 }
