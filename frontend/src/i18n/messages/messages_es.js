@@ -139,8 +139,11 @@ export default {
     'project.plans.WeeklyPlan.noData': 'No se pudo cargar la información de la semana.',
 
     'project.plans.MonthlyPlan.title': 'Plan mensual',
+    'project.plans.MonthlyPlan.returnToCurrentMonth': 'VOLVER AL MES ACTUAL',
     'project.plans.MonthlyPlan.loading': 'Cargando planificación mensual...',
-    'project.plans.MonthlyPlan.noData': 'No se pudo cargar la información del mes.',
+    'project.plans.MonthlyPlan.noData': 'No hay sesiones planificadas este mes.',
+    'project.plans.MonthlyPlan.sessionCount': 'Sesiones',
+    'project.plans.MonthlyPlan.tss': 'Carga (TSS)',
     'project.plans.MonthlyPlan.monday': 'Lunes',
     'project.plans.MonthlyPlan.tuesday': 'Martes',
     'project.plans.MonthlyPlan.wednesday': 'Miércoles',
