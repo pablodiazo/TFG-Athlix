@@ -100,7 +100,7 @@ const WeeklyPlan = ({athleteId}) => {
     };
 
     ['RUN', 'BIKE', 'SWIM', 'STRENGTH'].forEach(sport => {
-        processedData.totals[sport] = { totalMins: 0, totalMts: 0, sessionCount: 0 };
+        processedData.totals[sport] = { totalMins: 0, totalMts: 0, sessionCount: 0, totalTss: 0 };
     });
 
     data.forEach((dayData) => {
@@ -108,13 +108,14 @@ const WeeklyPlan = ({athleteId}) => {
         
         const sessions = dayData.sessions.map(session => {
             if (!processedData.totals[session.sport]) {
-                processedData.totals[session.sport] = { totalMins: 0, totalMts: 0, sessionCount: 0 };
+                processedData.totals[session.sport] = { totalMins: 0, totalMts: 0, sessionCount: 0, totalTss: 0 };
             }
 
             const { minutes, meters } = parseSessionString(session.totalDistanceOrDuration);
             processedData.totals[session.sport].totalMins += minutes;
             processedData.totals[session.sport].totalMts += meters;
             processedData.totals[session.sport].sessionCount += 1;
+            processedData.totals[session.sport].totalTss += (session.tss || 0);
             
             return {
                 sport: session.sport,
@@ -136,19 +137,14 @@ const WeeklyPlan = ({athleteId}) => {
             const timeStr = formatDuration(sportData.totalMins);
             const distStr = formatDistance(sportData.totalMts);
 
-            if (timeStr || distStr) {
-                processedData.totals[sport] = {
-                    duration: timeStr || "--",
-                    distance: distStr || "--"
-                };
-            } else {
-                processedData.totals[sport] = {
-                    duration: sportData.sessionCount === 1 ? "1 sesión" : `${sportData.sessionCount} sesiones`,
-                    distance: "--" 
-                };
-            }
+            processedData.totals[sport] = {
+                duration: timeStr || "--",
+                distance: distStr || "--",
+                sessionCount: sportData.sessionCount,
+                totalTss: sportData.totalTss
+            };
         } else {
-             processedData.totals[sport] = { duration: "0", distance: "0" };
+             processedData.totals[sport] = { duration: "0", distance: "0", sessionCount: 0, totalTss: 0 };
         }
     });
 
@@ -226,7 +222,6 @@ const WeeklyPlan = ({athleteId}) => {
   return (
     <div className="athlix-weekly-wrapper">
       
-      {/* NAVEGADOR DE SEMANAS */}
       <div className="weekly-navigator">
         <button className="weekly-nav-btn" onClick={handlePrevWeek}>
           <FaChevronLeft /> <FormattedMessage id="project.plans.WeeklyPlan.previousWeek" defaultMessage="Semana anterior" />
@@ -244,7 +239,6 @@ const WeeklyPlan = ({athleteId}) => {
 
       <div className="weekly-layout-grid">
         
-        {/* BLOQUE GENERAL: CUADRO ACUMULADO */}
         <div className="weekly-dashboard-section">
           <h3 className="weekly-section-title"><FormattedMessage id="project.plans.WeeklyPlan.totalVolumeAcumulated" defaultMessage="Volumen Total Acumulado" /></h3>
           <div className="weekly-totals-grid">
@@ -253,7 +247,7 @@ const WeeklyPlan = ({athleteId}) => {
               const SportIcon = sportInfo.icon;
               const data = weeklyData.totals[sportKey];
 
-              if(data.duration === "0") return null;
+              if(data.sessionCount === 0) return null;
 
               return (
                 <div key={sportKey} className="weekly-total-card" style={{ borderLeftColor: sportInfo.color }}>
@@ -261,17 +255,33 @@ const WeeklyPlan = ({athleteId}) => {
                     <SportIcon className="weekly-sport-icon" style={{ color: sportInfo.color }} />
                     <h4>{sportInfo.name}</h4>
                   </div>
-                  <div className="weekly-stats-row">
+                  
+                  <div className="weekly-stats-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.8rem" }}>
+                    
                     <div className="weekly-stat-box">
-                      <span><FormattedMessage id="project.plans.WeeklyPlan.time" defaultMessage="Tiempo" /></span>
-                      <strong>{data.duration}</strong>
+                      <span><FormattedMessage id="project.plans.MonthlyPlan.sessionCount" defaultMessage="Sesiones" /></span>
+                      <strong>{data.sessionCount}</strong>
                     </div>
+
+                    <div className="weekly-stat-box">
+                      <span><FormattedMessage id="project.plans.MonthlyPlan.tss" defaultMessage="Carga (TSS)" /></span>
+                      <strong>{Math.round(data.totalTss)}</strong>
+                    </div>
+
+                    {data.duration !== "--" && (
+                      <div className="weekly-stat-box">
+                        <span><FormattedMessage id="project.plans.WeeklyPlan.time" defaultMessage="Tiempo" /></span>
+                        <strong>{data.duration}</strong>
+                      </div>
+                    )}
+                    
                     {data.distance !== "--" && (
                       <div className="weekly-stat-box">
                         <span><FormattedMessage id="project.global.fields.distance" defaultMessage="Distancia" /></span>
                         <strong>{data.distance}</strong>
                       </div>
                     )}
+                    
                   </div>
                 </div>
               );
@@ -279,7 +289,6 @@ const WeeklyPlan = ({athleteId}) => {
           </div>
         </div>
 
-        {/* BLOQUE DETALLE: RESUMEN DÍA A DÍA */}
         <div className="weekly-days-section">
           <h3 className="weekly-section-title"><FormattedMessage id="project.plans.WeeklyPlan.dailyDistribution" defaultMessage="Distribución Diaria" /></h3>
           <div className="weekly-days-grid">

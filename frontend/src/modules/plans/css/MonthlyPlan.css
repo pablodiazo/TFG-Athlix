@@ -4,17 +4,18 @@
   padding-bottom: 2rem;
   background-color: #0f1115;
   min-height: calc(100vh - 70px);
+  padding: 4rem 3rem;
 }
 
 .monthly-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
   background-color: #1e2128;
   padding: 1rem 1.5rem;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.05);
+  margin: 0 1rem 2rem ;
 }
 
 .monthly-title {
@@ -195,4 +196,92 @@
   justify-content: center;
   padding: 4rem 0;
   color: #9ca3af;
+}
+
+.monthly-top-summary {
+  background-color: #1e2128;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 2rem;
+  margin:1rem;
+}
+
+.monthly-summary-title {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  color: #d1d5db;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 0.8rem;
+}
+
+.monthly-summary-empty {
+  color: #9ca3af;
+  font-size: 0.95rem;
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.monthly-totals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+.monthly-total-card {
+  background-color: #0f1115;
+  border-radius: 8px;
+  padding: 1rem;
+  border-bottom: 4px solid transparent;
+  transition: transform 0.2s;
+}
+
+.monthly-total-card:hover {
+  transform: translateY(-2px);
+}
+
+.monthly-card-header-sport {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.monthly-card-header-sport h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #f3f4f6;
+}
+
+.monthly-sport-icon {
+  font-size: 1.3rem;
+}
+
+.monthly-stats-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.monthly-stat-box {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background-color: rgba(255, 255, 255, 0.03);
+  padding: 0.6rem;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.monthly-stat-box span {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+
+.monthly-stat-box strong {
+  font-size: 1.2rem;
+  color: #ffffff;
 }

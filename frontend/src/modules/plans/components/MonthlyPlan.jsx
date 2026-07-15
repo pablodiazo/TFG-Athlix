@@ -28,6 +28,56 @@ const MonthlyPlan = ({ athleteId }) => {
     return `${year}-${month}-${day}`;
   };
 
+  const parseSessionString = (input) => {
+    if (!input) return { minutes: 0, meters: 0 };
+    const str = input.toLowerCase();
+    let minutes = 0;
+    let meters = 0;
+
+    const hMatch = str.match(/(\d+(?:[.,]\d+)?)\s*(?:h|hr|hrs|hora|horas)\b/);
+    if (hMatch) minutes += parseFloat(hMatch[1].replace(',', '.')) * 60;
+
+    const minMatch = str.match(/(\d+(?:[.,]\d+)?)\s*(?:min|mins|minuto|minutos)\b/);
+    if (minMatch) minutes += parseFloat(minMatch[1].replace(',', '.'));
+
+    const kmMatch = str.match(/(\d+(?:[.,]\d+)?)\s*(?:km|kms)\b/);
+    if (kmMatch) meters += parseFloat(kmMatch[1].replace(',', '.')) * 1000;
+
+    const mtsMatch = str.match(/(\d+(?:[.,]\d+)?)\s*(?:mts|metros)\b/);
+    if (mtsMatch) meters += parseFloat(mtsMatch[1].replace(',', '.'));
+
+    const mMatch = str.match(/(\d+(?:[.,]\d+)?)\s*m\b/);
+    if (mMatch && !minMatch && !mtsMatch) { 
+      const val = parseFloat(mMatch[1].replace(',', '.'));
+      if (hMatch) {
+        minutes += val;
+      } else if (val >= 100) {
+        meters += val;
+      } else {
+        minutes += val;
+      }
+    }
+
+    return { minutes, meters };
+  };
+
+  const formatDuration = (totalMinutes) => {
+    if (totalMinutes <= 0) return null;
+    const h = Math.floor(totalMinutes / 60);
+    const m = Math.round(totalMinutes % 60);
+    if (h > 0 && m > 0) return `${h}h ${m}m`;
+    if (h > 0) return `${h}h`;
+    return `${m} min`;
+  };
+
+  const formatDistance = (totalMeters) => {
+    if (totalMeters <= 0) return null;
+    if (totalMeters >= 1000) {
+        return `${+(totalMeters / 1000).toFixed(2)} km`;
+    }
+    return `${Math.round(totalMeters)} m`;
+  };
+
   useEffect(() => {
     const fetchMonthlyPlan = () => {
       setIsLoading(true);
@@ -58,26 +108,41 @@ const MonthlyPlan = ({ athleteId }) => {
     fetchMonthlyPlan();
   }, [currentMonth, athleteId]);
 
-  const handlePrevMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
-  };
+  const handlePrevMonth = () => { setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1)); };
+  const handleNextMonth = () => { setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1)); };
+  const handleToday = () => { setCurrentMonth(new Date()); };
+  const handleDayClick = (date) => { navigate(`/plans/athletes`, { state: { athleteId: athleteId, targetDate: getApiDateString(date) } }); };
 
-  const handleNextMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
-  };
+  const getMonthlyTotals = () => {
+    const totals = {};
+    monthlyData.forEach(day => {
+      if (day.sessions) {
+        day.sessions.forEach(session => {
+          const sport = session.sport;
+          if (!totals[sport]) totals[sport] = { count: 0, tss: 0, totalMins: 0, totalMts: 0 };
+          
+          totals[sport].count += 1;
+          totals[sport].tss += (session.tss || 0);
 
-  const handleToday = () => {
-    setCurrentMonth(new Date());
-  };
+          const { minutes, meters } = parseSessionString(session.totalDistanceOrDuration);
+          totals[sport].totalMins += minutes;
+          totals[sport].totalMts += meters;
+        });
+      }
+    });
 
-  const handleDayClick = (date) => {
-    navigate(`/plans/athletes`, { state: { athleteId: athleteId, targetDate: getApiDateString(date) } });
+    Object.keys(totals).forEach(sport => {
+      totals[sport].duration = formatDuration(totals[sport].totalMins) || "--";
+      totals[sport].distance = formatDistance(totals[sport].totalMts) || "--";
+    });
+
+    return totals;
   };
 
   const renderCalendar = () => {
+    // ... (Mantén tu función renderCalendar exactamente igual que la tenías) ...
     const year = currentMonth.getFullYear();
     const month = currentMonth.getMonth();
-
     const firstDayOfMonth = new Date(year, month, 1);
     const lastDayOfMonth = new Date(year, month + 1, 0);
     
@@ -94,9 +159,7 @@ const MonthlyPlan = ({ athleteId }) => {
     for (let day = 1; day <= daysInMonth; day++) {
       const currentDateLoop = new Date(year, month, day);
       const dateStr = getApiDateString(currentDateLoop);
-      
       const dayPlan = monthlyData.find(d => d.date === dateStr);
-      
       const isToday = getApiDateString(new Date()) === dateStr;
 
       calendarCells.push(
@@ -106,7 +169,6 @@ const MonthlyPlan = ({ athleteId }) => {
           onClick={() => handleDayClick(currentDateLoop)}
         >
           <span className="cell-day-number">{day}</span>
-          
           <div className="cell-indicators">
             {dayPlan && dayPlan.sessions && dayPlan.sessions.map((session, idx) => {
               const sportInfo = SPORT_INFO[session.sport] || SPORT_INFO.OTHER;
@@ -118,7 +180,6 @@ const MonthlyPlan = ({ athleteId }) => {
                 </div>
               );
             })}
-            
             <div className="lifestyle-dots">
               {dayPlan?.nutrition && <span className="dot nutrition-dot" title="Plan de Nutrición"></span>}
               {dayPlan?.rest && <span className="dot rest-dot" title="Plan de Descanso"></span>}
@@ -127,11 +188,11 @@ const MonthlyPlan = ({ athleteId }) => {
         </div>
       );
     }
-
     return calendarCells;
   };
 
   const monthName = new Intl.DateTimeFormat("es-ES", { month: "long" }).format(currentMonth);
+  const totals = getMonthlyTotals();
 
   return (
     <div className="monthly-wrapper">
@@ -142,11 +203,60 @@ const MonthlyPlan = ({ athleteId }) => {
         </button>
         <div className="monthly-title">
           <h2>{monthName.charAt(0).toUpperCase() + monthName.slice(1)} {currentMonth.getFullYear()}</h2>
-          <button className="athlix-btn-text" onClick={handleToday}>IR AL MES ACTUAL</button>
+          <button className="athlix-btn-text" onClick={handleToday}><FormattedMessage id="project.plans.MonthlyPlan.returnToCurrentMonth" defaultMessage="VOLVER AL MES ACTUAL" /></button>
         </div>
         <button className="athlix-btn-outline" onClick={handleNextMonth}>
           <FormattedMessage id="project.global.buttons.next" /> <FaChevronRight />
         </button>
+      </div>
+
+      <div className="monthly-top-summary">
+        <h3 className="monthly-summary-title">
+          <FormattedMessage id="project.plans.WeeklyPlan.totalVolumeAcumulated" defaultMessage="Volumen Acumulado" />
+        </h3>
+        
+        {Object.keys(totals).length === 0 && !isLoading ? (
+            <p className="monthly-summary-empty"><FormattedMessage id="project.plans.MonthlyPlan.noData" defaultMessage="No hay sesiones planificadas este mes." /></p>
+        ) : (
+          <div className="monthly-totals-grid">
+            {Object.keys(totals).map((sportKey) => {
+              const sportInfo = SPORT_INFO[sportKey] || SPORT_INFO.OTHER;
+              const SportIcon = sportInfo.icon;
+              const data = totals[sportKey];
+
+              return (
+                <div key={sportKey} className="monthly-total-card" style={{ borderBottomColor: sportInfo.color }}>
+                  <div className="monthly-card-header-sport">
+                    <SportIcon className="monthly-sport-icon" style={{ color: sportInfo.color }} />
+                    <h4>{sportInfo.name}</h4>
+                  </div>
+                  <div className="monthly-stats-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.8rem" }}>
+                    <div className="monthly-stat-box">
+                      <span><FormattedMessage id="project.plans.MonthlyPlan.sessionCount" defaultMessage="Sesiones" /></span>
+                      <strong>{data.count}</strong>
+                    </div>
+                    <div className="monthly-stat-box">
+                      <span><FormattedMessage id="project.plans.MonthlyPlan.tss" defaultMessage="Carga (TSS)" /></span>
+                      <strong>{Math.round(data.tss)}</strong>
+                    </div>
+                    {data.duration !== "--" && (
+                      <div className="monthly-stat-box">
+                        <span><FormattedMessage id="project.plans.WeeklyPlan.time" defaultMessage="Tiempo" /></span>
+                        <strong>{data.duration}</strong>
+                      </div>
+                    )}
+                    {data.distance !== "--" && (
+                      <div className="monthly-stat-box">
+                        <span><FormattedMessage id="project.global.fields.distance" defaultMessage="Distancia" /></span>
+                        <strong>{data.distance}</strong>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       <div className="calendar-container">

@@ -139,8 +139,11 @@ export default {
     'project.plans.WeeklyPlan.noData': 'Could not load the weekly plan data.',
 
     'project.plans.MonthlyPlan.title': 'Monthly plan',
+    'project.plans.MonthlyPlan.returnToCurrentMonth': 'RETURN TO CURRENT MONTH',
     'project.plans.MonthlyPlan.loading': 'Loading monthly plan...',
-    'project.plans.MonthlyPlan.noData': 'Could not load the monthly plan data.',
+    'project.plans.MonthlyPlan.noData': 'No data for this month.',
+    'project.plans.MonthlyPlan.sessionCount': 'Sessions',
+    'project.plans.MonthlyPlan.tss': 'Load (TSS)',
     'project.plans.MonthlyPlan.monday': 'Monday',
     'project.plans.MonthlyPlan.tuesday': 'Tuesday',
     'project.plans.MonthlyPlan.wednesday': 'Wednesday',
