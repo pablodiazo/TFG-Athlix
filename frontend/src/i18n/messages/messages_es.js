@@ -105,6 +105,8 @@ export default {
     'project.users.userMenu.accountManagement' : 'Gestión de cuenta',
     'project.users.userMenu.trainingPlans' : 'Planificación',
     'project.users.userMenu.coachManagement' : 'Supervisión',
+    'project.users.userMenu.coachRequests' : 'Solicitudes de entrenador',
+    'project.users.userMenu.inviteAthletes' : 'Invitar atletas',
 
     // === VALIDATORS (USERS) ===
     'project.validator.users.incorrectLogin': 'Usuario incorrecto',
@@ -263,4 +265,24 @@ export default {
 
     'project.plans.EditRestPlan.title': 'Modificar Plan de Descanso',
     'project.plans.EditRestPlan.disclaimer': 'Ajusta las horas objetivo y directrices del plan de recuperación existente.',
+
+    'project.plans.ManageAthletes.title': 'Gestión de Atletas',
+    'project.plans.ManageAthletes.subtitle': 'Amplía tu equipo enviando invitaciones de entrenamiento.',
+    'project.plans.ManageAthletes.invite': 'Invitar Nuevo Atleta',
+    'project.plans.ManageAthletes.description': 'Introduce el correo electrónico del atleta. Recibirá una notificación en su panel para aceptar tu solicitud de planificación.',
+    'project.plans.ManageAthletes.sending': 'Enviando...',
+    'project.plans.ManageAthletes.sendInvite': 'Enviar Invitación',
+    'project.plans.ManageAthletes.pendingInvitations': 'Invitaciones Pendientes',
+    'project.plans.ManageAthletes.pendingDescription': 'Atletas que aún no han respondido a tu solicitud.',
+    'project.plans.ManageAthletes.noRequests': 'No tienes ninguna invitación pendiente de respuesta.',
+    'project.plans.ManageAthletes.pending': 'Pendiente',
+
+    'project.plans.PendingRequests.title': 'Peticiones de Entrenadores',
+    'project.plans.PendingRequests.description': 'Estos entrenadores desean planificar tus sesiones. Selecciona con quién quieres entrenar.',
+    'project.plans.PendingRequests.loading': 'Cargando peticiones...',
+    'project.plans.PendingRequests.noRequests': 'No tienes ninguna petición pendiente.',
+    'project.plans.PendingRequests.coachRequest': 'Quiere ser tu entrenador',
+    'project.plans.PendingRequests.accept': 'Aceptar',
+    'project.plans.PendingRequests.deny': 'Rechazar',
+
 }

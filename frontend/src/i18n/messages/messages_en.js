@@ -105,6 +105,8 @@ export default {
     'project.users.userMenu.accountManagement' : 'Account management',
     'project.users.userMenu.trainingPlans' : 'Training plans',
     'project.users.userMenu.coachManagement' : 'Coach management',
+    'project.users.userMenu.coachRequests' : 'Coach requests',
+    'project.users.userMenu.inviteAthletes' : 'Invite athletes',
 
     // === VALIDATORS (USERS) ===
     'project.validator.users.incorrectLogin': 'Incorrect Login',
@@ -263,4 +265,23 @@ export default {
 
     'project.plans.EditRestPlan.title': 'Edit Rest Plan',
     'project.plans.EditRestPlan.disclaimer': 'Adjust the rest plan and additional information.',
+    
+    'project.plans.ManageAthletes.title': 'Manage Athletes',
+    'project.plans.ManageAthletes.subtitle': 'Expand your team by sending training invitations.',
+    'project.plans.ManageAthletes.invite': 'Invite New Athlete',
+    'project.plans.ManageAthletes.description': 'Enter the athlete\'s email address. They will receive a notification in their panel to accept your request for training planning.',
+    'project.plans.ManageAthletes.sending': 'Sending...',
+    'project.plans.ManageAthletes.sendInvite': 'Send Invitation',
+    'project.plans.ManageAthletes.pendingInvitations': 'Pending Invitations',
+    'project.plans.ManageAthletes.pendingDescription': 'Athletes who haven\'t responded to your request yet.',
+    'project.plans.ManageAthletes.noRequests': 'You have no pending invitation responses yet.',
+    'project.plans.ManageAthletes.pending': 'Pending',
+
+    'project.plans.PendingRequests.title': 'Coach Requests',
+    'project.plans.PendingRequests.description': 'These coaches want to plan your training sessions. Select with whom you want to train.',
+    'project.plans.PendingRequests.loading': 'Loading requests...',
+    'project.plans.PendingRequests.noRequests': 'You have no pending requests yet.',
+    'project.plans.PendingRequests.coachRequest': 'Wants to be your coach',
+    'project.plans.PendingRequests.accept': 'Accept',
+    'project.plans.PendingRequests.deny': 'Deny',
 }
