@@ -9,4 +9,6 @@ export { default as Profile } from './components/Profile';
 export { default as SignUp } from './components/SignUp';
 export {default as ChangePassword } from './components/ChangePassword';
 export {default as UpdateProfile } from './components/UpdateProfile';
+export { default as ManageAthletes } from './components/ManageAthletes';
+export { default as PendingRequests } from './components/PendingRequests';
 export default { actions, actionTypes, reducer, selectors };

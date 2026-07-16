@@ -102,6 +102,12 @@ const UserMenu = () => {
                     <FormattedMessage id="project.plans.MonthlyPlan.title" defaultMessage="Plan mensual" />
                   </button>
                 </li>
+                <li className="athlix-dropdown-divider"></li>
+                <li>
+                  <button onClick={() => navAndClose("/users/coach-requests")}>
+                    <FormattedMessage id="project.users.userMenu.coachRequests" defaultMessage="Solicitudes de Entrenador" />
+                  </button>
+                </li>
               </>
             )}
 
@@ -128,6 +134,11 @@ const UserMenu = () => {
             {isCoach && (
               <>
                 <li className="athlix-dropdown-group"><FormattedMessage id="project.users.userMenu.coachManagement" /></li>
+                <li>
+                  <button onClick={() => navAndClose("/users/manage-athletes")}>
+                    <FormattedMessage id="project.users.userMenu.inviteAthletes" defaultMessage="Invitar / Gestionar Atletas" />
+                  </button>
+                </li>
                 <li>
                   <button onClick={() => navAndClose("/plans/athletes")}>
                     <FormattedMessage id="project.plans.CoachDashboard.title" defaultMessage="Revisar planificación atletas" />

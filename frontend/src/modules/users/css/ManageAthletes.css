@@ -1,0 +1,147 @@
+.athlix-manage-wrapper {
+  animation: fadeIn 0.3s ease-in-out;
+  color: #f3f4f6;
+  padding: 2rem;
+  background-color: #0f1115;
+  min-height: calc(100vh - 70px);
+}
+
+.manage-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.manage-header h2 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.manage-header p {
+  color: #9ca3af;
+  margin: 0;
+  font-size: 1rem;
+}
+
+.manage-content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.invite-panel, .sent-requests-panel {
+  background-color: #1e2128;
+  border-radius: 12px;
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.panel-icon-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.panel-icon {
+  font-size: 1.5rem;
+  color: #3b82f6;
+}
+
+.invite-panel h3, .sent-requests-panel h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #ffffff;
+}
+
+.panel-desc {
+  color: #9ca3af;
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+}
+
+.invite-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.athlix-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.invite-input {
+  background-color: #0f1115;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1rem 1.2rem;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.invite-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.invite-input::placeholder {
+  color: #6b7280;
+}
+
+.athlix-feedback-msg {
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.athlix-feedback-msg.success {
+  background-color: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.athlix-feedback-msg.error {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.athlix-btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: #3b82f6;
+  color: #ffffff;
+  padding: 1rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.athlix-btn-primary:hover:not(:disabled) {
+  background-color: #2563eb;
+}
+
+.athlix-btn-primary:disabled {
+  background-color: #374151;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+@media (max-width: 900px) {
+  .manage-content-grid {
+    grid-template-columns: 1fr;
+  }
+}
