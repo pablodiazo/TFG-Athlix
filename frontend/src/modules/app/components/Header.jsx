@@ -56,6 +56,12 @@ const Header = () => {
     });
       */
     }
+    else if(notification.type === "COACH_ACCEPTED" || notification.type === "COACH_REJECTED") {
+      navigate("/users/manage-athletes");
+    }
+    else if(notification.type === "COACH_REQUEST") {
+      navigate("/users/coach-requests");
+    }
   };
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;

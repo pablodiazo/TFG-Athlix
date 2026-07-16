@@ -30,7 +30,7 @@ VALUES (
     'User2',
     'testuser2@example.com',
     'USER',
-    1
+    NULL
 );
 
 

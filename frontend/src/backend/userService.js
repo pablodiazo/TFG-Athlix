@@ -82,3 +82,23 @@ export const changePassword = (
 
 export const getAthletesByCoach = (onSuccess, onErrors) =>
   appFetch("/users/athletes", fetchConfig("GET"), onSuccess, onErrors);
+
+export const sendCoachRequest = (athleteEmail, onSuccess, onErrors) => {
+    appFetch('/users/coach-requests', fetchConfig('POST', { athleteEmail }), onSuccess, onErrors);
+};
+
+export const getPendingCoachRequests = (onSuccess, onErrors) => {
+    appFetch('/users/coach-requests/pending', fetchConfig('GET'), onSuccess, onErrors);
+};
+
+export const acceptCoachRequest = (requestId, onSuccess, onErrors) => {
+    appFetch(`/users/coach-requests/${requestId}/accept`, fetchConfig('POST'), onSuccess, onErrors);
+};
+
+export const rejectCoachRequest = (requestId, onSuccess, onErrors) => {
+    appFetch(`/users/coach-requests/${requestId}/reject`, fetchConfig('POST'), onSuccess, onErrors);
+};
+
+export const getSentCoachRequests = (onSuccess, onErrors) => {
+    appFetch('/users/coach-requests/sent', fetchConfig('GET'), onSuccess, onErrors);
+};

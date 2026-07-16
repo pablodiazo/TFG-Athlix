@@ -5,7 +5,7 @@ import { Route, Routes } from "react-router-dom";
 import Home from "./Home";
 import Test from "./Test";
 
-import { Login, Profile, SignUp, ChangePassword, UpdateProfile } from "../../users";
+import { Login, Profile, SignUp, ChangePassword, UpdateProfile , ManageAthletes, PendingRequests } from "../../users";
 import { DailyPlan, WeeklyPlan, MonthlyPlan, CreateTrainingSession, CreateSessionSuccess, CreateNutritionPlan, CreateRestPlan, CoachDashboard ,
    RescheduleRequests, EditTrainingSession , EditNutritionPlan, EditRestPlan } from "../../plans";
 
@@ -32,6 +32,8 @@ const Body = () => {
         <Route path="/plans/edit-session/:id" element={<EditTrainingSession />} />
         <Route path="/plans/edit-nutrition-plan/:id" element={<EditNutritionPlan />} />
         <Route path="/plans/edit-rest-plan/:id" element={<EditRestPlan />} />
+        <Route path="/users/manage-athletes" element={<ManageAthletes />} />
+        <Route path="/users/coach-requests" element={<PendingRequests />} />
       </Route>
     </Routes>
   );

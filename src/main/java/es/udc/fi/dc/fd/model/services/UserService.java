@@ -4,9 +4,11 @@ import java.util.List;
 
 import es.udc.fi.dc.fd.model.common.exceptions.DuplicateInstanceException;
 import es.udc.fi.dc.fd.model.common.exceptions.InstanceNotFoundException;
+import es.udc.fi.dc.fd.model.entities.CoachRequest;
 import es.udc.fi.dc.fd.model.entities.Users;
 import es.udc.fi.dc.fd.model.services.exceptions.IncorrectLoginException;
 import es.udc.fi.dc.fd.model.services.exceptions.IncorrectPasswordException;
+import es.udc.fi.dc.fd.model.services.exceptions.PermissionException;
 
 /**
  * The Interface UserService.
@@ -65,5 +67,15 @@ public interface UserService {
 		throws InstanceNotFoundException, IncorrectPasswordException;
 
 	List<Users> getAthletesByCoach(Long coachId);
+
+	CoachRequest sendCoachRequest(Long coachId, String athleteEmail) throws InstanceNotFoundException, DuplicateInstanceException;
+
+    List<CoachRequest> getPendingRequests(Long athleteId) throws InstanceNotFoundException;
+
+    void acceptCoachRequest(Long athleteId, Long requestId) throws InstanceNotFoundException, PermissionException;
+	
+    void rejectCoachRequest(Long athleteId, Long requestId) throws InstanceNotFoundException, PermissionException;
+
+	List<CoachRequest> getSentRequests(Long coachId) throws InstanceNotFoundException;
 	
 }
