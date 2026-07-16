@@ -3,6 +3,8 @@ package es.udc.fi.dc.fd.rest.controllers;
 import static es.udc.fi.dc.fd.rest.dtos.UserConversor.toAuthenticatedUserDto;
 import static es.udc.fi.dc.fd.rest.dtos.UserConversor.toUser;
 import static es.udc.fi.dc.fd.rest.dtos.UserConversor.toUserDto;
+import static es.udc.fi.dc.fd.rest.dtos.CoachRequestConversor.toCoachRequestDto;
+import static es.udc.fi.dc.fd.rest.dtos.CoachRequestConversor.toCoachRequestDtos;
 
 import java.net.URI;
 import java.util.List;
@@ -38,7 +40,9 @@ import es.udc.fi.dc.fd.rest.common.JwtGenerator;
 import es.udc.fi.dc.fd.rest.common.JwtInfo;
 import es.udc.fi.dc.fd.rest.dtos.AuthenticatedUserDto;
 import es.udc.fi.dc.fd.rest.dtos.ChangePasswordParamsDto;
+import es.udc.fi.dc.fd.rest.dtos.CoachRequestDto;
 import es.udc.fi.dc.fd.rest.dtos.LoginParamsDto;
+import es.udc.fi.dc.fd.rest.dtos.SendCoachRequestParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.UserDto;
 
 /**
@@ -228,4 +232,43 @@ public class UserController {
 		return userService.getAthletesByCoach(userId);
 	}
 
+	@PostMapping("/coach-requests")
+    public CoachRequestDto sendCoachRequest(
+            @RequestAttribute Long userId,
+            @Validated @RequestBody SendCoachRequestParamsDto params) 
+            throws InstanceNotFoundException, DuplicateInstanceException {
+        
+        return toCoachRequestDto(userService.sendCoachRequest(userId, params.getAthleteEmail()));
+    }
+
+    @GetMapping("/coach-requests/pending")
+    public List<CoachRequestDto> getPendingRequests(@RequestAttribute Long userId) 
+            throws InstanceNotFoundException {
+        
+        return toCoachRequestDtos(userService.getPendingRequests(userId));
+    }
+
+    @PostMapping("/coach-requests/{id}/accept")
+    public void acceptCoachRequest(
+            @RequestAttribute Long userId, 
+            @PathVariable Long id) 
+            throws InstanceNotFoundException, PermissionException {
+        
+        userService.acceptCoachRequest(userId, id);
+    }
+
+    @PostMapping("/coach-requests/{id}/reject")
+    public void rejectCoachRequest(
+            @RequestAttribute Long userId, 
+            @PathVariable Long id) 
+            throws InstanceNotFoundException, PermissionException {
+        
+        userService.rejectCoachRequest(userId, id);
+    }
+
+	@GetMapping("/coach-requests/sent")
+    public List<CoachRequestDto> getSentRequests(@RequestAttribute Long userId) 
+            throws InstanceNotFoundException {
+        return toCoachRequestDtos(userService.getSentRequests(userId));
+    }
 }

@@ -330,7 +330,7 @@ public class PlanController {
                 n.getSessionId(),
                 n.getMessage(), 
                 n.getType(), 
-                n.getPlanDate().toString(), 
+                n.getPlanDate() != null ? n.getPlanDate().toString() : null, 
                 n.isRead(), 
                 n.isReviewed(),
                 n.getNewDate() != null ? n.getNewDate().toString() : null, 

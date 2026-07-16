@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS CoachRequest;
 DROP TABLE IF EXISTS Notification;
 DROP TABLE IF EXISTS TrainingBlock;
 DROP TABLE IF EXISTS TrainingSession;
@@ -83,7 +84,7 @@ CREATE TABLE Notification (
     sessionId BIGINT,
     message VARCHAR(500) NOT NULL,
     type VARCHAR(50) NOT NULL,
-    planDate DATE NOT NULL,
+    planDate DATE,
     isRead BOOLEAN DEFAULT FALSE,
     isReviewed BOOLEAN DEFAULT FALSE,
     newDate DATE,
@@ -91,4 +92,13 @@ CREATE TABLE Notification (
     CONSTRAINT fk_notification_user FOREIGN KEY (userId) REFERENCES Users(id),
     CONSTRAINT fk_notification_athlete FOREIGN KEY (athleteId) REFERENCES Users(id),
     CONSTRAINT fk_notification_session FOREIGN KEY (sessionId) REFERENCES TrainingSession(id) ON DELETE CASCADE
+);
+
+CREATE TABLE CoachRequest (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    coachId BIGINT NOT NULL,
+    athleteId BIGINT NOT NULL,
+    status VARCHAR(20) NOT NULL,
+    CONSTRAINT fk_request_coach FOREIGN KEY (coachId) REFERENCES Users(id),
+    CONSTRAINT fk_request_athlete FOREIGN KEY (athleteId) REFERENCES Users(id)
 );

@@ -11,9 +11,15 @@ import org.springframework.transaction.annotation.Transactional;
 import es.udc.fi.dc.fd.model.common.exceptions.DuplicateInstanceException;
 import es.udc.fi.dc.fd.model.common.exceptions.InstanceNotFoundException;
 import es.udc.fi.dc.fd.model.entities.Users;
+import es.udc.fi.dc.fd.model.entities.CoachRequest;
+import es.udc.fi.dc.fd.model.entities.CoachRequest.CoachRequestStatus;
+import es.udc.fi.dc.fd.model.entities.CoachRequestDao;
+import es.udc.fi.dc.fd.model.entities.NotificationDao;
+import es.udc.fi.dc.fd.model.entities.Notification;
 import es.udc.fi.dc.fd.model.entities.UserDao;
 import es.udc.fi.dc.fd.model.services.exceptions.IncorrectLoginException;
 import es.udc.fi.dc.fd.model.services.exceptions.IncorrectPasswordException;
+import es.udc.fi.dc.fd.model.services.exceptions.PermissionException;
 
 /**
  * The Class UserServiceImpl.
@@ -33,6 +39,12 @@ public class UserServiceImpl implements UserService {
 	/** The user dao. */
 	@Autowired
 	private UserDao userDao;
+
+	@Autowired
+    private CoachRequestDao coachRequestDao;
+
+	@Autowired
+    private NotificationDao notificationDao;
 
 	/**
 	 * Sign up.
@@ -149,6 +161,112 @@ public class UserServiceImpl implements UserService {
 	@Override
     public List<Users> getAthletesByCoach(Long coachId) {
         return userDao.findAthletesByCoach(Users.RoleType.USER, coachId);
+    }
+
+    @Override
+    public CoachRequest sendCoachRequest(Long coachId, String athleteEmail) throws InstanceNotFoundException, DuplicateInstanceException {
+        Users coach = userDao.findById(coachId)
+            .orElseThrow(() -> new InstanceNotFoundException("user", coachId));
+        
+        Users athlete = userDao.findByEmail(athleteEmail)
+            .orElseThrow(() -> new InstanceNotFoundException("user", athleteEmail));
+
+        if (coach.getId().equals(athlete.getId())) {
+            throw new IllegalArgumentException("No puedes invitarte a ti mismo");
+        }
+
+		if (athlete.getCoachId() != null && athlete.getCoachId().equals(coach.getId())) {
+            throw new DuplicateInstanceException("request", athleteEmail);
+        }
+
+        if (coachRequestDao.existsByCoachIdAndAthleteIdAndStatus(coach.getId(), athlete.getId(), CoachRequestStatus.PENDING)) {
+            throw new DuplicateInstanceException("request", athleteEmail);
+        }
+
+        CoachRequest request = new CoachRequest(coach, athlete, CoachRequestStatus.PENDING);
+		coachRequestDao.save(request);
+
+		Notification notification = new Notification();
+        notification.setAthlete(coach);
+		notification.setUser(athlete);
+        notification.setMessage("El entrenador " + athlete.getFirstName() + " " + athlete.getLastName() + " quiere planificar tus entrenamientos.");
+        notification.setType("COACH_REQUEST");
+        notification.setRead(false);
+        notification.setReviewed(false);
+        
+        notificationDao.save(notification);
+        return request;
+    }
+
+    @Override
+    public List<CoachRequest> getPendingRequests(Long athleteId) throws InstanceNotFoundException {
+        if (!userDao.existsById(athleteId)) {
+            throw new InstanceNotFoundException("user", athleteId);
+        }
+        return coachRequestDao.findByAthleteIdAndStatus(athleteId, CoachRequestStatus.PENDING);
+    }
+
+    @Override
+    public void acceptCoachRequest(Long athleteId, Long requestId) throws InstanceNotFoundException, PermissionException {
+        CoachRequest request = coachRequestDao.findById(requestId)
+            .orElseThrow(() -> new InstanceNotFoundException("request", requestId));
+
+        if (!request.getAthlete().getId().equals(athleteId)) {
+            throw new PermissionException();
+        }
+
+        request.setStatus(CoachRequestStatus.ACCEPTED);
+        
+        Users athlete = request.getAthlete();
+        athlete.setCoachId(request.getCoach().getId());
+        
+        userDao.save(athlete);
+        coachRequestDao.save(request);
+
+		Notification notification = new Notification();
+        notification.setAthlete(athlete); 
+		notification.setUser(request.getCoach());
+        notification.setMessage("¡" + request.getCoach().getFirstName() + " " + request.getCoach().getLastName() + " ha aceptado tu solicitud de entrenamiento!");
+        notification.setType("COACH_ACCEPTED");
+        notification.setRead(false);
+        notification.setReviewed(false);
+        
+        notificationDao.save(notification);
+        
+    }
+
+    @Override
+    public void rejectCoachRequest(Long athleteId, Long requestId) throws InstanceNotFoundException, PermissionException {
+        CoachRequest request = coachRequestDao.findById(requestId)
+            .orElseThrow(() -> new InstanceNotFoundException("request", requestId));
+
+		Users athlete = userDao.findById(athleteId)
+            .orElseThrow(() -> new InstanceNotFoundException("user", athleteId));
+
+        if (!request.getAthlete().getId().equals(athleteId)) {
+            throw new PermissionException();
+        }
+
+        request.setStatus(CoachRequestStatus.REJECTED);
+        coachRequestDao.save(request);
+
+		Notification notification = new Notification();
+        notification.setAthlete(athlete);
+        notification.setUser(request.getCoach());
+        notification.setMessage(request.getCoach().getFirstName() + " " + request.getCoach().getLastName() + " ha rechazado tu solicitud de entrenamiento.");
+        notification.setType("COACH_REJECTED");
+        notification.setRead(false);
+        notification.setReviewed(false);
+        
+        notificationDao.save(notification);
+    }
+
+	@Override
+    public List<CoachRequest> getSentRequests(Long coachId) throws InstanceNotFoundException {
+        if (!userDao.existsById(coachId)) {
+            throw new InstanceNotFoundException("user", coachId);
+        }
+        return coachRequestDao.findByCoachIdAndStatus(coachId, CoachRequestStatus.PENDING);
     }
 
 }
