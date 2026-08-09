@@ -15,6 +15,8 @@ frontend/build/
 # ---- BACKEND ----
 # Archivos generados por Maven/Gradle
 target/
+*.pyc
+src/main/llm/env/
 
 # --- Sistema/IDE ---
 .vscode/
