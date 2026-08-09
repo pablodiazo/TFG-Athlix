@@ -531,4 +531,25 @@ public class PlanController {
 
         return monthlyDtos;
     }
+
+    @PostMapping("/training-sessions/{id}/fail")
+    public List<TrainingSessionDto> markTrainingSessionAsFailed(
+            @RequestAttribute Long userId, 
+            @PathVariable Long id) 
+            throws InstanceNotFoundException, PermissionException {
+        
+        List<TrainingSession> modifiedSessions = planService.markSessionAsFailedAndReplan(userId, id);
+        
+        return modifiedSessions.stream()
+            .map(session -> {
+                TrainingSessionDto dto = toTrainingSessionDto(session);
+                try {
+                    dto.setTss(planService.calculateTSS(session.getId()));
+                } catch (Exception e) {
+                    dto.setTss(0.0);
+                }
+                return dto;
+            })
+            .collect(Collectors.toList());
+    }
 }

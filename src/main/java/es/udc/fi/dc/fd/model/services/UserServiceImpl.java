@@ -189,7 +189,7 @@ public class UserServiceImpl implements UserService {
 		Notification notification = new Notification();
         notification.setAthlete(coach);
 		notification.setUser(athlete);
-        notification.setMessage("El entrenador " + athlete.getFirstName() + " " + athlete.getLastName() + " quiere planificar tus entrenamientos.");
+        notification.setMessage("El entrenador " + coach.getFirstName() + " " + coach.getLastName() + " quiere planificar tus entrenamientos.");
         notification.setType("COACH_REQUEST");
         notification.setRead(false);
         notification.setReviewed(false);
@@ -226,7 +226,7 @@ public class UserServiceImpl implements UserService {
 		Notification notification = new Notification();
         notification.setAthlete(athlete); 
 		notification.setUser(request.getCoach());
-        notification.setMessage("¡" + request.getCoach().getFirstName() + " " + request.getCoach().getLastName() + " ha aceptado tu solicitud de entrenamiento!");
+        notification.setMessage("¡" + request.getAthlete().getFirstName() + " " + request.getAthlete().getLastName() + " ha aceptado tu solicitud de entrenamiento!");
         notification.setType("COACH_ACCEPTED");
         notification.setRead(false);
         notification.setReviewed(false);
@@ -253,7 +253,7 @@ public class UserServiceImpl implements UserService {
 		Notification notification = new Notification();
         notification.setAthlete(athlete);
         notification.setUser(request.getCoach());
-        notification.setMessage(request.getCoach().getFirstName() + " " + request.getCoach().getLastName() + " ha rechazado tu solicitud de entrenamiento.");
+        notification.setMessage(request.getAthlete().getFirstName() + " " + request.getAthlete().getLastName() + " ha rechazado tu solicitud de entrenamiento.");
         notification.setType("COACH_REJECTED");
         notification.setRead(false);
         notification.setReviewed(false);

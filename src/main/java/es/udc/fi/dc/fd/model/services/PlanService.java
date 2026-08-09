@@ -62,4 +62,6 @@ public interface PlanService {
         throws InstanceNotFoundException, PermissionException;
 
     List<DailyPlan> getMonthlyPlan(Long userId, LocalDate startDate, LocalDate endDate) throws InstanceNotFoundException;
+
+    List<TrainingSession> markSessionAsFailedAndReplan(Long userId, Long sessionId) throws InstanceNotFoundException, PermissionException;
 }

@@ -12,10 +12,13 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import es.udc.fi.dc.fd.model.common.exceptions.*;
 import es.udc.fi.dc.fd.model.services.exceptions.*;
 import es.udc.fi.dc.fd.model.entities.*;
+
+import es.udc.fi.dc.fd.rest.dtos.ReplanningDtos.*;
 
 @Service
 @Transactional
@@ -780,4 +783,118 @@ public class PlanServiceImpl implements PlanService {
 
         return monthlyPlan;
     }
+
+    @Override
+    public List<TrainingSession> markSessionAsFailedAndReplan(Long userId, Long sessionId) throws InstanceNotFoundException, PermissionException {
+        
+        TrainingSession failedSession = trainingSessionDao.findById(sessionId)
+                .orElseThrow(() -> new InstanceNotFoundException("TrainingSession", sessionId));
+        
+        if (!failedSession.getUser().getId().equals(userId)) {
+            throw new PermissionException();
+        }
+
+        double failedTss = calculateTSS(sessionId);
+
+        LocalDate failedDate = failedSession.getSessionDate();
+        LocalDate endOfWeek = failedDate.with(java.time.DayOfWeek.SUNDAY);
+        List<TrainingSession> futureSessions = trainingSessionDao.findByUserIdAndSessionDateBetweenOrderByStartTimeAsc(
+                userId, failedDate.plusDays(1), endOfWeek);
+
+        ContextApiRequest context = new ContextApiRequest(450.0, failedTss); 
+        
+        List<BlockApiRequest> failedBlocksReq = failedSession.getBlocks().stream()
+                .map(b -> new BlockApiRequest(b.getName(), b.getDistanceOrDuration(), b.getPace().name(), b.getSets(), b.getReps(), b.getRest()))
+                .collect(Collectors.toList());
+        SessionApiRequest failedSessionReq = new SessionApiRequest(
+                failedSession.getSessionDate().toString(), failedSession.getSport().name(), failedTss, failedBlocksReq);
+
+        List<SessionApiRequest> adjustableSessionsReq = futureSessions.stream().map(s -> {
+            try {
+                double tss = calculateTSS(s.getId());
+                List<BlockApiRequest> blocksReq = s.getBlocks().stream()
+                    .map(b -> new BlockApiRequest(b.getName(), b.getDistanceOrDuration(), b.getPace().name(), b.getSets(), b.getReps(), b.getRest()))
+                    .collect(Collectors.toList());
+                return new SessionApiRequest(s.getSessionDate().toString(), s.getSport().name(), tss, blocksReq);
+            } catch (Exception e) {
+                return null;
+            }
+        }).filter(java.util.Objects::nonNull).collect(Collectors.toList());
+
+        ReplanApiRequest requestPayload = new ReplanApiRequest(context, failedSessionReq, adjustableSessionsReq);
+
+        RestTemplate restTemplate = new RestTemplate();
+        String pythonUrl = "http://localhost:8000/api/replan";
+        PlanReadjustmentApiResponse aiResponse = restTemplate.postForObject(pythonUrl, requestPayload, PlanReadjustmentApiResponse.class);
+
+        List<TrainingSession> modifiedSessions = new ArrayList<>();
+        if (aiResponse != null) {
+            modifiedSessions = applyReadjustmentToDatabase(aiResponse, futureSessions, failedSession);
+        }
+
+        return modifiedSessions;
+    }
+
+    private List<TrainingSession> applyReadjustmentToDatabase(PlanReadjustmentApiResponse aiResponse, List<TrainingSession> futureSessions, TrainingSession failedSession) {
+        List<TrainingSession> result = new ArrayList<>();
+
+        for (UpdatedSessionApiResponse updatedResp : aiResponse.getUpdatedSessions()) {
+            for (TrainingSession originalSession : futureSessions) {
+                if (originalSession.getSessionDate().toString().equals(updatedResp.getDate()) && originalSession.getSport().name().equals(updatedResp.getSport())) {
+                    
+                    if (originalSession.getBlocks() != null) {
+                        trainingBlockDao.deleteAll(originalSession.getBlocks());
+                        originalSession.getBlocks().clear();
+                    }
+
+                    int blockOrder = 1;
+                    for (UpdatedBlockApiResponse uBlock : updatedResp.getUpdatedBlocks()) {
+                        TrainingBlock newBlock = new TrainingBlock();
+                        newBlock.setBlockOrder(blockOrder++);
+                        newBlock.setName(uBlock.getName());
+                        newBlock.setDistanceOrDuration(uBlock.getDistanceOrDuration());
+                        String rawPace = uBlock.getPace().replace("+", "_PLUS");
+                        newBlock.setPace(es.udc.fi.dc.fd.model.entities.IntensityZone.valueOf(rawPace));
+                        newBlock.setSets(uBlock.getSets() != null ? uBlock.getSets() : 1);
+                        newBlock.setReps(uBlock.getReps() != null ? uBlock.getReps() : 1);
+                        newBlock.setRest(uBlock.getRest() != null ? uBlock.getRest() : "");
+                        newBlock.setTrainingSession(originalSession);
+                        originalSession.addBlock(newBlock);
+                    }
+                    result.add(trainingSessionDao.save(originalSession));
+                }
+            }
+        }
+
+        if (aiResponse.getRescheduledSession() != null) {
+            RescheduledSessionApiResponse resch = aiResponse.getRescheduledSession();
+            
+            TrainingSession newSession = new TrainingSession();
+            newSession.setUser(failedSession.getUser());
+            newSession.setCoach(failedSession.getCoach());
+            newSession.setSessionDate(LocalDate.parse(resch.getNewDate()));
+            newSession.setStartTime(failedSession.getStartTime());
+            newSession.setSport(failedSession.getSport());
+            newSession.setObjective("Sesión recolocada automáticamente");
+            
+            int blockOrder = 1;
+            for (UpdatedBlockApiResponse rBlock : resch.getBlocks()) {
+                TrainingBlock newBlock = new TrainingBlock();
+                newBlock.setBlockOrder(blockOrder++);
+                newBlock.setName(rBlock.getName());
+                newBlock.setDistanceOrDuration(rBlock.getDistanceOrDuration());
+                String rawPace = rBlock.getPace().replace("+", "_PLUS");
+                newBlock.setPace(es.udc.fi.dc.fd.model.entities.IntensityZone.valueOf(rawPace));
+                newBlock.setSets(rBlock.getSets() != null ? rBlock.getSets() : 1);
+                newBlock.setReps(rBlock.getReps() != null ? rBlock.getReps() : 1);
+                newBlock.setRest(rBlock.getRest() != null ? rBlock.getRest() : "");
+                newBlock.setTrainingSession(newSession);
+                newSession.addBlock(newBlock);
+            }
+            result.add(trainingSessionDao.save(newSession));
+        }
+
+        return result;
+    }
+
 }
