@@ -23,6 +23,7 @@ import es.udc.fi.dc.fd.model.common.exceptions.InstanceNotFoundException;
 import es.udc.fi.dc.fd.model.entities.DailyPlan;
 import es.udc.fi.dc.fd.model.entities.NutritionPlan;
 import es.udc.fi.dc.fd.model.entities.TrainingBlock;
+import es.udc.fi.dc.fd.model.entities.TrainingReplanningProposal;
 import es.udc.fi.dc.fd.model.entities.TrainingSession;
 import es.udc.fi.dc.fd.model.entities.RestPlan;
 import es.udc.fi.dc.fd.rest.dtos.CreateSessionParamsDto;
@@ -35,6 +36,7 @@ import es.udc.fi.dc.fd.rest.dtos.RescheduleParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.RestPlanDto;
 import es.udc.fi.dc.fd.rest.dtos.TrainingSessionDto;
 import es.udc.fi.dc.fd.rest.dtos.TrainingBlockDto;
+import es.udc.fi.dc.fd.rest.dtos.TrainingReplanningProposalDto;
 import es.udc.fi.dc.fd.rest.dtos.UpdatePlanDoneParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.UpdateSessionParamsDto;
 import es.udc.fi.dc.fd.rest.dtos.AcceptReadjustmentParamsDto;
@@ -533,23 +535,68 @@ public class PlanController {
     }
 
     @PostMapping("/training-sessions/{id}/fail")
-    public List<TrainingSessionDto> markTrainingSessionAsFailed(
+    public TrainingReplanningProposalDto markTrainingSessionAsFailed(
             @RequestAttribute Long userId, 
             @PathVariable Long id) 
             throws InstanceNotFoundException, PermissionException {
         
-        List<TrainingSession> modifiedSessions = planService.markSessionAsFailedAndReplan(userId, id);
+        TrainingReplanningProposal proposal = planService.markSessionAsFailedAndReplan(userId, id);
         
-        return modifiedSessions.stream()
-            .map(session -> {
-                TrainingSessionDto dto = toTrainingSessionDto(session);
-                try {
-                    dto.setTss(planService.calculateTSS(session.getId()));
-                } catch (Exception e) {
-                    dto.setTss(0.0);
-                }
-                return dto;
-            })
-            .collect(Collectors.toList());
+        return new TrainingReplanningProposalDto(
+            proposal.getId(),
+            proposal.getAthlete().getId(),
+            proposal.getCoach().getId(),
+            proposal.getFailedSession().getId(),
+            proposal.getProposalJson(),
+            proposal.getStatus().name(),
+            proposal.getCreationDate().toString()
+        );
+    }
+
+    @PostMapping("/proposals/{id}/accept")
+    public List<TrainingSessionDto> acceptProposal(
+            @RequestAttribute Long userId, 
+            @PathVariable Long id) 
+            throws InstanceNotFoundException, PermissionException {
+        
+        List<TrainingSession> modifiedSessions = planService.acceptProposal(userId, id);
+        
+        return modifiedSessions.stream().map(session -> {
+            TrainingSessionDto dto = toTrainingSessionDto(session);
+            try {
+                dto.setTss(planService.calculateTSS(session.getId()));
+            } catch (Exception e) {
+                dto.setTss(0.0);
+            }
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
+    @PostMapping("/proposals/{id}/deny")
+    public void denyProposal(
+            @RequestAttribute Long userId, 
+            @PathVariable Long id) 
+            throws InstanceNotFoundException, PermissionException {
+        
+        planService.denyProposal(userId, id);
+    }
+
+    @GetMapping("/training-sessions/{id}/proposal")
+    public TrainingReplanningProposalDto getPendingAiProposal(
+            @RequestAttribute Long userId, 
+            @PathVariable Long id) 
+            throws InstanceNotFoundException, PermissionException {
+        
+        TrainingReplanningProposal proposal = planService.getPendingProposalBySessionId(userId, id);
+        
+        return new TrainingReplanningProposalDto(
+            proposal.getId(),
+            proposal.getAthlete().getId(),
+            proposal.getCoach().getId(),
+            proposal.getFailedSession().getId(),
+            proposal.getProposalJson(),
+            proposal.getStatus().name(),
+            proposal.getCreationDate().toString()
+        );
     }
 }

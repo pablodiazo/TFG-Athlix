@@ -42,6 +42,9 @@ public class PlanServiceImpl implements PlanService {
     @Autowired
     private NotificationDao notificationDao;
 
+    @Autowired
+    private TrainingReplanningProposalDao trainingReplanningProposalDao;
+
     @Override
     public DailyPlan getDailyPlan(Long userId, LocalDate date) throws InstanceNotFoundException {
         List<TrainingSession> sessions = trainingSessionDao.findByUserIdAndSessionDateOrderByStartTimeAsc(userId, date);
@@ -785,7 +788,7 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public List<TrainingSession> markSessionAsFailedAndReplan(Long userId, Long sessionId) throws InstanceNotFoundException, PermissionException {
+    public TrainingReplanningProposal markSessionAsFailedAndReplan(Long userId, Long sessionId) throws InstanceNotFoundException, PermissionException {
         
         TrainingSession failedSession = trainingSessionDao.findById(sessionId)
                 .orElseThrow(() -> new InstanceNotFoundException("TrainingSession", sessionId));
@@ -827,12 +830,32 @@ public class PlanServiceImpl implements PlanService {
         String pythonUrl = "http://localhost:8000/api/replan";
         PlanReadjustmentApiResponse aiResponse = restTemplate.postForObject(pythonUrl, requestPayload, PlanReadjustmentApiResponse.class);
 
-        List<TrainingSession> modifiedSessions = new ArrayList<>();
-        if (aiResponse != null) {
-            modifiedSessions = applyReadjustmentToDatabase(aiResponse, futureSessions, failedSession);
+        if (aiResponse == null) {
+            throw new RuntimeException("Error al comunicarse con el motor de IA");
         }
 
-        return modifiedSessions;
+        String proposalJson = "";
+        try {
+            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            proposalJson = mapper.writeValueAsString(aiResponse);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al serializar la propuesta de la IA", e);
+        }
+
+        Users athlete = failedSession.getUser();
+        Users coach = failedSession.getCoach();
+
+        TrainingReplanningProposal proposal = new TrainingReplanningProposal(athlete, coach, failedSession, proposalJson);
+        TrainingReplanningProposal savedProposal = trainingReplanningProposalDao.save(proposal);
+
+        String msg = "Tu atleta " + athlete.getFirstName() + " " + athlete.getLastName() + 
+                     " ha reportado una sesión incompleta. La IA ha generado una propuesta de reajuste.";
+        Notification notification = new Notification(coach, athlete, msg, "AI_PROPOSAL", failedSession.getSessionDate());
+        
+        notification.setSessionId(failedSession.getId());
+        notificationDao.save(notification);
+
+        return savedProposal;
     }
 
     private List<TrainingSession> applyReadjustmentToDatabase(PlanReadjustmentApiResponse aiResponse, List<TrainingSession> futureSessions, TrainingSession failedSession) {
@@ -897,4 +920,83 @@ public class PlanServiceImpl implements PlanService {
         return result;
     }
 
+    @Override
+    public List<TrainingSession> acceptProposal(Long coachId, Long proposalId) throws InstanceNotFoundException, PermissionException {
+        
+        TrainingReplanningProposal proposal = trainingReplanningProposalDao.findById(proposalId)
+            .orElseThrow(() -> new InstanceNotFoundException("TrainingReplanningProposal", proposalId));
+        
+        if (!proposal.getCoach().getId().equals(coachId)) {
+            throw new PermissionException();
+        }
+
+        if (proposal.getStatus() != TrainingReplanningProposal.TrainingReplanningProposalStatus.PENDING) {
+            throw new RuntimeException("Esta propuesta ya ha sido revisada.");
+        }
+
+        PlanReadjustmentApiResponse aiResponse = null;
+        try {
+            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            aiResponse = mapper.readValue(proposal.getProposalJson(), PlanReadjustmentApiResponse.class);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al leer el JSON de la propuesta guardada", e);
+        }
+
+        LocalDate failedDate = proposal.getFailedSession().getSessionDate();
+        LocalDate endOfWeek = failedDate.with(java.time.DayOfWeek.SUNDAY);
+        List<TrainingSession> futureSessions = trainingSessionDao.findByUserIdAndSessionDateBetweenOrderByStartTimeAsc(
+                proposal.getAthlete().getId(), failedDate.plusDays(1), endOfWeek);
+
+        List<TrainingSession> modifiedSessions = applyReadjustmentToDatabase(aiResponse, futureSessions, proposal.getFailedSession());
+
+        proposal.setStatus(TrainingReplanningProposal.TrainingReplanningProposalStatus.ACCEPTED);
+        trainingReplanningProposalDao.save(proposal);
+
+        String msg = "Tu entrenador ha aprobado el reajuste generado para compensar tu sesión incompleta.";
+        Notification notification = new Notification(proposal.getAthlete(), proposal.getCoach(), msg, "AI_PROPOSAL_ACCEPTED", LocalDate.now());
+        notificationDao.save(notification);
+
+        return modifiedSessions;
+    }
+
+    @Override
+    public void denyProposal(Long coachId, Long proposalId) throws InstanceNotFoundException, PermissionException {
+        
+        TrainingReplanningProposal proposal = trainingReplanningProposalDao.findById(proposalId)
+            .orElseThrow(() -> new InstanceNotFoundException("TrainingReplanningProposal", proposalId));
+        
+        if (!proposal.getCoach().getId().equals(coachId)) {
+            throw new PermissionException();
+        }
+
+        if (proposal.getStatus() != TrainingReplanningProposal.TrainingReplanningProposalStatus.PENDING) {
+            throw new RuntimeException("Esta propuesta ya ha sido revisada.");
+        }
+
+        proposal.setStatus(TrainingReplanningProposal.TrainingReplanningProposalStatus.REJECTED);
+        trainingReplanningProposalDao.save(proposal);
+
+        String msg = "Tu entrenador ha descartado el reajuste automático propuesto. Ponte en contacto con él para saber cómo continuar.";
+        Notification notification = new Notification(proposal.getAthlete(), proposal.getCoach(), msg, "AI_PROPOSAL_REJECTED", LocalDate.now());
+        notificationDao.save(notification);
+    }
+
+    @Override
+    public TrainingReplanningProposal getPendingProposalBySessionId(Long userId, Long sessionId) throws InstanceNotFoundException, PermissionException {
+
+        TrainingSession session = trainingSessionDao.findById(sessionId)
+                .orElseThrow(() -> new InstanceNotFoundException("TrainingSession", sessionId));
+        
+        if (!session.getCoach().getId().equals(userId) && !session.getUser().getId().equals(userId)) {
+            throw new PermissionException();
+        }
+
+        List<TrainingReplanningProposal> proposals = trainingReplanningProposalDao.findByFailedSessionIdAndStatusOrderByCreationDateDesc(sessionId, TrainingReplanningProposal.TrainingReplanningProposalStatus.PENDING);
+        
+        if (proposals.isEmpty()) {
+            throw new InstanceNotFoundException("TrainingReplanningProposal pending for session", sessionId);
+        }
+
+        return proposals.get(0);
+    }
 }

@@ -102,3 +102,16 @@ CREATE TABLE CoachRequest (
     CONSTRAINT fk_request_coach FOREIGN KEY (coachId) REFERENCES Users(id),
     CONSTRAINT fk_request_athlete FOREIGN KEY (athleteId) REFERENCES Users(id)
 );
+
+CREATE TABLE TrainingReplanningProposal (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    athleteId BIGINT NOT NULL,
+    coachId BIGINT NOT NULL,
+    failedSessionId BIGINT NOT NULL,
+    proposalJson TEXT NOT NULL,
+    status VARCHAR(20) NOT NULL,
+    creationDate TIMESTAMP NOT NULL,
+    CONSTRAINT fk_trainingreplanningproposal_athlete FOREIGN KEY (athleteId) REFERENCES Users(id),
+    CONSTRAINT fk_trainingreplanningproposal_coach FOREIGN KEY (coachId) REFERENCES Users(id),
+    CONSTRAINT fk_trainingreplanningproposal_session FOREIGN KEY (failedSessionId) REFERENCES TrainingSession(id)
+);

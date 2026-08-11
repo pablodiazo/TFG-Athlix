@@ -63,5 +63,11 @@ public interface PlanService {
 
     List<DailyPlan> getMonthlyPlan(Long userId, LocalDate startDate, LocalDate endDate) throws InstanceNotFoundException;
 
-    List<TrainingSession> markSessionAsFailedAndReplan(Long userId, Long sessionId) throws InstanceNotFoundException, PermissionException;
+    TrainingReplanningProposal markSessionAsFailedAndReplan(Long userId, Long sessionId) throws InstanceNotFoundException, PermissionException;
+
+    List<TrainingSession> acceptProposal(Long coachId, Long proposalId) throws InstanceNotFoundException, PermissionException;
+
+    void denyProposal(Long coachId, Long proposalId) throws InstanceNotFoundException, PermissionException;
+
+    TrainingReplanningProposal getPendingProposalBySessionId(Long userId, Long sessionId) throws InstanceNotFoundException, PermissionException;
 }
