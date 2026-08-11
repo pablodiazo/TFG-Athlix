@@ -3,7 +3,7 @@ import { FormattedMessage } from "react-intl";
 import backend from "../../../backend";
 import { useNavigate } from "react-router-dom";
 
-import { FaSwimmer, FaBicycle, FaRunning, FaDumbbell, FaClock, FaSync, FaCheck, FaTimes, FaCalendarDay, FaEdit, FaTrash } from "react-icons/fa";
+import { FaSwimmer, FaBicycle, FaRunning, FaDumbbell, FaClock, FaSync, FaCheck, FaTimes, FaCalendarDay, FaEdit, FaTrash, FaRobot } from "react-icons/fa";
 import "../css/DailyPlan.css";
 
 const SPORT_INFO = {
@@ -20,7 +20,7 @@ const DailyPlan = ({ athleteId, forcedDate }) => {
   const [planData, setPlanData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
-
+  const [isReplanningId, setIsReplanningId] = useState(null);
   const isCoach = !!athleteId;
 
   useEffect(() => {
@@ -328,6 +328,38 @@ const DailyPlan = ({ athleteId, forcedDate }) => {
     navigate(`/plans/edit-rest-plan/${plan.id}`, { state: { planData: plan } });
   };
 
+  const [replanModal, setReplanModal] = useState({
+    isOpen: false,
+    sessionId: null
+  });
+
+  const openReplanModal = (e, sessionId) => {
+    e.stopPropagation();
+    setReplanModal({ isOpen: true, sessionId: sessionId });
+  };
+
+  const closeReplanModal = () => {
+    setReplanModal({ isOpen: false, sessionId: null });
+  };
+
+  const confirmReplan = () => {
+    const sessionId = replanModal.sessionId;
+    setIsReplanningId(sessionId);
+    closeReplanModal();
+
+    backend.planService.markSessionAsFailedAndReplan(
+      sessionId,
+      () => {
+        setIsReplanningId(null);
+      },
+      (error) => {
+        console.error("Error al pedir reajuste a la IA:", error);
+        setIsReplanningId(null);
+        alert("Hubo un error al solicitar el reajuste. Inténtalo de nuevo más tarde.");
+      }
+    );
+  };
+
   if (isLoading) {
     return (
       <div className="daily-wrapper loading">
@@ -388,9 +420,16 @@ const DailyPlan = ({ athleteId, forcedDate }) => {
                               
                               <div className="badge-wrapper" style={{ marginLeft: "auto" }}>
                                 {!isCoach && (
-                                  <button className="reschedule-icon-btn" onClick={(e) => openReschedulePopover(e, session.id, session.startTime)}title="Mover a otro día u hora">
-                                    <FaCalendarDay />
-                                  </button>
+                                  <>
+                                    <button className="reschedule-icon-btn" onClick={(e) => openReplanModal(e, session.id)} 
+                                      title="Sesión fallida (Pedir reajuste automático)" disabled={isReplanningId === session.id}
+                                      style={{ color: isReplanningId === session.id ? 'gray' : '#ef4444' }}>
+                                      <FaRobot />
+                                    </button>
+                                    <button className="reschedule-icon-btn" onClick={(e) => openReschedulePopover(e, session.id, session.startTime)}title="Mover a otro día u hora">
+                                      <FaCalendarDay />
+                                    </button>
+                                  </>
                                 )}
                                 {reschedulePopover.activeId === session.id && (
                                   <div className="slider-popover reschedule-popover" onClick={e => e.stopPropagation()}>
@@ -439,7 +478,7 @@ const DailyPlan = ({ athleteId, forcedDate }) => {
                                 </div>
                               </div>
                               <div className="block-details">
-                                {block.pace && block.pace !== "0" && <span className="badge pace">{block.pace}</span>}
+                                {block.pace && block.pace !== "0" && block.pace !== "-" && <span className="badge pace">{block.pace}</span>}
                                 {block.rest && block.rest !== "0" && <span className="badge rest">Recuperación: {block.rest}</span>}
                               </div>
                             </div>
@@ -510,7 +549,7 @@ const DailyPlan = ({ athleteId, forcedDate }) => {
                             <strong>{planData.nutrition.hydrationLiters}L</strong>
                             </div>
                         </div>
-                        {planData.nutrition.guidelines && (
+                        {planData.nutrition.guidelines && planData.nutrition.guidelines !== "-" && (
                             <div className="guidelines">
                             <p>{planData.nutrition.guidelines}</p>
                             </div>
@@ -559,9 +598,9 @@ const DailyPlan = ({ athleteId, forcedDate }) => {
                         </div>
                         <p className="sleep-label"><FormattedMessage id="project.plans.DailyPlan.sleepTarget" /></p>
                         
-                        {planData.rest.guidelines && (
+                        {planData.rest.guidelines && planData.rest.guidelines !== "-" && (
                             <div className="guidelines">
-                            <p>{planData.rest.guidelines}</p>
+                              <p>{planData.rest.guidelines}</p>
                             </div>
                         )}
                         {isCoach && 
@@ -628,6 +667,31 @@ const DailyPlan = ({ athleteId, forcedDate }) => {
               </button>
               <button className="athlix-btn-confirm-danger" onClick={confirmDelete}>
                 <FormattedMessage id="project.plans.DeleteSession.confirm" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {replanModal.isOpen && (
+        <div className="athlix-modal-overlay" onClick={closeReplanModal}>
+          <div className="athlix-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="athlix-modal-header">
+              <h3>Reajuste automático</h3>
+            </div>
+            <div className="athlix-modal-body">
+              <p>
+                ¿No has podido completar esta sesión? Un LLM analizará tu semana y generará una propuesta de reajuste para tu entrenador.
+              </p>
+              <p style={{ marginTop: '10px', fontWeight: 'bold' }}>
+                ¿Deseas continuar?
+              </p>
+            </div>
+            <div className="athlix-modal-footer">
+              <button className="athlix-btn-cancel" onClick={closeReplanModal}>
+                <FormattedMessage id="project.global.buttons.cancel" />
+              </button>
+              <button className="athlix-btn-confirm-danger" onClick={confirmReplan} style={{ backgroundColor: '#22c55e' }}>
+                Solicitar Reajuste
               </button>
             </div>
           </div>

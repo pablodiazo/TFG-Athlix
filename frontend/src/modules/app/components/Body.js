@@ -7,7 +7,7 @@ import Test from "./Test";
 
 import { Login, Profile, SignUp, ChangePassword, UpdateProfile , ManageAthletes, PendingRequests } from "../../users";
 import { DailyPlan, WeeklyPlan, MonthlyPlan, CreateTrainingSession, CreateSessionSuccess, CreateNutritionPlan, CreateRestPlan, CoachDashboard ,
-   RescheduleRequests, EditTrainingSession , EditNutritionPlan, EditRestPlan } from "../../plans";
+   RescheduleRequests, EditTrainingSession , EditNutritionPlan, EditRestPlan, ReplanningProposalsPage } from "../../plans";
 
 const Body = () => {
   return (
@@ -34,6 +34,7 @@ const Body = () => {
         <Route path="/plans/edit-rest-plan/:id" element={<EditRestPlan />} />
         <Route path="/users/manage-athletes" element={<ManageAthletes />} />
         <Route path="/users/coach-requests" element={<PendingRequests />} />
+        <Route path="/plans/review-proposal/:sessionId" element={<ReplanningProposalsPage />} />
       </Route>
     </Routes>
   );

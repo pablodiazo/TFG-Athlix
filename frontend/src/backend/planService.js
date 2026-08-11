@@ -91,3 +91,20 @@ export const getAthleteMonthlyPlan = (athleteId, startDate, endDate, onSuccess, 
 export const getMonthlyPlan = (startDate, endDate, onSuccess, onErrors) => {
     appFetch(`/plans/monthly?startDate=${startDate}&endDate=${endDate}`, fetchConfig('GET'), onSuccess, onErrors);
 };
+
+
+export const markSessionAsFailedAndReplan = (sessionId, onSuccess, onErrors) => {
+    appFetch(`/plans/training-sessions/${sessionId}/fail`, fetchConfig('POST'), onSuccess, onErrors);
+};
+
+export const acceptProposal = (proposalId, onSuccess, onErrors) => {
+    appFetch(`/plans/proposals/${proposalId}/accept`, fetchConfig('POST'), onSuccess, onErrors);
+};
+
+export const denyProposal = (proposalId, onSuccess, onErrors) => {
+    appFetch(`/plans/proposals/${proposalId}/deny`, fetchConfig('POST'), onSuccess, onErrors);
+};
+
+export const getPendingAiProposal = (sessionId, onSuccess, onErrors) => {
+    appFetch(`/plans/training-sessions/${sessionId}/proposal`, fetchConfig('GET'), onSuccess, onErrors);
+};

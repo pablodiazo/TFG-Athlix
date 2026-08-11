@@ -10,3 +10,5 @@ export {default as RescheduleRequests} from './components/RescheduleRequests';
 export {default as EditTrainingSession} from './components/EditTrainingSession';
 export {default as EditNutritionPlan} from './components/EditNutritionPlan';
 export {default as EditRestPlan} from './components/EditRestPlan';
+export {default as ReplanningProposalReview} from './components/ReplanningProposalReview';
+export {default as ReplanningProposalsPage} from './components/ReplanningProposalsPage';

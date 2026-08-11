@@ -56,11 +56,17 @@ const Header = () => {
     });
       */
     }
-    else if(notification.type === "COACH_ACCEPTED" || notification.type === "COACH_REJECTED") {
+    else if(notification.type === "COACH_ACCEPTED") {
+      navigate("/plans/athletes");
+    }
+    else if(notification.type === "COACH_REJECTED") {
       navigate("/users/manage-athletes");
     }
     else if(notification.type === "COACH_REQUEST") {
       navigate("/users/coach-requests");
+    }
+    else if(notification.type === "AI_PROPOSAL") {
+      navigate(`/plans/review-proposal/${notification.sessionId}`);
     }
   };
 
