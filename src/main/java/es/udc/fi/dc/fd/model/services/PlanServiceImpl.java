@@ -865,11 +865,13 @@ public class PlanServiceImpl implements PlanService {
             for (TrainingSession originalSession : futureSessions) {
                 if (originalSession.getSessionDate().toString().equals(updatedResp.getDate()) && originalSession.getSport().name().equals(updatedResp.getSport())) {
                     
-                    if (originalSession.getBlocks() != null) {
+                    if (originalSession.getBlocks() != null && !originalSession.getBlocks().isEmpty()) {
                         trainingBlockDao.deleteAll(originalSession.getBlocks());
                         originalSession.getBlocks().clear();
                     }
 
+                    originalSession.setTss(updatedResp.getNewTss());
+                    
                     int blockOrder = 1;
                     for (UpdatedBlockApiResponse uBlock : updatedResp.getUpdatedBlocks()) {
                         TrainingBlock newBlock = new TrainingBlock();
@@ -877,7 +879,7 @@ public class PlanServiceImpl implements PlanService {
                         newBlock.setName(uBlock.getName());
                         newBlock.setDistanceOrDuration(uBlock.getDistanceOrDuration());
                         String rawPace = uBlock.getPace().replace("+", "_PLUS");
-                        newBlock.setPace(es.udc.fi.dc.fd.model.entities.IntensityZone.valueOf(rawPace));
+                        newBlock.setPace(IntensityZone.valueOf(rawPace));
                         newBlock.setSets(uBlock.getSets() != null ? uBlock.getSets() : 1);
                         newBlock.setReps(uBlock.getReps() != null ? uBlock.getReps() : 1);
                         newBlock.setRest(uBlock.getRest() != null ? uBlock.getRest() : "");
@@ -907,7 +909,7 @@ public class PlanServiceImpl implements PlanService {
                 newBlock.setName(rBlock.getName());
                 newBlock.setDistanceOrDuration(rBlock.getDistanceOrDuration());
                 String rawPace = rBlock.getPace().replace("+", "_PLUS");
-                newBlock.setPace(es.udc.fi.dc.fd.model.entities.IntensityZone.valueOf(rawPace));
+                newBlock.setPace(IntensityZone.valueOf(rawPace));
                 newBlock.setSets(rBlock.getSets() != null ? rBlock.getSets() : 1);
                 newBlock.setReps(rBlock.getReps() != null ? rBlock.getReps() : 1);
                 newBlock.setRest(rBlock.getRest() != null ? rBlock.getRest() : "");
