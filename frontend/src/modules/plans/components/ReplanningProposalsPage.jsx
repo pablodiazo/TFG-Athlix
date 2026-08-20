@@ -41,7 +41,7 @@ const AiProposalPage = () => {
 
     if (isLoading) {
         return (
-            <div className="flex justify-center items-center h-screen">
+            <div className="ai-proposal-wrapper">
                 <p className="text-gray-600 text-lg">Cargando la propuesta de la IA...</p>
             </div>
         );
@@ -49,12 +49,12 @@ const AiProposalPage = () => {
 
     if (error || !proposal) {
         return (
-            <div className="flex flex-col justify-center items-center h-screen">
+            <div className="ai-proposal-wrapper">
                 <p className="text-red-500 text-lg font-bold mb-4">No se pudo cargar la propuesta.</p>
                 <p className="text-gray-600 mb-4">Es posible que ya haya sido revisada o cancelada.</p>
                 <button 
                     onClick={() => navigate(-1)} 
-                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    className="ai-back-btn"
                 >
                     Volver atrás
                 </button>

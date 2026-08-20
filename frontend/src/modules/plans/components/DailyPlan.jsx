@@ -351,6 +351,7 @@ const DailyPlan = ({ athleteId, forcedDate }) => {
       sessionId,
       () => {
         setIsReplanningId(null);
+        navigate(`/plans/review-proposal/${sessionId}`);
       },
       (error) => {
         console.error("Error al pedir reajuste a la IA:", error);
