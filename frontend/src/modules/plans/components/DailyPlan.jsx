@@ -480,7 +480,7 @@ const DailyPlan = ({ athleteId, forcedDate }) => {
                               </div>
                               <div className="block-details">
                                 {block.pace && block.pace !== "0" && block.pace !== "-" && <span className="badge pace">{block.pace}</span>}
-                                {block.rest && block.rest !== "0" && <span className="badge rest">Recuperación: {block.rest}</span>}
+                                {block.rest && block.rest !== "0" && <span className="badge rest"> <FormattedMessage id="project.plans.CreateTrainingSession.rest"/>: {block.rest}</span>}
                               </div>
                             </div>
                         ))}
@@ -677,14 +677,14 @@ const DailyPlan = ({ athleteId, forcedDate }) => {
         <div className="athlix-modal-overlay" onClick={closeReplanModal}>
           <div className="athlix-modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="athlix-modal-header">
-              <h3>Reajuste automático</h3>
+              <h3><FormattedMessage id="project.plans.DailyPlan.autoAdjustment" /></h3>
             </div>
             <div className="athlix-modal-body">
               <p>
-                ¿No has podido completar esta sesión? Un LLM analizará tu semana y generará una propuesta de reajuste para tu entrenador.
+                <FormattedMessage id="project.plans.DailyPlan.adjustmentDescription" />
               </p>
               <p style={{ marginTop: '10px', fontWeight: 'bold' }}>
-                ¿Deseas continuar?
+                <FormattedMessage id="project.plans.DailyPlan.continue" />
               </p>
             </div>
             <div className="athlix-modal-footer">
@@ -692,7 +692,7 @@ const DailyPlan = ({ athleteId, forcedDate }) => {
                 <FormattedMessage id="project.global.buttons.cancel" />
               </button>
               <button className="athlix-btn-confirm-danger" onClick={confirmReplan} style={{ backgroundColor: '#22c55e' }}>
-                Solicitar Reajuste
+                <FormattedMessage id="project.plans.DailyPlan.adjust" />
               </button>
             </div>
           </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { FormattedMessage } from "react-intl";
 import backend from "../../../backend";
 import { ReplanningProposalReview } from "../../plans";
 import users from "../../users";
@@ -42,7 +43,7 @@ const AiProposalPage = () => {
     if (isLoading) {
         return (
             <div className="ai-proposal-wrapper">
-                <p className="text-gray-600 text-lg">Cargando la propuesta de la IA...</p>
+                <p className="text-gray-600 text-lg"><FormattedMessage id="project.plans.ReplanningProposals.loading" /></p>
             </div>
         );
     }
@@ -50,13 +51,12 @@ const AiProposalPage = () => {
     if (error || !proposal) {
         return (
             <div className="ai-proposal-wrapper">
-                <p className="text-red-500 text-lg font-bold mb-4">No se pudo cargar la propuesta.</p>
-                <p className="text-gray-600 mb-4">Es posible que ya haya sido revisada o cancelada.</p>
+                <p className="text-red-500 text-lg font-bold mb-4"><FormattedMessage id="project.plans.ReplanningProposals.noCharging" /></p>
                 <button 
                     onClick={() => navigate(-1)} 
                     className="ai-back-btn"
                 >
-                    Volver atrás
+                    <FormattedMessage id="project.plans.ReplanningProposals.back" />
                 </button>
             </div>
         );
@@ -68,7 +68,7 @@ const AiProposalPage = () => {
                 onClick={() => navigate(-1)}
                 className="ai-back-btn"
             >
-                &larr; Volver
+                &larr; <FormattedMessage id="project.global.buttons.back" />
             </button>
             
             <ReplanningProposalReview 

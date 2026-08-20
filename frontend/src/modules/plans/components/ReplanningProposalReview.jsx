@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import backend from "../../../backend";
+import { FormattedMessage } from "react-intl";
 
 import "../css/ReplanningProposals.css";
 
@@ -80,23 +81,23 @@ const ReplanningProposalReview = ({ proposal, isCoach, onReviewComplete }) => {
         }
     };
 
-    if (!data) return <p>Cargando datos de la propuesta...</p>;
+    if (!data) return <p><FormattedMessage id="project.plans.ReplanningProposalReview.loading" /></p>;
 
     return (
         <div className="ai-review-container">
-            <h2 className="ai-review-title">Reajuste sugerido por el LLM</h2>
-            <p className="ai-reasoning"><strong>Razonamiento:</strong> {data.readjustmentReasoning}</p>
+            <h2 className="ai-review-title"><FormattedMessage id="project.plans.ReplanningProposalReview.title" /></h2>
+            <p className="ai-reasoning"><strong><FormattedMessage id="project.plans.ReplanningProposalReview.reasoning" />:</strong> {data.readjustmentReasoning}</p>
 
             <div className="ai-grid">
                 <div className="ai-card-section">
-                    <h3 className="ai-card-title modified">Sesiones Modificadas</h3>
+                    <h3 className="ai-card-title modified"><FormattedMessage id="project.plans.ReplanningProposalReview.modifiedSessions" /></h3>
                     {data.updatedSessions.length === 0 ? (
-                        <p style={{color: '#64748b'}}>No hay alteraciones en otras sesiones.</p>
+                        <p style={{color: '#64748b'}}><FormattedMessage id="project.plans.ReplanningProposalReview.noModifiedSessions" /></p>
                     ) : (
                         data.updatedSessions.map((session, index) => (
                             <div key={index} className="ai-session-item modified-item">
                                 <div className="ai-session-header">{session.sport} - {formatDate(session.date)}</div>
-                                <div className="ai-session-tss">Nuevo TSS: {session.newTss}</div>
+                                <div className="ai-session-tss"><FormattedMessage id="project.plans.ReplanningProposalReview.newTSS" />{session.newTss}</div>
                                 <ul className="ai-block-list">
                                     {session.updatedBlocks.map((block, bIdx) => (
                                         <li key={bIdx}>{block.sets}x{block.reps} {block.name} ({block.distanceOrDuration})</li>
@@ -108,13 +109,13 @@ const ReplanningProposalReview = ({ proposal, isCoach, onReviewComplete }) => {
                 </div>
 
                 <div className="ai-card-section">
-                    <h3 className="ai-card-title rescheduled">Sesión Recolocada</h3>
+                    <h3 className="ai-card-title rescheduled"><FormattedMessage id="project.plans.ReplanningProposalReview.rescheduledSession" /></h3>
                     {!data.rescheduledSession ? (
-                        <p style={{color: '#64748b'}}>La sesión fallida no se ha movido a otro día.</p>
+                        <p style={{color: '#64748b'}}><FormattedMessage id="project.plans.ReplanningProposalReview.noRescheduledSession" /></p>
                     ) : (
                         <div className="ai-session-item rescheduled-item">
-                            <p className="ai-session-header">Nuevo Día: {formatDate(data.rescheduledSession.newDate)}</p>
-                            <p className="ai-session-tss">TSS Estimado: {data.rescheduledSession.tss}</p>
+                            <p className="ai-session-header"><FormattedMessage id="project.plans.ReplanningProposalReview.newDay" />{formatDate(data.rescheduledSession.newDate)}</p>
+                            <p className="ai-session-tss"><FormattedMessage id="project.plans.ReplanningProposalReview.tssEstimated" />{data.rescheduledSession.tss}</p>
                             <ul className="ai-block-list">
                                 {data.rescheduledSession.blocks.map((block, bIdx) => (
                                     <li key={bIdx}>{block.sets}x{block.reps} {block.name}</li>
@@ -139,14 +140,14 @@ const ReplanningProposalReview = ({ proposal, isCoach, onReviewComplete }) => {
                         disabled={isProcessing}
                         className="ai-btn ai-btn-accept"
                     >
-                        {isProcessing ? 'Procesando...' : 'Aceptar Propuesta'}
+                        {isProcessing ? <FormattedMessage id="project.global.buttons.processing" /> : <FormattedMessage id="project.global.buttons.confirm" />}
                     </button>
                 </div>
             )}
 
             {proposal.status === 'PENDING' && !isCoach && (
                 <div className="ai-alert-pending">
-                    Pendiente de revisión por tu entrenador.
+                    <FormattedMessage id="project.plans.ReplanningProposalReview.coachPending" />
                 </div>
             )}
             {confirmModal.isOpen && (
@@ -154,26 +155,26 @@ const ReplanningProposalReview = ({ proposal, isCoach, onReviewComplete }) => {
                     <div className="athlix-modal-content" onClick={(e) => e.stopPropagation()}>
                         <div className="athlix-modal-header">
                             <h3>
-                                {confirmModal.type === 'ACCEPT' ? 'Aplicar Reajuste' : 'Rechazar Propuesta'}
+                                {confirmModal.type === 'ACCEPT' ? <FormattedMessage id="project.plans.ReplanningProposalReview.confirm" /> : <FormattedMessage id="project.plans.ReplanningProposalReview.deny" />}
                             </h3>
                         </div>
                         <div className="athlix-modal-body">
                             <p>
                                 {confirmModal.type === 'ACCEPT' 
-                                    ? '¿Estás seguro de que quieres aplicar estos cambios en la semana del atleta? Esta acción modificará su calendario de forma inmediata.' 
-                                    : '¿Estás seguro de que deseas descartar esta propuesta? El atleta será notificado de tu decisión.'}
+                                    ? <FormattedMessage id="project.plans.ReplanningProposalReview.confirmModal" /> 
+                                    : <FormattedMessage id="project.plans.ReplanningProposalReview.denyModal" />}
                             </p>
                         </div>
                         <div className="athlix-modal-footer">
                             <button className="athlix-btn-cancel" onClick={closeConfirmModal}>
-                                Cancelar
+                                <FormattedMessage id="project.global.buttons.cancel" />
                             </button>
                             <button 
                                 className={confirmModal.type === 'ACCEPT' ? 'athlix-btn-confirm-success' : 'athlix-btn-confirm-danger'} 
                                 onClick={handleConfirm}
                                 style={confirmModal.type === 'ACCEPT' ? { backgroundColor: '#22c55e', color: 'white', padding: '0.5rem 1rem', borderRadius: '0.375rem', fontWeight: 'bold' } : {}}
                             >
-                                {confirmModal.type === 'ACCEPT' ? 'Sí, Aplicar' : 'Sí, Rechazar'}
+                                {confirmModal.type === 'ACCEPT' ? <FormattedMessage id="project.plans.ReplanningProposalReview.confirmModalAccept" /> : <FormattedMessage id="project.plans.ReplanningProposalReview.confirmModalDeny" />}
                             </button>
                         </div>
                     </div>
