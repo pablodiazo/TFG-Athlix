@@ -552,11 +552,11 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public Double calculateTSS(Long sessionId) throws InstanceNotFoundException, PermissionException {
+    public Double calculateCE(Long sessionId) throws InstanceNotFoundException, PermissionException {
         TrainingSession session = trainingSessionDao.findById(sessionId)
                 .orElseThrow(() -> new InstanceNotFoundException("TrainingSession", sessionId));
 
-        double tss = 0.0;
+        double ce = 0.0;
 
         for (TrainingBlock block : session.getBlocks()) {
             double intensity = 0.0;
@@ -603,11 +603,11 @@ public class PlanServiceImpl implements PlanService {
             int reps = block.getReps() != null && block.getReps() > 0 ? block.getReps() : 1;
             double totalBlockMinutes = baseMinutes * sets * reps;
             if (intensity > 0 && totalBlockMinutes > 0) {
-                tss += (totalBlockMinutes / 60.0) * (intensity * intensity) * 100.0;
+                ce += (totalBlockMinutes / 60.0) * (intensity * intensity) * 100.0;
             }
         }
 
-        return tss;
+        return ce;
     }
 
     @Override
@@ -797,28 +797,28 @@ public class PlanServiceImpl implements PlanService {
             throw new PermissionException();
         }
 
-        double failedTss = calculateTSS(sessionId);
+        double failedCe = calculateCE(sessionId);
 
         LocalDate failedDate = failedSession.getSessionDate();
         LocalDate endOfWeek = failedDate.with(java.time.DayOfWeek.SUNDAY);
         List<TrainingSession> futureSessions = trainingSessionDao.findByUserIdAndSessionDateBetweenOrderByStartTimeAsc(
                 userId, failedDate.plusDays(1), endOfWeek);
 
-        ContextApiRequest context = new ContextApiRequest(450.0, failedTss); 
+        ContextApiRequest context = new ContextApiRequest(450.0, failedCe); 
         
         List<BlockApiRequest> failedBlocksReq = failedSession.getBlocks().stream()
                 .map(b -> new BlockApiRequest(b.getName(), b.getDistanceOrDuration(), b.getPace().name(), b.getSets(), b.getReps(), b.getRest()))
                 .collect(Collectors.toList());
         SessionApiRequest failedSessionReq = new SessionApiRequest(
-                failedSession.getSessionDate().toString(), failedSession.getSport().name(), failedTss, failedBlocksReq);
+                failedSession.getSessionDate().toString(), failedSession.getSport().name(), failedCe, failedBlocksReq);
 
         List<SessionApiRequest> adjustableSessionsReq = futureSessions.stream().map(s -> {
             try {
-                double tss = calculateTSS(s.getId());
+                double ce = calculateCE(s.getId());
                 List<BlockApiRequest> blocksReq = s.getBlocks().stream()
                     .map(b -> new BlockApiRequest(b.getName(), b.getDistanceOrDuration(), b.getPace().name(), b.getSets(), b.getReps(), b.getRest()))
                     .collect(Collectors.toList());
-                return new SessionApiRequest(s.getSessionDate().toString(), s.getSport().name(), tss, blocksReq);
+                return new SessionApiRequest(s.getSessionDate().toString(), s.getSport().name(), ce, blocksReq);
             } catch (Exception e) {
                 return null;
             }
@@ -870,7 +870,7 @@ public class PlanServiceImpl implements PlanService {
                         originalSession.getBlocks().clear();
                     }
 
-                    originalSession.setTss(updatedResp.getNewTss());
+                    originalSession.setCe(updatedResp.getNewCe());
                     
                     int blockOrder = 1;
                     for (UpdatedBlockApiResponse uBlock : updatedResp.getUpdatedBlocks()) {

@@ -25,32 +25,32 @@ public class ReplanningDtos {
     }
 
     public static class ContextApiRequest {
-        private double athleteWeeklyTargetTss;
-        private double missingTssToCompensate;
+        private double athleteWeeklyTargetCe;
+        private double missingCeToCompensate;
 
         public ContextApiRequest() {}
-        public ContextApiRequest(double athleteWeeklyTargetTss, double missingTssToCompensate) {
-            this.athleteWeeklyTargetTss = athleteWeeklyTargetTss;
-            this.missingTssToCompensate = missingTssToCompensate;
+        public ContextApiRequest(double athleteWeeklyTargetCe, double missingCeToCompensate) {
+            this.athleteWeeklyTargetCe = athleteWeeklyTargetCe;
+            this.missingCeToCompensate = missingCeToCompensate;
         }
 
-        public double getAthleteWeeklyTargetTss() { return athleteWeeklyTargetTss; }
-        public void setAthleteWeeklyTargetTss(double athleteWeeklyTargetTss) { this.athleteWeeklyTargetTss = athleteWeeklyTargetTss; }
-        public double getMissingTssToCompensate() { return missingTssToCompensate; }
-        public void setMissingTssToCompensate(double missingTssToCompensate) { this.missingTssToCompensate = missingTssToCompensate; }
+        public double getAthleteWeeklyTargetCe() { return athleteWeeklyTargetCe; }
+        public void setAthleteWeeklyTargetCe(double athleteWeeklyTargetCe) { this.athleteWeeklyTargetCe = athleteWeeklyTargetCe; }
+        public double getMissingCeToCompensate() { return missingCeToCompensate; }
+        public void setMissingCeToCompensate(double missingCeToCompensate) { this.missingCeToCompensate = missingCeToCompensate; }
     }
 
     public static class SessionApiRequest {
         private String date;
         private String sport;
-        private double tss;
+        private double ce;
         private List<BlockApiRequest> blocks;
 
         public SessionApiRequest() {}
-        public SessionApiRequest(String date, String sport, double tss, List<BlockApiRequest> blocks) {
+        public SessionApiRequest(String date, String sport, double ce, List<BlockApiRequest> blocks) {
             this.date = date;
             this.sport = sport;
-            this.tss = tss;
+            this.ce = ce;
             this.blocks = blocks;
         }
 
@@ -58,8 +58,8 @@ public class ReplanningDtos {
         public void setDate(String date) { this.date = date; }
         public String getSport() { return sport; }
         public void setSport(String sport) { this.sport = sport; }
-        public double getTss() { return tss; }
-        public void setTss(double tss) { this.tss = tss; }
+        public double getCe() { return ce; }
+        public void setCe(double ce) { this.ce = ce; }
         public List<BlockApiRequest> getBlocks() { return blocks; }
         public void setBlocks(List<BlockApiRequest> blocks) { this.blocks = blocks; }
     }
@@ -114,7 +114,7 @@ public class ReplanningDtos {
     public static class UpdatedSessionApiResponse {
         private String date;
         private String sport;
-        private double newTss;
+        private double newCe;
         private List<UpdatedBlockApiResponse> updatedBlocks;
 
         public UpdatedSessionApiResponse() {}
@@ -123,8 +123,8 @@ public class ReplanningDtos {
         public void setDate(String date) { this.date = date; }
         public String getSport() { return sport; }
         public void setSport(String sport) { this.sport = sport; }
-        public double getNewTss() { return newTss; }
-        public void setNewTss(double newTss) { this.newTss = newTss; }
+        public double getNewCe() { return newCe; }
+        public void setNewCe(double newCe) { this.newCe = newCe; }
         public List<UpdatedBlockApiResponse> getUpdatedBlocks() { return updatedBlocks; }
         public void setUpdatedBlocks(List<UpdatedBlockApiResponse> updatedBlocks) { this.updatedBlocks = updatedBlocks; }
     }
@@ -156,7 +156,7 @@ public class ReplanningDtos {
     public static class RescheduledSessionApiResponse {
         private String newDate;
         private String sport;
-        private double tss;
+        private double ce;
         private List<UpdatedBlockApiResponse> blocks;
 
         public RescheduledSessionApiResponse() {}
@@ -165,8 +165,8 @@ public class ReplanningDtos {
         public void setNewDate(String newDate) { this.newDate = newDate; }
         public String getSport() { return sport; }
         public void setSport(String sport) { this.sport = sport; }
-        public double getTss() { return tss; }
-        public void setTss(double tss) { this.tss = tss; }
+        public double getCe() { return ce; }
+        public void setCe(double ce) { this.ce = ce; }
         public List<UpdatedBlockApiResponse> getBlocks() { return blocks; }
         public void setBlocks(List<UpdatedBlockApiResponse> blocks) { this.blocks = blocks; }
     }

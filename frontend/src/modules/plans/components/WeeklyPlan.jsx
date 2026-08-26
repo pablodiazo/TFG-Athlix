@@ -100,7 +100,7 @@ const WeeklyPlan = ({athleteId}) => {
     };
 
     ['RUN', 'BIKE', 'SWIM', 'STRENGTH'].forEach(sport => {
-        processedData.totals[sport] = { totalMins: 0, totalMts: 0, sessionCount: 0, totalTss: 0 };
+        processedData.totals[sport] = { totalMins: 0, totalMts: 0, sessionCount: 0, totalCe: 0 };
     });
 
     data.forEach((dayData) => {
@@ -108,15 +108,15 @@ const WeeklyPlan = ({athleteId}) => {
         
         const sessions = dayData.sessions.map(session => {
             if (!processedData.totals[session.sport]) {
-                processedData.totals[session.sport] = { totalMins: 0, totalMts: 0, sessionCount: 0, totalTss: 0 };
+                processedData.totals[session.sport] = { totalMins: 0, totalMts: 0, sessionCount: 0, totalCe: 0 };
             }
 
             const { minutes, meters } = parseSessionString(session.totalDistanceOrDuration);
             processedData.totals[session.sport].totalMins += minutes;
             processedData.totals[session.sport].totalMts += meters;
             processedData.totals[session.sport].sessionCount += 1;
-            processedData.totals[session.sport].totalTss += (session.tss || 0);
-            
+            processedData.totals[session.sport].totalCe += (session.ce || 0);
+
             return {
                 sport: session.sport,
                 title: session.objective || session.sport
@@ -141,10 +141,10 @@ const WeeklyPlan = ({athleteId}) => {
                 duration: timeStr || "--",
                 distance: distStr || "--",
                 sessionCount: sportData.sessionCount,
-                totalTss: sportData.totalTss
+                totalCe: sportData.totalCe
             };
         } else {
-             processedData.totals[sport] = { duration: "0", distance: "0", sessionCount: 0, totalTss: 0 };
+             processedData.totals[sport] = { duration: "0", distance: "0", sessionCount: 0, totalCe: 0 };
         }
     });
 
@@ -264,8 +264,8 @@ const WeeklyPlan = ({athleteId}) => {
                     </div>
 
                     <div className="weekly-stat-box">
-                      <span><FormattedMessage id="project.plans.MonthlyPlan.tss" defaultMessage="Carga (TSS)" /></span>
-                      <strong>{Math.round(data.totalTss)}</strong>
+                      <span><FormattedMessage id="project.plans.MonthlyPlan.ce" defaultMessage="Carga (CE)" /></span>
+                      <strong>{Math.round(data.totalCe)}</strong>
                     </div>
 
                     {data.duration !== "--" && (

@@ -119,10 +119,10 @@ const MonthlyPlan = ({ athleteId }) => {
       if (day.sessions) {
         day.sessions.forEach(session => {
           const sport = session.sport;
-          if (!totals[sport]) totals[sport] = { count: 0, tss: 0, totalMins: 0, totalMts: 0 };
+          if (!totals[sport]) totals[sport] = { count: 0, ce: 0, totalMins: 0, totalMts: 0 };
           
           totals[sport].count += 1;
-          totals[sport].tss += (session.tss || 0);
+          totals[sport].ce += (session.ce || 0);
 
           const { minutes, meters } = parseSessionString(session.totalDistanceOrDuration);
           totals[sport].totalMins += minutes;
@@ -236,8 +236,8 @@ const MonthlyPlan = ({ athleteId }) => {
                       <strong>{data.count}</strong>
                     </div>
                     <div className="monthly-stat-box">
-                      <span><FormattedMessage id="project.plans.MonthlyPlan.tss" defaultMessage="Carga (TSS)" /></span>
-                      <strong>{Math.round(data.tss)}</strong>
+                      <span><FormattedMessage id="project.plans.MonthlyPlan.ce" defaultMessage="Carga (CE)" /></span>
+                      <strong>{Math.round(data.ce)}</strong>
                     </div>
                     {data.duration !== "--" && (
                       <div className="monthly-stat-box">

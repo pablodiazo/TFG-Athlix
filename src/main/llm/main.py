@@ -27,18 +27,18 @@ class UpdatedBlock(BaseModel):
 class UpdatedSession(BaseModel):
     date: str = Field(..., description="Fecha de la sesión")
     sport: str = Field(..., description="Deporte de la sesión")
-    newTss: float = Field(..., description="TSS final de la sesión")
+    newCe: float = Field(..., description="CE final de la sesión")
     updatedBlocks: List[UpdatedBlock] = Field(..., description="Bloques de la sesión")
 
 class RescheduledSession(BaseModel):
     newDate: str = Field(..., description="Nueva fecha asignada a la sesión fallida (DEBE ser estrictamente una de las permitidas en las reglas)")
     sport: str = Field(..., description="CÓPIALO EXACTAMENTE del campo 'sport' de la 'failedSession'")
-    tss: float = Field(..., description="CÓPIALO EXACTAMENTE del campo 'tss' de la 'failedSession'")
+    ce: float = Field(..., description="CÓPIALO EXACTAMENTE del campo 'ce' de la 'failedSession'")
     blocks: List[UpdatedBlock] = Field(..., description="CÓPIALO EXACTAMENTE de los 'blocks' de la 'failedSession'")
 
 class PlanReadjustment(BaseModel):
     readjustmentReasoning: str = Field(..., description="Escribe MÁXIMO 15 palabras resumiendo la acción. (Ej: 'Se aumenta la duración del RUN').")
-    updatedSessions: List[UpdatedSession] = Field(description="Sesiones originales de la semana (con TSS ajustado o mantenido)")
+    updatedSessions: List[UpdatedSession] = Field(description="Sesiones originales de la semana (con CE ajustado o mantenido)")
     rescheduledSession: Optional[RescheduledSession] = Field(default=None, description="SOLO RELLENAR si se ha recolocado una sesión entera")
 
 
@@ -52,10 +52,10 @@ async def replan_week(request: ReplanRequest):
     - Si el deporte es BIKE, usa ÚNICAMENTE: Z1, Z2, Z3, Z4, Z5, Z6, Z7.
     - Si el deporte es RUN, usa ÚNICAMENTE: R0, R1, R1+, R2, R3, R3+, R4, R5, R6.
 
-    GUÍA PARA ESTIMAR TSS:
-    - Baja intensidad (AER1, Z2, R1): ~40-50 TSS por hora.
-    - Media intensidad (AER2, Z3, R3): ~60-70 TSS por hora.
-    - Alta intensidad (AER3, Z4, R4): ~100 TSS por hora.
+    GUÍA PARA ESTIMAR CE:
+    - Baja intensidad (AER1, Z2, R1): ~40-50 CE por hora.
+    - Media intensidad (AER2, Z3, R3): ~60-70 CE por hora.
+    - Alta intensidad (AER3, Z4, R4): ~100 CE por hora.
     
     ¡ADVERTENCIA MATEMÁTICA CRÍTICA PARA LOS BLOQUES!:
     - El tiempo/distancia TOTAL de un bloque se calcula multiplicando: distanceOrDuration * sets * reps.
@@ -71,16 +71,16 @@ async def replan_week(request: ReplanRequest):
         matching_sessions = [s for s in adjustable_sessions if s["sport"] == failed_sport]
 
         if matching_sessions:
-            extra_tss = input_data["context"]["missingTssToCompensate"] / len(matching_sessions)
+            extra_ce = input_data["context"]["missingCeToCompensate"] / len(matching_sessions)
             instrucciones_dinamicas = ""
 
             for session in adjustable_sessions:
                 if session["sport"] == failed_sport:
-                    session["targetTss"] = round(session["tss"] + extra_tss, 2)
-                    instrucciones_dinamicas += f"- MODIFICAR: Sube la sesión de {session['sport']} del {session['date']} a {session['targetTss']} TSS. IMPORTANTE: Para lograrlo, DEBES AÑADIR NUEVOS BLOQUES (nuevas series, intervalos o trabajo extra) a la lista 'updatedBlocks' de esta sesión.\n"
+                    session["targetCe"] = round(session["ce"] + extra_ce, 2)
+                    instrucciones_dinamicas += f"- MODIFICAR: Sube la sesión de {session['sport']} del {session['date']} a {session['targetCe']} CE. IMPORTANTE: Para lograrlo, DEBES AÑADIR NUEVOS BLOQUES (nuevas series, intervalos o trabajo extra) a la lista 'updatedBlocks' de esta sesión.\n"
                 else:
-                    session["targetTss"] = session["tss"]
-                    instrucciones_dinamicas += f"- MANTENER: Deja la sesión de {session['sport']} del {session['date']} exactamente igual, con {session['tss']} TSS. No modifiques ni añadas bloques.\n"
+                    session["targetCe"] = session["ce"]
+                    instrucciones_dinamicas += f"- MANTENER: Deja la sesión de {session['sport']} del {session['date']} exactamente igual, con {session['ce']} CE. No modifiques ni añadas bloques.\n"
 
             system_prompt = f"""Eres un entrenador experto.
             REGLAS ESTRICTAS:
@@ -100,18 +100,18 @@ async def replan_week(request: ReplanRequest):
             available_dates_str = ", ".join(available_dates)
 
             f_sport = input_data["failedSession"]["sport"]
-            f_tss = input_data["failedSession"]["tss"]
+            f_ce = input_data["failedSession"]["ce"]
             f_blocks = json.dumps(input_data["failedSession"]["blocks"], ensure_ascii=False)
 
             for session in adjustable_sessions:
-                session["targetTss"] = session["tss"]
+                session["targetCe"] = session["ce"]
                 
             system_prompt = f"""Eres un entrenador experto. El atleta ha fallado una sesión y NO hay sesiones de ese mismo deporte en los días restantes.
             REGLAS ESTRICTAS:
             1. Tu ÚNICA tarea es RECOLOCAR la 'failedSession' rellenando el objeto 'rescheduledSession'.
             2. FECHA OBLIGATORIA: La 'newDate' DEBE SER EXACTAMENTE UNA DE ESTAS FECHAS: [{available_dates_str}].
-            3. COPIA EXACTA: En 'rescheduledSession', el 'sport' DEBE ser "{f_sport}", el 'tss' DEBE ser {f_tss}, y los 'blocks' DEBEN ser exactamente: {f_blocks}.
-            4. Devuelve las 'updatedSessions' exactamente igual que entraron, no modifiques ni su TSS ni sus bloques.
+            3. COPIA EXACTA: En 'rescheduledSession', el 'sport' DEBE ser "{f_sport}", el 'ce' DEBE ser {f_ce}, y los 'blocks' DEBEN ser exactamente: {f_blocks}.
+            4. Devuelve las 'updatedSessions' exactamente igual que entraron, no modifiques ni su CE ni sus bloques.
             
             ¡ADVERTENCIA CRÍTICA!: 
             - Está TOTALMENTE PROHIBIDO devolver 'readjustmentReasoning' vacío.

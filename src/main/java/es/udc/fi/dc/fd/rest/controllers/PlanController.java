@@ -73,9 +73,9 @@ public class PlanController {
                                      b.getReps(), b.getDistanceOrDuration(), b.getPace(), b.getRest(), b.getDone())
             ).collect(Collectors.toList());
 
-            Double tss=0.0;
+            Double ce=0.0;
                 try {
-                    tss = planService.calculateTSS(s.getId());
+                    ce = planService.calculateCE(s.getId());
                 } catch (InstanceNotFoundException e) {
                     e.printStackTrace();
                 } catch (PermissionException e) {
@@ -83,7 +83,7 @@ public class PlanController {
                 }
 
             return new TrainingSessionDto(s.getId(), s.getSessionDate(), s.getStartTime(), s.getSport(), 
-                                          s.getObjective(), s.getTotalDistanceOrDuration(), tss, blockDtos);
+                                          s.getObjective(), s.getTotalDistanceOrDuration(), ce, blockDtos);
         }).collect(Collectors.toList());
 
         NutritionPlanDto nutritionDto = info.getNutrition().map(n -> 
@@ -118,9 +118,9 @@ public class PlanController {
                                          b.getReps(), b.getDistanceOrDuration(), b.getPace(), b.getRest(), b.getDone())
                 ).collect(Collectors.toList());
 
-                Double tss=0.0;
+                Double ce=0.0;
                 try {
-                    tss = planService.calculateTSS(s.getId());
+                    ce = planService.calculateCE(s.getId());
                 } catch (InstanceNotFoundException e) {
                     e.printStackTrace();
                 } catch (PermissionException e) {
@@ -128,7 +128,7 @@ public class PlanController {
                 }
 
                 return new TrainingSessionDto(s.getId(), s.getSessionDate(), s.getStartTime(), s.getSport(), 
-                                              s.getObjective(), s.getTotalDistanceOrDuration(), tss, blockDtos);
+                                              s.getObjective(), s.getTotalDistanceOrDuration(), ce, blockDtos);
             }).collect(Collectors.toList());
 
             NutritionPlanDto nutritionDto = info.getNutrition().map(n -> 
@@ -248,9 +248,9 @@ public class PlanController {
                                      b.getReps(), b.getDistanceOrDuration(), b.getPace(), b.getRest(), b.getDone())
             ).collect(Collectors.toList());
 
-            Double tss=0.0;
+            Double ce=0.0;
                 try {
-                    tss = planService.calculateTSS(s.getId());
+                    ce = planService.calculateCE(s.getId());
                 } catch (InstanceNotFoundException e) {
                     e.printStackTrace();
                 } catch (PermissionException e) {
@@ -258,7 +258,7 @@ public class PlanController {
                 }
 
             return new TrainingSessionDto(s.getId(), s.getSessionDate(), s.getStartTime(), s.getSport(), 
-                                          s.getObjective(), s.getTotalDistanceOrDuration(), tss, blockDtos);
+                                          s.getObjective(), s.getTotalDistanceOrDuration(), ce, blockDtos);
         }).collect(Collectors.toList());
 
         NutritionPlanDto nutritionDto = info.getNutrition().map(n -> 
@@ -293,9 +293,9 @@ public class PlanController {
                                          b.getReps(), b.getDistanceOrDuration(), b.getPace(), b.getRest(), b.getDone())
                 ).collect(Collectors.toList());
 
-                Double tss=0.0;
+                Double ce=0.0;
                 try {
-                    tss = planService.calculateTSS(s.getId());
+                    ce = planService.calculateCE(s.getId());
                 } catch (InstanceNotFoundException e) {
                     e.printStackTrace();
                 } catch (PermissionException e) {
@@ -303,7 +303,7 @@ public class PlanController {
                 }
 
                 return new TrainingSessionDto(s.getId(), s.getSessionDate(), s.getStartTime(), s.getSport(), 
-                                              s.getObjective(), s.getTotalDistanceOrDuration(), tss, blockDtos);
+                                              s.getObjective(), s.getTotalDistanceOrDuration(), ce, blockDtos);
             }).collect(Collectors.toList());
 
             NutritionPlanDto nutritionDto = info.getNutrition().map(n -> 
@@ -393,15 +393,15 @@ public class PlanController {
                                                  params.getStartTime(), params.getSport(), params.getObjective(), 
                                                  params.getTotalDistanceOrDuration(), blocks);
 
-        Double tss = 0.0;
+        Double ce = 0.0;
         try {
-            tss = planService.calculateTSS(updatedSession.getId());
+            ce = planService.calculateCE(updatedSession.getId());
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         TrainingSessionDto responseDto = toTrainingSessionDto(updatedSession);
-        responseDto.setTss(tss); 
+        responseDto.setCe(ce);
         
         return responseDto;
     }
@@ -459,15 +459,15 @@ public class PlanController {
                                          b.getReps(), b.getDistanceOrDuration(), b.getPace(), b.getRest(), b.getDone())
                 ).collect(Collectors.toList());
 
-                Double tss=0.0;
+                Double ce=0.0;
                 try {
-                    tss = planService.calculateTSS(s.getId());
+                    ce = planService.calculateCE(s.getId());
                 } catch (InstanceNotFoundException | PermissionException e) {
                     e.printStackTrace();
                 }
 
                 return new TrainingSessionDto(s.getId(), s.getSessionDate(), s.getStartTime(), s.getSport(), 
-                                              s.getObjective(), s.getTotalDistanceOrDuration(), tss, blockDtos);
+                                              s.getObjective(), s.getTotalDistanceOrDuration(), ce, blockDtos);
             }).collect(Collectors.toList());
 
             NutritionPlanDto nutritionDto = info.getNutrition().map(n -> 
@@ -507,14 +507,14 @@ public class PlanController {
                                          b.getReps(), b.getDistanceOrDuration(), b.getPace(), b.getRest(), b.getDone())
                 ).collect(Collectors.toList());
 
-                Double tss = 0.0;
+                Double ce = 0.0;
                 try {
-                    tss = planService.calculateTSS(s.getId());
+                    ce = planService.calculateCE(s.getId());
                 } catch (Exception e) {
                 }
 
                 return new TrainingSessionDto(s.getId(), s.getSessionDate(), s.getStartTime(), s.getSport(), 
-                                              s.getObjective(), s.getTotalDistanceOrDuration(), tss, blockDtos);
+                                              s.getObjective(), s.getTotalDistanceOrDuration(), ce, blockDtos);
             }).collect(Collectors.toList());
 
             NutritionPlanDto nutritionDto = info.getNutrition().map(n -> 
@@ -564,9 +564,9 @@ public class PlanController {
         return modifiedSessions.stream().map(session -> {
             TrainingSessionDto dto = toTrainingSessionDto(session);
             try {
-                dto.setTss(planService.calculateTSS(session.getId()));
+                dto.setCe(planService.calculateCE(session.getId()));
             } catch (Exception e) {
-                dto.setTss(0.0);
+                dto.setCe(0.0);
             }
             return dto;
         }).collect(Collectors.toList());

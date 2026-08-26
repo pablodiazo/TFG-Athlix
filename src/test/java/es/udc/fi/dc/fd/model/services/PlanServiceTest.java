@@ -998,7 +998,7 @@ public class PlanServiceTest {
         planService.deleteTrainingSession(coach.getId(), session.getId());
 
         assertThrows(InstanceNotFoundException.class, () -> {
-            planService.calculateTSS(session.getId()); 
+            planService.calculateCE(session.getId()); 
         });
     }
 

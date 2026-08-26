@@ -97,7 +97,7 @@ const ReplanningProposalReview = ({ proposal, isCoach, onReviewComplete }) => {
                         data.updatedSessions.map((session, index) => (
                             <div key={index} className="ai-session-item modified-item">
                                 <div className="ai-session-header">{session.sport} - {formatDate(session.date)}</div>
-                                <div className="ai-session-tss"><FormattedMessage id="project.plans.ReplanningProposalReview.newTSS" />{session.newTss}</div>
+                                <div className="ai-session-ce"><FormattedMessage id="project.plans.ReplanningProposalReview.newCE" />{session.newCe}</div>
                                 <ul className="ai-block-list">
                                     {session.updatedBlocks.map((block, bIdx) => (
                                         <li key={bIdx}>{block.sets}x{block.reps} {block.name} ({block.distanceOrDuration})</li>
@@ -115,7 +115,7 @@ const ReplanningProposalReview = ({ proposal, isCoach, onReviewComplete }) => {
                     ) : (
                         <div className="ai-session-item rescheduled-item">
                             <p className="ai-session-header"><FormattedMessage id="project.plans.ReplanningProposalReview.newDay" />{formatDate(data.rescheduledSession.newDate)}</p>
-                            <p className="ai-session-tss"><FormattedMessage id="project.plans.ReplanningProposalReview.tssEstimated" />{data.rescheduledSession.tss}</p>
+                            <p className="ai-session-ce"><FormattedMessage id="project.plans.ReplanningProposalReview.ceEstimated" />{data.rescheduledSession.ce}</p>
                             <ul className="ai-block-list">
                                 {data.rescheduledSession.blocks.map((block, bIdx) => (
                                     <li key={bIdx}>{block.sets}x{block.reps} {block.name}</li>

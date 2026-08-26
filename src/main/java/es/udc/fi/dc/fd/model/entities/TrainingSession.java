@@ -21,7 +21,7 @@ public class TrainingSession {
     private SportType sport;
     private String objective;
     private String totalDistanceOrDuration;
-    private Double tss;
+    private Double ce;
     private List<TrainingBlock> blocks = new ArrayList<>();
 
     public TrainingSession() {}
@@ -57,8 +57,8 @@ public class TrainingSession {
     public String getTotalDistanceOrDuration() { return totalDistanceOrDuration; }
     public void setTotalDistanceOrDuration(String totalDistanceOrDuration) { this.totalDistanceOrDuration = totalDistanceOrDuration; }
 
-    public Double getTss() { return tss; }
-    public void setTss(Double tss) { this.tss = tss; }
+    public Double getCe() { return ce; }
+    public void setCe(Double ce) { this.ce = ce; }
 
     @OneToMany(mappedBy = "trainingSession", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("blockOrder ASC")

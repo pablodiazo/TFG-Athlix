@@ -41,7 +41,7 @@ public interface PlanService {
 
     void denyReadjustment(Long coachId, Long userId, Long notificationId, Long sessionId, LocalDate newDate, LocalTime newStartTime) throws InstanceNotFoundException, PermissionException;
 
-    Double calculateTSS(Long sessionId) throws InstanceNotFoundException, PermissionException;
+    Double calculateCE(Long sessionId) throws InstanceNotFoundException, PermissionException;
 
     void deleteTrainingSession(Long coachId, Long sessionId) throws InstanceNotFoundException, PermissionException;
 

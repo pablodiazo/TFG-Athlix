@@ -16,18 +16,18 @@ class UpdatedBlock(BaseModel):
 class UpdatedSession(BaseModel):
     date: str = Field(..., description="Fecha de la sesión")
     sport: str = Field(..., description="Deporte de la sesión")
-    newTss: float = Field(..., description="TSS final de la sesión")
+    newCe: float = Field(..., description="CE final de la sesión")
     updatedBlocks: List[UpdatedBlock] = Field(..., description="Bloques de la sesión")
 
 class RescheduledSession(BaseModel):
     newDate: str = Field(..., description="Nueva fecha asignada a la sesión fallida (DEBE ser estrictamente una de las permitidas en las reglas)")
     sport: str = Field(..., description="CÓPIALO EXACTAMENTE del campo 'sport' de la 'failedSession'")
-    tss: float = Field(..., description="CÓPIALO EXACTAMENTE del campo 'tss' de la 'failedSession'")
+    ce: float = Field(..., description="CÓPIALO EXACTAMENTE del campo 'ce' de la 'failedSession'")
     blocks: List[UpdatedBlock] = Field(..., description="CÓPIALO EXACTAMENTE de los 'blocks' de la 'failedSession'")
 
 class PlanReadjustment(BaseModel):
     readjustmentReasoning: str = Field(..., description="Escribe MÁXIMO 15 palabras resumiendo la acción. (Ej: 'Se aumenta la duración del RUN').")
-    updatedSessions: List[UpdatedSession] = Field(default=[], description="Sesiones originales de la semana (con TSS ajustado o mantenido)")
+    updatedSessions: List[UpdatedSession] = Field(default=[], description="Sesiones originales de la semana (con CE ajustado o mantenido)")
     rescheduledSession: Optional[RescheduledSession] = Field(default=None, description="SOLO RELLENAR si se ha recolocado una sesión entera")
 
 zones_rule = """
@@ -39,26 +39,26 @@ REGLA DE ZONAS DE INTENSIDAD ('pace'):
 
 input_data = {
   "context": {
-    "athleteWeeklyTargetTss": 450,
-    "missingTssToCompensate": 50.00
+    "athleteWeeklyTargetCe": 450,
+    "missingCeToCompensate": 50.00
   },
   "failedSession": {
     "date": "2026-08-02",
     "sport": "RUN",
-    "tss": 50.0,
+    "ce": 50.0,
     "blocks": [{"name": "Rodaje regenerativo", "distanceOrDuration": "40 min", "pace": "R1"}]
   },
   "adjustableSessions": [
     {
       "date": "2026-08-04",
       "sport": "BIKE",
-      "tss": 120.0,
+      "ce": 120.0,
       "blocks": [{"name": "Rodaje aeróbico", "distanceOrDuration": "1.5 h", "pace": "Z2"}]
     },
     {
       "date": "2026-08-05",
       "sport": "RUN",
-      "tss": 70.0,
+      "ce": 70.0,
       "blocks": [{"name": "Fartlek corto", "distanceOrDuration": "45 min", "pace": "R3"}]
     }
   ]
@@ -70,18 +70,18 @@ adjustable_sessions = input_data["adjustableSessions"]
 matching_sessions = [s for s in adjustable_sessions if s["sport"] == failed_sport]
 
 if matching_sessions:
-    extra_tss = input_data["context"]["missingTssToCompensate"] / len(matching_sessions)
+    extra_ce = input_data["context"]["missingCeToCompensate"] / len(matching_sessions)
 
     instrucciones_dinamicas = ""
 
     for session in adjustable_sessions:
         if session["sport"] == failed_sport:
-            session["targetTss"] = round(session["tss"] + extra_tss, 2)
-            instrucciones_dinamicas += f"- La sesión de {session['sport']} del {session['date']} PASA DE {session['tss']} a {session['targetTss']} TSS. DEBES aumentar su distanceOrDuration o su pace.\n"
+            session["targetCe"] = round(session["ce"] + extra_ce, 2)
+            instrucciones_dinamicas += f"- La sesión de {session['sport']} del {session['date']} PASA DE {session['ce']} a {session['targetCe']} CE. DEBES aumentar su distanceOrDuration o su pace.\n"
         
         else:
-            session["targetTss"] = session["tss"]
-            instrucciones_dinamicas += f"- La sesión de {session['sport']} del {session['date']} SE MANTIENE en {session['tss']} TSS. Cópiala EXACTAMENTE igual, no modifiques nada.\n"
+            session["targetCe"] = session["ce"]
+            instrucciones_dinamicas += f"- La sesión de {session['sport']} del {session['date']} SE MANTIENE en {session['ce']} CE. Cópiala EXACTAMENTE igual, no modifiques nada.\n"
             
     system_prompt = f"""Eres un entrenador experto.
     REGLAS ESTRICTAS:
@@ -96,18 +96,18 @@ else:
     available_dates_str = ", ".join(available_dates)
 
     f_sport = input_data["failedSession"]["sport"]
-    f_tss = input_data["failedSession"]["tss"]
+    f_ce = input_data["failedSession"]["ce"]
     f_blocks = json.dumps(input_data["failedSession"]["blocks"], ensure_ascii=False)
 
     for session in adjustable_sessions:
-        session["targetTss"] = session["tss"]
+        session["targetCe"] = session["ce"]
         
     system_prompt = f"""Eres un entrenador experto. El atleta ha fallado una sesión y NO hay sesiones de ese mismo deporte en los días restantes.
     REGLAS ESTRICTAS:
     1. Tu ÚNICA tarea es RECOLOCAR la 'failedSession' rellenando el objeto 'rescheduledSession'.
     2. FECHA OBLIGATORIA: La 'newDate' DEBE SER EXACTAMENTE UNA DE ESTAS FECHAS: [{available_dates_str}].
-    3. COPIA EXACTA: En 'rescheduledSession', el 'sport' DEBE ser "{f_sport}", el 'tss' DEBE ser {f_tss}, y los 'blocks' DEBEN ser exactamente: {f_blocks}.
-    4. Devuelve las 'updatedSessions' exactamente igual que entraron, no modifiques ni su TSS ni sus bloques.
+    3. COPIA EXACTA: En 'rescheduledSession', el 'sport' DEBE ser "{f_sport}", el 'ce' DEBE ser {f_ce}, y los 'blocks' DEBEN ser exactamente: {f_blocks}.
+    4. Devuelve las 'updatedSessions' exactamente igual que entraron, no modifiques ni su CE ni sus bloques.
     {zones_rule}"""
 
 try:
