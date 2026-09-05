@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
-import { Form, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import backend from "../../../backend";
 import { FaSwimmer, FaBicycle, FaRunning, FaDumbbell, FaSync, FaClock, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
@@ -111,7 +111,13 @@ const MonthlyPlan = ({ athleteId }) => {
   const handlePrevMonth = () => { setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1)); };
   const handleNextMonth = () => { setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1)); };
   const handleToday = () => { setCurrentMonth(new Date()); };
-  const handleDayClick = (date) => { navigate(`/plans/athletes`, { state: { athleteId: athleteId, targetDate: getApiDateString(date) } }); };
+  const handleDayClick = (date) => { 
+    if (!athleteId)
+      navigate(`/plans/daily`, { state: { targetDate: getApiDateString(date) } });
+    else{
+     navigate(`/plans/athletes`, { state: { athleteId: athleteId, targetDate: getApiDateString(date) } }); 
+    }
+  };
 
   const getMonthlyTotals = () => {
     const totals = {};
@@ -235,10 +241,12 @@ const MonthlyPlan = ({ athleteId }) => {
                       <span><FormattedMessage id="project.plans.MonthlyPlan.sessionCount" defaultMessage="Sesiones" /></span>
                       <strong>{data.count}</strong>
                     </div>
-                    <div className="monthly-stat-box">
-                      <span><FormattedMessage id="project.plans.MonthlyPlan.ce" defaultMessage="Carga (CE)" /></span>
-                      <strong>{Math.round(data.ce)}</strong>
-                    </div>
+                    {data.ce > 0 && (
+                      <div className="monthly-stat-box">
+                        <span><FormattedMessage id="project.plans.MonthlyPlan.ce" defaultMessage="Carga (CE)" /></span>
+                        <strong>{Math.round(data.ce)}</strong>
+                      </div>
+                    )}
                     {data.duration !== "--" && (
                       <div className="monthly-stat-box">
                         <span><FormattedMessage id="project.plans.WeeklyPlan.time" defaultMessage="Tiempo" /></span>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import backend from "../../../backend";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { FaSwimmer, FaBicycle, FaRunning, FaDumbbell, FaClock, FaSync, FaCheck, FaTimes, FaCalendarDay, FaEdit, FaTrash, FaRobot } from "react-icons/fa";
 import "../css/DailyPlan.css";
@@ -16,7 +16,13 @@ const SPORT_INFO = {
 };
 
 const DailyPlan = ({ athleteId, forcedDate }) => {
-  const [currentDate, setCurrentDate] = useState(forcedDate || new Date());
+  const location = useLocation();
+
+  const navigatedDate = location.state?.targetDate 
+  ? new Date(location.state.targetDate) 
+  : new Date();
+
+  const [currentDate, setCurrentDate] = useState(forcedDate || navigatedDate || new Date());
   const [planData, setPlanData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();

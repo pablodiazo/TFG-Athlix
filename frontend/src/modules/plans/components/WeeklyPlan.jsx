@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import backend from "../../../backend";
+import { useNavigate } from "react-router-dom";
 
 import { FaSwimmer, FaBicycle, FaRunning, FaDumbbell, FaClock, FaSync, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import "../css/WeeklyPlan.css";
@@ -15,6 +16,7 @@ const SPORT_INFO = {
 };
 
 const WeeklyPlan = ({athleteId}) => {
+  const navigate = useNavigate();
   const [currentMonday, setCurrentMonday] = useState(() => {
     const today = new Date();
     const day = today.getDay();
@@ -200,6 +202,17 @@ const WeeklyPlan = ({athleteId}) => {
     setCurrentMonday(new Date(today.setDate(diff)));
   };
 
+  const handleDayClick = (dayIndex) => {
+    const clickedDate = new Date(currentMonday);
+    clickedDate.setDate(clickedDate.getDate() + dayIndex);
+    
+    if (!athleteId) {
+      navigate(`/plans/daily`, { state: { targetDate: getApiDateString(clickedDate) } });
+    } else {
+      navigate(`/plans/athletes`, { state: { athleteId: athleteId, targetDate: getApiDateString(clickedDate) } });
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="athlix-weekly-wrapper loading">
@@ -262,11 +275,12 @@ const WeeklyPlan = ({athleteId}) => {
                       <span><FormattedMessage id="project.plans.MonthlyPlan.sessionCount" defaultMessage="Sesiones" /></span>
                       <strong>{data.sessionCount}</strong>
                     </div>
-
-                    <div className="weekly-stat-box">
-                      <span><FormattedMessage id="project.plans.MonthlyPlan.ce" defaultMessage="Carga (CE)" /></span>
-                      <strong>{Math.round(data.totalCe)}</strong>
-                    </div>
+                    {data.totalCe > 0 && (
+                      <div className="weekly-stat-box">
+                        <span><FormattedMessage id="project.plans.MonthlyPlan.ce" defaultMessage="Carga (CE)" /></span>
+                        <strong>{Math.round(data.totalCe)}</strong>
+                      </div>
+                    )}
 
                     {data.duration !== "--" && (
                       <div className="weekly-stat-box">
@@ -297,7 +311,7 @@ const WeeklyPlan = ({athleteId}) => {
               const isRestDay = day.sessions.length === 0;
 
               return (
-                <div key={idx} className={`weekly-day-column-card ${isToday ? "is-today" : ""}`}>
+                <div key={idx} className={`weekly-day-column-card ${isToday ? "is-today" : ""}`} onClick={() => handleDayClick(idx)} style={{ cursor: "pointer" }}>
                   <div className="weekly-day-header">
                     <span className="weekly-day-name">{day.date}</span>
                     <span className="weekly-day-number">{day.dateNum}</span>
